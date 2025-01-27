@@ -4,7 +4,7 @@ REQUIRE 'db.php';
 dbConnect();
 $username = $_POST["username"];
 $password = $_POST["password"];
-$checkUsername = "SELECT * FROM Users WHERE username = :username";
+$checkUsername = "SELECT * FROM users WHERE username = :username";
 $stmt = $pdo->prepare($checkUsername);
 $stmt->bindParam(':username', $username);
 $stmt->execute();
@@ -14,7 +14,9 @@ if (!$user) {
 } 
 else {
 	$storedPassword = $user['password'];
-	if (password_verify($password, $storedPassword)) {
+	if ($password == $storedPassword) {
+		//GO BACK TO THIS 
+	//if (password_verify($password, $storedPassword)) {
 		session_regenerate_id(true);
 		$_SESSION['user_id'] = $user['user_id'];
 		$_SESSION['admin'] = $user['admin'];	
@@ -24,7 +26,6 @@ else {
 		
 	} else {
       echo 'Incorrect username or password';
-	  sleep(3);
 	  header("Location: login.php");
 	  exit();
 }

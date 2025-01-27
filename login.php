@@ -1,7 +1,6 @@
 <html>
 <head>
 <title>Returning User </title>
-<link rel="stylesheet" type="text/css" href="formatStyles.css">
 </head>
 <body>
 <div>
