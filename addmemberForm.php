@@ -26,7 +26,6 @@ if ($row) {
     $stmt->bindParam(':password', $encryptedPass);
     $stmt->bindParam(':admin', $admin, PDO::PARAM_INT);
     $stmt->execute();
-    echo '<br>' . "User Registered";
-    header("Location: addmember.php");
+    header("Location: adminPage.php");
 }
 ?>
