@@ -13,12 +13,13 @@ if (!isset($_SESSION['admin'])) {
 <head>
     <title>Admin Functionality </title>
 </head>
+<h1> Admin Functionality </h1>
 <form action="index.php" method="post">
 	<input type="submit" value="Back to Home">
 	</form>
     <br>
 <body>
-    <h1>Add New Club Member</h1>
+    <h2>Add New Club Member</h2>
     <form action="addmemberForm.php" method="post">
         <label for="username">Username:</label><br>
         <input type="text" id="username" name="username" required><br><br>
@@ -36,7 +37,7 @@ if (!isset($_SESSION['admin'])) {
         <input type="submit" value="Add Member">
         <br>
     </form>
-    <h1>Remove Club Member</h1>
+    <h2>Remove Club Member</h2>
     <form action="removeMemberForm.php" method="post">
         <label for="email">Email:</label><br>
         <input type="email" id="email" name="email" required><br><br>
@@ -44,7 +45,7 @@ if (!isset($_SESSION['admin'])) {
         <input type="submit" value="Remove Member"><br>
     </form>
 
-    <h1>Make Stock Transaction</h1>
+    <h2>Make Stock Transaction</h2>
     <form action="addTransaction.php" method="post">
         <label for="transaction_type">Transaction Type:</label>
         <select id="transaction_type" name="transaction_type" required>
