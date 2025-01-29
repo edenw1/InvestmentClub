@@ -6,7 +6,11 @@ $username = $_POST['username'];
 $email = $_POST['email'];
 $password = $_POST['password'];
 //if the checkbox is checked, set admin to 1, else 0
-$admin = isset($_POST['admin']) ? 1 : 0;  
+if (isset($_POST['admin'])) {
+    $admin = 1;
+} else {
+    $admin = 0;
+}
 
 $checkUser = "SELECT * FROM users WHERE username = :username OR email = :email";
 $stmt1 = $pdo->prepare($checkUser);

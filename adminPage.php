@@ -13,6 +13,10 @@ if (!isset($_SESSION['admin'])) {
 <head>
     <title>Admin Functionality </title>
 </head>
+<form action="index.php" method="post">
+	<input type="submit" value="Back to Home">
+	</form>
+    <br>
 <body>
     <h1>Add New Club Member</h1>
     <form action="addmemberForm.php" method="post">
@@ -32,14 +36,37 @@ if (!isset($_SESSION['admin'])) {
         <input type="submit" value="Add Member">
         <br>
     </form>
-
-    <html>
     <h1>Remove Club Member</h1>
     <form action="removeMemberForm.php" method="post">
         <label for="email">Email:</label><br>
         <input type="email" id="email" name="email" required><br><br>
         
         <input type="submit" value="Remove Member"><br>
+    </form>
+
+    <h1>Make Stock Transaction</h1>
+    <form action="addTransaction.php" method="post">
+        <label for="transaction_type">Transaction Type:</label>
+        <select id="transaction_type" name="transaction_type" required>
+            <option value="Buy">Buy</option>
+            <option value="Sell">Sell</option>
+        </select><br><br>
+    need to ask on how I will be adding stocks? right now stock_ids were added manually
+    into the database and the transaction will look for the stock with that ID
+    <br>
+        <label for="stock_id">Stock ID:</label>
+        <input type="number" id="stock_id" name="stock_id" required><br><br>
+        
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" required><br><br>
+        
+        <label for="price_per_share">Price per Share:</label>
+        <input type="text" id="price_per_share" name="price_per_share" required><br><br>
+        
+        <label for="buy_sell_date">Transaction Date:</label><br>
+        <input type="date" id="buy_sell_date" name="buy_sell_date" required><br><br>
+
+        <input type="submit" value="Make Transaction">
     </form>
 </body>
 </html>
