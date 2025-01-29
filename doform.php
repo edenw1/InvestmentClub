@@ -14,9 +14,8 @@ if (!$user) {
 } 
 else {
 	$storedPassword = $user['password'];
-	if ($password == $storedPassword) {
-		//GO BACK TO THIS 
-	//if (password_verify($password, $storedPassword)) {
+	// if ($password == $storedPassword) {
+	if (password_verify($password, $storedPassword)) {
 		session_regenerate_id(true);
 		$_SESSION['user_id'] = $user['user_id'];
 		$_SESSION['admin'] = $user['admin'];	
