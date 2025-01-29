@@ -19,6 +19,9 @@ if (isset($_SESSION['user_id'])) {
           echo '<form action="transactions.php" method="post">
           <input type="submit" value="See Transactions">
         </form>';
+        echo '<form action="presentations.php" method="post">
+        <input type="submit" value="Presentations">
+      </form>';
 } else {
     //guests
     echo '<form action="login.php" method="post">
