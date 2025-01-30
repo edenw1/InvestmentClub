@@ -52,11 +52,21 @@ if (!isset($_SESSION['admin'])) {
             <option value="Buy">Buy</option>
             <option value="Sell">Sell</option>
         </select><br><br>
-    need to ask on how I will be adding stocks? right now stock_ids were added manually
-    into the database and the transaction will look for the stock with that ID
-    <br>
-        <label for="stock_id">Stock ID:</label>
-        <input type="number" id="stock_id" name="stock_id" required><br><br>
+        
+        <label for="stock_id">Stock:</label>
+        <select id="stock_id" name="stock_id" required>
+            <?php
+            //fetch all 'approved' stocks from the stocks table
+            $selectStocksQuery = "SELECT stock_id, symbol, name FROM stocks";
+            $stmt = $pdo->prepare($selectStocksQuery);
+            $stmt->execute();
+            $stocks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($stocks as $stock) {
+                echo "<option value='" . $stock['stock_id'] . "'>" . $stock['symbol'] . " - " . $stock['name'] . "</option>";
+            }
+            ?>
+        </select><br><br>
         
         <label for="quantity">Quantity:</label>
         <input type="number" id="quantity" name="quantity" required><br><br>
@@ -69,5 +79,35 @@ if (!isset($_SESSION['admin'])) {
 
         <input type="submit" value="Make Transaction">
     </form>
+
+    <h2>Pending Stock Proposals</h2>
+    <?php
+        $stockProposals = "SELECT * FROM stockProposal WHERE status = 'pending'";
+        $stmt = $pdo->prepare($stockProposals);
+        $stmt->execute();
+        $proposals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    if (count($proposals) > 0) {
+        foreach ($proposals as $proposal) {
+            echo "<div>";
+            echo "<p><strong>Proposal ID:</strong> " . $proposal['proposal_id'] . "</p>";
+            echo "<p><strong>Stock Symbol:</strong> " . $proposal['stock_symbol'] . "</p>";
+            echo "<p><strong>Stock Name:</strong> " . $proposal['stock_name'] . "</p>";
+            echo "<p><strong>Proposed By User ID:</strong> " . $proposal['proposed_by'] . "</p>";
+            echo "<form action='pendingStocks.php' method='post'>";
+            echo "<input type='hidden' name='proposal_id' value='" . $proposal['proposal_id'] . "'>";
+            echo "<label for='status'>Action:</label>";
+            echo "<select name='status' required>";
+            echo "<option value='approved'>Approve</option>";
+            echo "<option value='rejected'>Reject</option>";
+            echo "</select>";
+            echo "<input type='submit' value='Submit'>";
+            echo "</form>";
+            echo "</div>";
+        }
+    } else {
+        echo "<p>No pending stock proposals .</p>";
+    }
+    ?>
 </body>
 </html>
