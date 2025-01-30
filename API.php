@@ -24,10 +24,10 @@
                 return json_decode($response, true);
             }
 
-            function getNews($ticker) {
-                $from = date('yyyy-mm-dd', strtotime("-1 week"));
-                $to = date("yyyy-mm-dd", strtotime(now)); 
-                $newsUrl = "https://finnhub.io/api/v1/company-news?symbol=" . $ticker . "&from=" . $from . "&to=" . $to;
+            function getNews($ticker, $scope) {
+                $present = date("Y-m-d");
+                $past = date("Y-m-d", strtotime($present . '- '.$scope.' days')); //adjusts ammount of news, API will not fetch news from over a year ago.
+                $newsUrl = "https://finnhub.io/api/v1/company-news?symbol=" . $ticker . "&from=" . $past . "&to=" . $present;
                 return fetchFromAPI($newsUrl);
             }
 

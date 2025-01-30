@@ -49,6 +49,7 @@ function processStockSymbols() {
           parseProfile(getProfile($symbol));
           parseQuote(getQuote($symbol));
           parseTrends(getTrends($symbol));
+          parseNews(getNews($symbol, 1)); //input the scope of prior days to include in the news call. Can not exceed 1 yr
           echo "<hr>";
       }
   } else {
