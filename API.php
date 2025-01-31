@@ -1,6 +1,6 @@
 <?php
             $API_KEY = "cu8jie9r01qt63vh5q70cu8jie9r01qt63vh5q7g";
-            $ticker = htmlspecialchars($_POST["ticker"]);
+            $ticker = isset($_POST["ticker"]) ? htmlspecialchars($_POST["ticker"]) : "";
 
             function fetchFromAPI($url) {
                 global $API_KEY;
