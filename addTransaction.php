@@ -26,7 +26,15 @@ if (!$stock) {
     $stmt->bindParam(':buy_sell_date', $buy_sell_date);
     $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
     $stmt->execute();
-    //may eventually take the admin to a page confirming that is the stock they want to buy/sell
+
+    // mark stock as active if it isn't already
+    if (!$stock['active']) {
+        $updateStock = "UPDATE stocks SET active = 1 WHERE stock_id = :stock_id";
+        $stmt2 = $pdo->prepare($updateStock);
+        $stmt2->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
+        $stmt2->execute();
+    }
+
     header("Location: adminPage.php");
     exit();
 }
