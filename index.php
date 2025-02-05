@@ -45,7 +45,7 @@ dbConnect();
                     processStockSymbols();
                 } else {
                     // Login button for guests
-                    echo '<a href="login.php">Login</a>';
+                    echo '<a href="login.html">Login</a>';
                 }
                 ?>
         </nav>
@@ -60,7 +60,7 @@ dbConnect();
         </div>
     </div>
     <footer>
-        <p>&copy; Muskingum Univeristy Investment Club</p>
+        <p>Muskingum Univeristy Investment Club</p>
     </footer>
     </div>
 </body>

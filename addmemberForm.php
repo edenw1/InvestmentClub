@@ -17,7 +17,7 @@ if ($row) {
     echo '<br>' . 'This username or email already exists.';
     ?>
     <form action="index.php" method="post">
-    <input type="submit" value="Back to Home">
+    <input type="submit" value="Back to Home"></form>
     <?php
 } else {
     addMember($username, $password, $email, $admin);
