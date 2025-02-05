@@ -61,4 +61,32 @@ function removeMemberByEmail($email) {
         echo "No user found with this email.";
     }
 }
+function addPresentation($user_id, $title, $url) {
+    global $pdo;
+
+    $addPresentation = "INSERT INTO presentation (user_id, title, file_path, date) VALUES (?, ?, ?, NOW())";
+    $stmt = $pdo->prepare($addPresentation);
+    $stmt->bindValue(1, $user_id, PDO::PARAM_INT);
+    $stmt->bindValue(2, $title, PDO::PARAM_STR);
+    $stmt->bindValue(3, $url, PDO::PARAM_STR);
+    $stmt->execute();
+    
+    return $pdo->lastInsertId(); 
+}
+
+function addStockProposal($presentation_id, $user_id, $symbol, $name, $action, $quantity) {
+    global $pdo;
+
+    $addStockProposal = "INSERT INTO stockProposal (presentation_id, stock_symbol, stock_name, proposed_by, action, quantity) VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $pdo->prepare($addStockProposal);
+    $stmt->bindValue(1, $presentation_id, PDO::PARAM_INT);
+    $stmt->bindValue(2, $symbol, PDO::PARAM_STR);
+    $stmt->bindValue(3, $name, PDO::PARAM_STR);
+    $stmt->bindValue(4, $user_id, PDO::PARAM_INT);
+    $stmt->bindValue(5, $action, PDO::PARAM_STR);
+    $stmt->bindValue(6, $quantity, PDO::PARAM_INT);
+    $stmt->execute();
+    
+    return "Stock proposal added successfully!";
+}
 ?>

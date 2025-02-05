@@ -7,6 +7,7 @@ dbConnect();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +15,7 @@ dbConnect();
     <!-- Link to the external CSS file -->
     <link rel="stylesheet" href="homePageStyles.css">
 </head>
+
 <body>
     <div class="sidebar">
         <img src="logo.png" alt="Logo">
@@ -24,58 +26,43 @@ dbConnect();
             <h1>Investment Club</h1>
         </header>
         <nav>
-            <a href="#">Home</a>
-            <a href="#">Transaction</a>
-            <a href="#">About</a>
-            <a href="#">Presentations</a>
-        </nav>
-        <div class="container">
-            <?php
-            // Welcome message for logged-in users
-            if (isset($_SESSION['user_id'])) {
-                echo "<h2>Welcome, Investment Club!</h2>";
+            <div class="container">
+                <?php
+                // Display menu if the user is logged in
+                if (isset($_SESSION['user_id'])) {
+                    echo '<a href="transactions.php">See Transactions</a>';
+                    echo '<a href="presentations.php">Presentations</a>';
 
-                // Admin Panel button (only visible for admins)
-                if (isset($_SESSION['admin']) && $_SESSION['admin'] == 1) {
-                    echo '<form action="adminPage.php" method="post">
-                            <input type="submit" value="Admin Panel">
-                          </form>';
+                    // Admin Panel link for admins only
+                    if (isset($_SESSION['admin']) && $_SESSION['admin'] == 1) {
+                        echo '<a href="adminPage.php">Admin Panel</a>';
+                    }
+
+                    // Logout button
+                    echo '<a href="logout.php">Logout</a>';
+
+                    // Process stock symbols
+                    processStockSymbols();
+                } else {
+                    // Login button for guests
+                    echo '<a href="login.php">Login</a>';
                 }
-
-                // Logged-in user buttons
-                echo '<form action="logout.php" method="post">
-                        <input type="submit" value="Logout">
-                      </form>';
-                echo '<form action="transactions.php" method="post">
-                        <input type="submit" value="See Transactions">
-                      </form>';
-                echo '<form action="presentations.php" method="post">
-                        <input type="submit" value="Presentations">
-                      </form>';
-
-                // Iterate through stock symbols (function is assumed to exist in API.php)
-                processStockSymbols();
-
-            } else {
-                // If user is not logged in (guest)
-                echo '<form action="login.php" method="post">
-                        <input type="submit" value="Login">
-                      </form>';
-            }
-            ?>
-            <div class="stock-card">
-                <!-- Stock Card content -->
-            </div>
-            <div class="stock-card">
-                <!-- Stock Card content -->
-            </div>
-            <div class="stock-card">
-                <!-- Stock Card content -->
-            </div>
+                ?>
+        </nav>
+        <div class="stock-card">
+            <!-- Stock Card content -->
         </div>
-        <footer>
-            <p>&copy; 2025 Stock Tracker. All rights reserved.</p>
-        </footer>
+        <div class="stock-card">
+            <!-- Stock Card content -->
+        </div>
+        <div class="stock-card">
+            <!-- Stock Card content -->
+        </div>
+    </div>
+    <footer>
+        <p>&copy; Muskingum Univeristy Investment Club</p>
+    </footer>
     </div>
 </body>
+
 </html>
