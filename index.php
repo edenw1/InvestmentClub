@@ -47,17 +47,34 @@ dbConnect();
                     // Login button for guests
                     echo '<a href="login.php">Login</a>';
                 }
+                
+                function processStockSymbols() {
+                    global $pdo;
+                  
+                    // Select all stock symbols
+                    $query = "SELECT symbol FROM stocks";
+                    $stmt = $pdo->prepare($query);
+                    $stmt->execute();
+                  
+                    if ($stmt->rowCount() > 0) {
+                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                            $symbol = $row['symbol'];
+                            echo "<strong> Processing stock: $symbol </strong><div class='stock-card'>";
+                            // Example of processing the stock symbol with an API call
+                            parseProfile(getProfile($symbol));
+                            parseQuote(getQuote($symbol));
+                            parseTrends(getTrends($symbol));
+                            parseNews(getNews($symbol, 1)); //input the scope of prior days to include in the news call. Can not exceed 1 yr
+                            echo "</div>";
+                        }
+                    } else {
+                        echo "No stocks found.";
+                    }
+                  }
+
                 ?>
         </nav>
-        <div class="stock-card">
-            <!-- Stock Card content -->
-        </div>
-        <div class="stock-card">
-            <!-- Stock Card content -->
-        </div>
-        <div class="stock-card">
-            <!-- Stock Card content -->
-        </div>
+
     </div>
     <footer>
         <p>&copy; Muskingum Univeristy Investment Club</p>
