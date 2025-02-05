@@ -12,24 +12,11 @@ if (isset($_POST['admin'])) {
     $admin = 0;
 }
 
-$checkUser = "SELECT * FROM users WHERE username = :username OR email = :email";
-$stmt1 = $pdo->prepare($checkUser);
-$stmt1->bindParam(':username', $username);
-$stmt1->bindParam(':email', $email);
-$stmt1->execute();
-$row = $stmt1->fetch();
+$row = checkMember($username, $email);
 
 if ($row) {
     echo '<br>' . 'This username or email already exists.';
 } else {
-    $sql = 'INSERT INTO users (username, email, password, admin) VALUES (:username, :email, :password, :admin)';
-    $stmt = $pdo->prepare($sql);
-    $encryptedPass = password_hash($password, PASSWORD_BCRYPT);
-    $stmt->bindParam(':username', $username);
-    $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':password', $encryptedPass);
-    $stmt->bindParam(':admin', $admin, PDO::PARAM_INT);
-    $stmt->execute();
-    header("Location: adminPage.php");
+    addMember($username, $password, $email, $admin = 0);
 }
 ?>

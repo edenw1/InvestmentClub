@@ -1,19 +1,17 @@
 <?php
 require 'db.php'; 
 dbConnect(); 
+function checkMember($username,$email) {
+    global $pdo;
+        $checkUser = "SELECT * FROM users WHERE username = :username OR email = :email";
+        $stmt1 = $pdo->prepare($checkUser);
+        $stmt1->bindParam(':username', $username);
+        $stmt1->bindParam(':email', $email);
+        $stmt1->execute();
+        return $stmt1->fetch();
+}
 function addMember($username, $password, $email, $admin = 0) {
     global $pdo;
-    $checkUser = "SELECT * FROM users WHERE username = :username OR email = :email";
-    $stmt1 = $pdo->prepare($checkUser);
-    $stmt1->bindParam(':username', $username);
-    $stmt1->bindParam(':email', $email);
-    $stmt1->execute();
-    $row = $stmt1->fetch();
-
-    if ($row) {
-        return 'This username or email already exists.';
-    } else {
-        // Insert the new user into the database
         $sql = 'INSERT INTO users (username, email, password, admin) VALUES (:username, :email, :password, :admin)';
         $stmt = $pdo->prepare($sql);
         $encryptedPass = password_hash($password, PASSWORD_BCRYPT);
@@ -24,9 +22,7 @@ function addMember($username, $password, $email, $admin = 0) {
         $stmt->execute();
 
         return 'User Registered';
-    }
 }
-
 function getUserById($userId) {
     global $pdo; // Use the global $pdo object
 
