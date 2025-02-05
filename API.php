@@ -61,7 +61,7 @@
                         echo "URL: <a href='" . $newsItem['url'] . "' target='_blank'>" . $newsItem['url'] . "</a>\n\n";
                     }
                 } else {
-                    echo "Failed to fetch news.\n";
+                    echo "No news available within selected scope.\n";
                 }
 
             }
@@ -149,7 +149,7 @@
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         $symbol = $row['symbol'];
-                        echo "<strong> Processing stock: $symbol </strong>";
+                        echo "<strong> Processing stock: $symbol </strong><br>";
                         // Example of processing the stock symbol with an API call
                         parseProfile(getProfile($symbol));
                         parseQuote(getQuote($symbol));
