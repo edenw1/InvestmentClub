@@ -1,5 +1,6 @@
 <?php
 require 'db.php';
+require 'databaseFunctions.php';
 dbConnect();
 
 $username = $_POST['username'];
