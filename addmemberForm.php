@@ -1,7 +1,5 @@
 <?php
-require 'db.php';
 require 'databaseFunctions.php';
-dbConnect();
 
 $username = $_POST['username'];
 $email = $_POST['email'];
@@ -17,7 +15,13 @@ $row = checkMember($username, $email);
 
 if ($row) {
     echo '<br>' . 'This username or email already exists.';
+    ?>
+    <form action="index.php" method="post">
+    <input type="submit" value="Back to Home">
+    <?php
 } else {
-    addMember($username, $password, $email, $admin = 0);
+    addMember($username, $password, $email, $admin);
+    header("Location: adminPage.php");
+    exit();
 }
 ?>
