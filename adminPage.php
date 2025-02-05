@@ -94,6 +94,8 @@ if (!isset($_SESSION['admin'])) {
             echo "<p><strong>Stock Symbol:</strong> " . $proposal['stock_symbol'] . "</p>";
             echo "<p><strong>Stock Name:</strong> " . $proposal['stock_name'] . "</p>";
             echo "<p><strong>Proposed By User ID:</strong> " . $proposal['proposed_by'] . "</p>";
+            echo "<p><strong>Action: </strong> " . $proposal['action'] . "</p>";
+            echo "<p><strong>Quantity: </strong> " . $proposal['quantity'] . "</p>";
             echo "<form action='pendingStocks.php' method='post'>";
             echo "<input type='hidden' name='proposal_id' value='" . $proposal['proposal_id'] . "'>";
             echo "<label for='status'>Action:</label>";
