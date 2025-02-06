@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block title %}Admin Functionality{% endblock %}</title>
+	<link rel="stylesheet" href="homePageStyles.css">
+</head>
+<h1>{% block header %}Admin Functionality{% endblock %}</h1>
+<form action="index.php" method="post">
+	<input type="submit" value="Back to Home">
+	</form>
+    <br>
+<body>
+    <h2>{% block header %}Add New Club Member{% endblock %}</h2>
+    <form action="addmemberForm.php" method="post">
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username" required><br><br>
+        
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required>
+        <br><br>
+        
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <label for="admin">Make Admin:</label>
+        <input type="checkbox" name="admin" value="1"><br>
+        
+        <input type="submit" value="Add Member">
+        <br>
+    </form>
+    <h2>{% block header %}Remove Club Member{% endblock %}</h2>
+    <form action="removeMemberForm.php" method="post">
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+        
+        <input type="submit" value="Remove Member"><br>
+    </form>
+
+    <h2>{% block header %}Make Stock Transaction{% endblock %}</h2>
+    <form action="addTransaction.php" method="post">
+        <label for="transaction_type">Transaction Type:</label>
+        <select id="transaction_type" name="transaction_type" required>
+            <option value="Buy">Buy</option>
+            <option value="Sell">Sell</option>
+        </select><br><br>
+        
+        <label for="stock_id">Stock:</label>
+        <select id="stock_id" name="stock_id" required>
+        </select><br><br>
+        
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" required><br><br>
+        
+        <label for="price_per_share">Price per Share:</label>
+        <input type="text" id="price_per_share" name="price_per_share" required><br><br>
+        
+        <label for="buy_sell_date">Transaction Date:</label><br>
+        <input type="date" id="buy_sell_date" name="buy_sell_date" required><br><br>
+
+        <input type="submit" value="Make Transaction">
+    </form>
+
+    <h2>{% block header %}Pending Stock Proposals{% endblock %}</h2>
+</body>
+</html>

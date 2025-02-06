@@ -1,7 +1,7 @@
 <?php
 function dbConnect()
 //now in every document where you are using the database use this to establish database connetion 
-//require 'dbconnect.php';
+//require 'db.php';
 //dbConnect();
 
 {
