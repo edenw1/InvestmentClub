@@ -11,22 +11,6 @@
     <div class="content">
         <header>
             <h1>{% block header %}Investment Club{% endblock %}</h1>
-<<<<<<< HEAD
-	</header>
-        <nav>
-            <a href="index.php">Home</a>
-            <a href="transactions.html">Transaction</a>
-            <a href="#">About</a>
-            <a href="presentations.html">Presentations</a>
-        </nav>
-        <div class="container">
-            <h2>{% block header %}Welcome, Investment Club!{% endblock %}</h2>
-            {% if not user.is_authenticated %}
-	    <form action="login.php" method="post">
-                <input type="submit" value="Login">
-	    </form>
-	    {% else %}
-=======
         </header>
         <nav>
             <a href="#">Home</a>
@@ -42,33 +26,12 @@
                 <input type="submit" value="Login">
     </form>
   {% else %}
->>>>>>> d7f0de3db058a22800052c285648b8c1d355d022
             <form action="transactions.php" method="post">
                 <input type="submit" value="See Transactions">
             </form>
             <form action="presentations.php" method="post">
                 <input type="submit" value="Presentations">
             </form>
-<<<<<<< HEAD
-	    {% if user.is_admin %}
-	    <form action="adminPage.php" method="post">
-                <input type="submit" value="Admin Panel">
-            </form>
-	    {% endif %}
-	    <form action="logout.php" method="post">
-                <input type="submit" value="Logout">
-            </form>
-	     {% endif %}
-	  
-	    <div class="stock-card">
-                {% block content %}{% endblock %}
-            </div>
-            <div class="stock-card">
-                {% block content %}{% endblock %}
-            </div>
-            <div class="stock-card">
-		{% block content %}{% endblock %}
-=======
   {% if user.is_admin %}
     <form action="adminPage.php" method="post">
                 <input type="submit" value="Admin Panel">
@@ -89,7 +52,6 @@
             </div>
             <div class="stock-card">
 {% block content %}{% endblock %}
->>>>>>> d7f0de3db058a22800052c285648b8c1d355d022
                 <!-- Stock Card content -->
             </div>
         </div>
