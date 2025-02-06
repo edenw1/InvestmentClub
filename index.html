@@ -13,45 +13,45 @@
             <h1>{% block header %}Investment Club{% endblock %}</h1>
         </header>
         <nav>
-            <a href="#">Home</a>
-            <a href="#">Transaction</a>
+            <a href="index.html">Home</a>
+            <a href="transactions.php">Transaction</a>
             <a href="#">About</a>
-            <a href="#">Presentations</a>
+            <a href="presentations.html">Presentations</a>
         </nav>
         <div class="container">
             <h2>{% block header %}Welcome, Investment Club!{% endblock %}</h2>
 
-  {% if not user.is_authenticated %}
-    <form action="login.php" method="post">
+	  {% if not user.is_authenticated %}
+	    <form action="login.html" method="post">
                 <input type="submit" value="Login">
-    </form>
-  {% else %}
+	    </form>
+	  {% else %}
             <form action="transactions.php" method="post">
                 <input type="submit" value="See Transactions">
             </form>
             <form action="presentations.php" method="post">
                 <input type="submit" value="Presentations">
             </form>
-  {% if user.is_admin %}
-    <form action="adminPage.php" method="post">
+	  {% if user.is_admin %}
+	    <form action="adminPage.php" method="post">
                 <input type="submit" value="Admin Panel">
             </form>
-  {% endif %}
-    <form action="logout.php" method="post">
+	  {% endif %}
+	    <form action="logout.php" method="post">
                 <input type="submit" value="Logout">
             </form>
-  {% endif %}
+	  {% endif %}
 
             <div class="stock-card">
-{% block content %}{% endblock %}
+		{% block content %}{% endblock %}
                 <!-- Stock Card content -->
             </div>
             <div class="stock-card">
-{% block content %}{% endblock %}
+		{% block content %}{% endblock %}
                 <!-- Stock Card content -->
             </div>
             <div class="stock-card">
-{% block content %}{% endblock %}
+		{% block content %}{% endblock %}
                 <!-- Stock Card content -->
             </div>
         </div>

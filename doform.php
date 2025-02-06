@@ -19,12 +19,12 @@ else {
 		$_SESSION['user_id'] = $user['user_id'];
 		$_SESSION['admin'] = $user['admin'];	
 			echo 'Login Successful';
-			header("Location: index.php");
+			header("Location: index.html");
 			exit();
 		
 	} else {
       echo 'Incorrect username or password';
-	  header("Location: login.php");
+	  header("Location: login.html");
 	  exit();
 }
 }
