@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<head>
+    <title>{% block title %}Transaction History{% endblock %}</title>
+    <link rel="stylesheet" href="homePageStyles.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <img src="Inv_Logo.png" alt="Investment Club Logo">
+        <a href="indexx.html" class="button">Back To Home</a>
+    </div>
+
+    <div class="content">
+        <header>
+            <h1>{% block header %}Transaction History{% endblock %}</h1>
+        </header>
+
+        <div class="container">
+		{% block content %}{% endblock %}
+            <table class="transactions-table">
+                <tr>
+                    <th>Stock</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Price per Share</th>
+                    <th>Date</th>
+                </tr>
+                <tr>
+                    <td>{% block content %}{% endblock %}</td>
+                    <td>{% block content %}{% endblock %}</td>
+                    <td>{% block content %}{% endblock %}</td>
+                    <td>{% block content %}{% endblock %}</td>
+                    <td>{% block content %}{% endblock %}</td>
+                </tr>
+                <tr>
+                    <td>{% block content %}{% endblock %}</td>
+                    <td>{% block content %}{% endblock %}</td>
+                    <td>{% block content %}{% endblock %}</td>
+                    <td>{% block content %}{% endblock %}</td>
+                    <td>{% block content %}{% endblock %}</td>
+                </tr>
+                <tr>
+                    <td>{% block content %}{% endblock %}</td>
+                    <td>{% block content %}{% endblock %}</td>
+                    <td>{% block content %}{% endblock %}</td>
+                    <td>{% block content %}{% endblock %}</td>
+                    <td>{% block content %}{% endblock %}</td>
+                </tr>
+            </table>
+        </div>
+
+        <footer>
+            <p>{% block footer %}&copy; 2025 Stock Tracker. All rights reserved.{% endblock %}</p>
+        </footer>
+    </div>
+
+</body>
+</html>

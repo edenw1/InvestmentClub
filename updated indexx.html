@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<head>
+    <title>{% block title %}Stock Website{% endblock %}</title>
+    <!-- Link to the external CSS file -->
+    <link rel="stylesheet" href="homePageStyles.css">
+</head>
+<body>
+    <div class="sidebar">
+        <img src="Inv_Logo.png" alt="Investment Club Logo">
+    </div>
+    <div class="content">
+        <header>
+            <h1>{% block header %}Investment Club{% endblock %}</h1>
+        </header>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Transaction</a>
+            <a href="#">About</a>
+            <a href="#">Presentations</a>
+        </nav>
+        <div class="container">
+            <h2>{% block header %}Welcome, Investment Club!{% endblock %}</h2>
+
+	  {% if not user.is_authenticated %}
+	    <form action="login.php" method="post">
+                <input type="submit" value="Login">
+	    </form>
+	  {% else %}
+            <form action="transactions.php" method="post">
+                <input type="submit" value="See Transactions">
+            </form>
+            <form action="presentations.php" method="post">
+                <input type="submit" value="Presentations">
+            </form>
+	  {% if user.is_admin %}
+	    <form action="adminPage.php" method="post">
+                <input type="submit" value="Admin Panel">
+            </form>
+	  {% endif %}
+	    <form action="logout.php" method="post">
+                <input type="submit" value="Logout">
+            </form>
+	  {% endif %}
+
+            <div class="stock-card">
+		{% block content %}{% endblock %}
+                <!-- Stock Card content -->
+            </div>
+            <div class="stock-card">
+		{% block content %}{% endblock %}
+                <!-- Stock Card content -->
+            </div>
+            <div class="stock-card">
+		{% block content %}{% endblock %}
+                <!-- Stock Card content -->
+            </div>
+        </div>
+        <footer>
+            <p>{% block footer %}&copy; 2025 Stock Tracker. All rights reserved.{% endblock %}</p>
+        </footer>
+    </div>
+</body>
+</html>
