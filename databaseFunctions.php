@@ -1,6 +1,24 @@
 <?php
 require 'db.php'; 
 dbConnect(); 
+function checkLogin($username, $password){
+    global $pdo;
+    $checkUsername = "SELECT * FROM users WHERE username = :username";
+    $stmt = $pdo->prepare($checkUsername);
+    $stmt->bindParam(':username', $username);
+    $stmt->execute();
+    $user = $stmt->fetch(); 
+
+    if (!$user) {
+        echo 'User not found';
+        return NULL;
+    }
+    if (password_verify($password, $user['password'])) {
+        return $user;
+    } else {
+        return NULL;
+    }
+}
 function checkMember($username,$email) {
     global $pdo;
         $checkUser = "SELECT * FROM users WHERE username = :username OR email = :email";
@@ -23,21 +41,34 @@ function addMember($username, $password, $email, $admin) {
 
         return 'User Registered';
 }
-// function getUsersByIds($userIds) {
-//     global $pdo; 
+function getUsersByIds($userIds) {
+    global $pdo; // Use the global $pdo object
 
-//     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-//         $users[] = [
-//             'id' => $row['id'],
-//             'username' => $row['username'],
-//             'email' => $row['email'],
-//             'password' => $row['password'], 
-//             'admin' => $row['admin'] 
-//         ];
-//     }
+    // Prepare the SQL query to select users by multiple IDs
+    $sql = "SELECT * FROM users WHERE id IN (" . implode(',', array_fill(0, count($userIds), '?')) . ")";
+    //vulnerable to SQL injection
+    //pass in the parameters to execute
+    $stmt = $pdo->prepare($sql);
+    
+    // Bind the user IDs to the placeholders
+    foreach ($userIds as $index => $userId) {
+        $stmt->bindValue($index + 1, $userId, PDO::PARAM_INT);
+    }
+    
+    $stmt->execute();
+    $users = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $users[] = [
+            'id' => $row['id'],
+            'username' => $row['username'],
+            'email' => $row['email'],
+            'password' => $row['password'], // or store hashed password as needed
+            'admin' => $row['admin'] 
+        ];
+    }
 
-//     return $users;
-// }
+    return $users;
+}
 
 function removeMemberByEmail($email) {
     global $pdo;
@@ -50,7 +81,6 @@ function removeMemberByEmail($email) {
     $user = $stmt->fetch();
 
     if ($user) {
-        // User exists, delete them from the database
         $deleteUser = "DELETE FROM users WHERE email = :email";
         $stmtDelete = $pdo->prepare($deleteUser);
         $stmtDelete->bindParam(':email', $email);
