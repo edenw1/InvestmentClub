@@ -17,7 +17,7 @@ if ($user) {
     $stmtDelete->execute();
 
     echo "User successfully removed.";
-    header("Location: controller.php?action=admin");
+    header("Location: index.php?action=admin");
 } else {
     echo "No user found with this email.";
 }

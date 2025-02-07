@@ -69,6 +69,17 @@ nav a:hover {
     padding: 2rem;
 }
 
+.stocks {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the cards horizontally */
+    justify-content: flex-start; /* Aligns cards to the top */
+    padding: 2rem;
+    margin-top: 100px; /* Adjust this to move the cards down */
+    width: 100%; /* Make sure the container takes full width */
+    text-align: center; /* Centers text within cards */
+}
+
 .stock-card {
     background: white;
     border: 1px solid #ddd;
@@ -76,15 +87,7 @@ nav a:hover {
     padding: 1rem;
     margin: 1rem 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.stock-card h3 {
-    margin: 0;
-    font-size: 1.5rem;
-}
-
-.stock-card p {
-    margin: 0.5rem 0 0;
+    width: 300px; /* Adjust width if necessary */
 }
 
 footer {
