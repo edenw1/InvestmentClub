@@ -88,28 +88,25 @@ switch ($action) {
 
     case 'admin':
         if ($isAuthenticated && $isAdmin) {
-        $stmt = $pdo->prepare("SELECT stock_id, symbol FROM stocks");
-        $stmt->execute();
+            $stmt = $pdo->prepare("SELECT stock_id, symbol FROM stocks");
+            $stmt->execute();
+            $stocks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $stocks = [];
-
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $stocks[] = [
-                'stock_id' => $row['stock_id'],
-                'stock_symbol' => $row['symbol']
-            ];
-            }
+            $stockProposalsQuery = "SELECT * FROM stockProposal WHERE status = 'pending'";
+            $stmt = $pdo->prepare($stockProposalsQuery);
+            $stmt->execute();
+            $proposals = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
             echo $twig->render('adminPage.html.twig', [
                 'user' => $user,
-                'stocks' => $stocks
+                'stocks' => $stocks,
+                'proposals' => $proposals
             ]);
         } else {
             header('Location: controller.php?action=home');
             exit();
         }
         break;
-        
     
     case 'logout':
         session_start();
