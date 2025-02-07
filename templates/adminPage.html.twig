@@ -4,13 +4,14 @@
 	<title>{% block title %}Admin Functionality{% endblock %}</title>
 	<link rel="stylesheet" href="homePageStyles.css">
 </head>
-<h1>{% block header %}Admin Functionality{% endblock %}</h1>
-<form action="controller.php" method="post">
-	<input type="submit" value="Back to Home">
-	</form>
-    <br>
 <body>
-    <h2>{% block header %}Add New Club Member{% endblock %}</h2>
+    <h1>{% block header_main %}Admin Functionality{% endblock %}</h1>
+    <form action="controller.php" method="post">
+        <input type="submit" value="Back to Home">
+    </form>
+    <br>
+
+    <h2>{% block header_add_member %}Add New Club Member{% endblock %}</h2>
     <form action="addmemberForm.php" method="post">
         <label for="username">Username:</label><br>
         <input type="text" id="username" name="username" required><br><br>
@@ -28,7 +29,8 @@
         <input type="submit" value="Add Member">
         <br>
     </form>
-    <h2>{% block header %}Remove Club Member{% endblock %}</h2>
+    
+    <h2>{% block header_remove_member %}Remove Club Member{% endblock %}</h2>
     <form action="removeMemberForm.php" method="post">
         <label for="email">Email:</label><br>
         <input type="email" id="email" name="email" required><br><br>
@@ -36,7 +38,7 @@
         <input type="submit" value="Remove Member"><br>
     </form>
 
-    <h2>{% block header %}Make Stock Transaction{% endblock %}</h2>
+    <h2>{% block header_transaction %}Make Stock Transaction{% endblock %}</h2>
     <form action="addTransaction.php" method="post">
         <label for="transaction_type">Transaction Type:</label>
         <select id="transaction_type" name="transaction_type" required>
@@ -60,6 +62,6 @@
         <input type="submit" value="Make Transaction">
     </form>
 
-    <h2>{% block header %}Pending Stock Proposals{% endblock %}</h2>
+    <h2>{% block header_pending_proposals %}Pending Stock Proposals{% endblock %}</h2>
 </body>
-</html>	
+</html>

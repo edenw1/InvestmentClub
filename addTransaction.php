@@ -35,7 +35,7 @@ if (!$stock) {
         $stmt2->execute();
     }
 
-    header("Location: adminPage.php");
+    header("Location: controller.php?action=admin");
     exit();
 }
 ?>

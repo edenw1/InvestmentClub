@@ -21,7 +21,7 @@ if ($row) {
     <?php
 } else {
     addMember($username, $password, $email, $admin);
-    header("Location: adminPage.php");
+    header("Location: controller.php?action=admin");
     exit();
 }
 ?>

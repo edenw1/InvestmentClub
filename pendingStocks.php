@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['proposal_id']) && isse
             }
         }
     }
-    header("Location: adminPage.php");
+    header("Location: controller.php?action=admin");
     exit();
 }
 
