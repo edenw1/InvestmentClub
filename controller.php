@@ -56,7 +56,20 @@ switch ($action) {
 
     case 'transactions':
         if ($isAuthenticated) {
-            echo $twig->render('transactions.html.twig', ['user' => $user]);
+            $sql = "SELECT s.name AS stock_name, t.transaction_type, t.quantity, t.price_per_share, t.buy_sell_date 
+            FROM transactions t
+            JOIN stocks s ON t.stock_id = s.stock_id
+            ORDER BY t.buy_sell_date DESC";
+    
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            $transactions = $stmt->fetchAll();
+
+            echo $twig->render('transactions.html.twig', [
+                'user' => $user,
+                'transactions' => $transactions
+            ]);
         } else {
             header('Location: controller.php?action=login');
             exit();
@@ -90,7 +103,6 @@ switch ($action) {
         exit();
     case 'about':
     case 'home':
-
     default:
         echo $twig->render('index.html.twig', ['user' => $user]);
         exit();

@@ -26,15 +26,15 @@
                     <th>Price per Share</th>
                     <th>Date</th>
                 </tr>
-                <!-- Example row, replace with dynamic content as needed -->
+                {% for transaction in transactions %}
                 <tr>
-                    <td>Example Stock</td>
-                    <td>Buy</td>
-                    <td>100</td>
-                    <td>$50.00</td>
-                    <td>2025-02-07</td>
+                    <td>{{ transaction.stock_name }}</td>
+                    <td>{{ transaction.transaction_type }}</td>
+                    <td>{{ transaction.quantity }}</td>
+                    <td>${{ transaction.price_per_share | number_format(2) }}</td>
+                    <td>{{ transaction.buy_sell_date }}</td>
                 </tr>
-                <!-- Add more rows here -->
+                {% endfor %}
             </table>
             {% endblock %}
         </div>
