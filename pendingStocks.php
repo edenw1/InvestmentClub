@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION['admin'])) {
-    header("Location: indexx.html");
+    header("Location: index.html");
     exit();
 }
 
@@ -59,6 +59,6 @@ $stmt->execute();
 $proposals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<form action="indexx.html" method="post">
+<form action="index.html" method="post">
     <input type="submit" value="Back to Home">
 </form>
