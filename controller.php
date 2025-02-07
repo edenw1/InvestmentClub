@@ -81,14 +81,14 @@ switch ($action) {
             exit();
         }
         break;
-
+    
     case 'logout':
         session_start();
         session_unset();
         session_destroy();
         header('Location: controller.php?action=home');
         exit();
-
+    case 'about':
     case 'home':
 
     default:
