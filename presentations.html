@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>{% block title %} Presentations {% endblock %}</title>
-	<link rel="stylesheet" href="hommePageStyles.css">
+    <title>Presentations</title>
+    <link rel="stylesheet" href="hommePageStyles.css">
 </head>
 <body>
-    <h1>{% block header %} Add Presentation {% endblock %}</h1>
+    <h1>Add Presentation</h1>
     <form action="addPresentation.php" method="post">
         <label for="title">Presentation Title:</label>
         <input type="text" id="title" name="title" required>
@@ -15,29 +15,64 @@
         <input type="url" id="url" name="url" required>
         <br><br>
 
-        <h3>{% block header %} Stock Proposals {% endblock %}</h3>
+        <h3>Stock Proposals</h3>
 
-        <?php for ($i = 0; $i < 3; $i++): ?>
-            <label for="stock<?= $i ?>_symbol">Stock Symbol:</label>
-            <input type="text" id="stock<?= $i ?>_symbol" name="stocks[<?= $i ?>][symbol]" placeholder="AAPL">
-            
-            <label for="stock<?= $i ?>_name">Stock Name:</label>
-            <input type="text" id="stock<?= $i ?>_name" name="stocks[<?= $i ?>][name]" placeholder="Apple Inc.">
-            
-            <label for="stock<?= $i ?>_action">Action:</label>
-            <select id="stock<?= $i ?>_action" name="stocks[<?= $i ?>][action]">
-                <option value="">Select Action</option>
-                <option value="add">Add to Portfolio</option>
-                <option value="remove">Remove from Portfolio</option>
-                <option value="increase">Increase Holdings</option>
-                <option value="decrease">Decrease Holdings</option>
-            </select>
+        <label for="stock0_symbol">Stock Symbol:</label>
+        <input type="text" id="stock0_symbol" name="stocks[0][symbol]" placeholder="AAPL">
 
-            <label for="stock<?= $i ?>_quantity">Quantity:</label>
-            <input type="number" id="stock<?= $i ?>_quantity" name="stocks[<?= $i ?>][quantity]" min="1">
-            
-            <br><br>
-        <?php endfor; ?>
+        <label for="stock0_name">Stock Name:</label>
+        <input type="text" id="stock0_name" name="stocks[0][name]" placeholder="Apple Inc.">
+
+        <label for="stock0_action">Action:</label>
+        <select id="stock0_action" name="stocks[0][action]">
+            <option value="">Select Action</option>
+            <option value="add">Add to Portfolio</option>
+            <option value="remove">Remove from Portfolio</option>
+            <option value="increase">Increase Holdings</option>
+            <option value="decrease">Decrease Holdings</option>
+        </select>
+
+        <label for="stock0_quantity">Quantity:</label>
+        <input type="number" id="stock0_quantity" name="stocks[0][quantity]" min="1">
+        <br><br>
+
+        <label for="stock1_symbol">Stock Symbol:</label>
+        <input type="text" id="stock1_symbol" name="stocks[1][symbol]" placeholder="TSLA">
+
+        <label for="stock1_name">Stock Name:</label>
+        <input type="text" id="stock1_name" name="stocks[1][name]" placeholder="Tesla Inc.">
+
+        <label for="stock1_action">Action:</label>
+        <select id="stock1_action" name="stocks[1][action]">
+            <option value="">Select Action</option>
+            <option value="add">Add to Portfolio</option>
+            <option value="remove">Remove from Portfolio</option>
+            <option value="increase">Increase Holdings</option>
+            <option value="decrease">Decrease Holdings</option>
+        </select>
+
+        <label for="stock1_quantity">Quantity:</label>
+        <input type="number" id="stock1_quantity" name="stocks[1][quantity]" min="1">
+        <br><br>
+
+        <label for="stock2_symbol">Stock Symbol:</label>
+        <input type="text" id="stock2_symbol" name="stocks[2][symbol]" placeholder="GOOGL">
+
+        <label for="stock2_name">Stock Name:</label>
+        <input type="text" id="stock2_name" name="stocks[2][name]" placeholder="Alphabet Inc.">
+
+        <label for="stock2_action">Action:</label>
+        <select id="stock2_action" name="stocks[2][action]">
+            <option value="">Select Action</option>
+            <option value="add">Add to Portfolio</option>
+            <option value="remove">Remove from Portfolio</option>
+            <option value="increase">Increase Holdings</option>
+            <option value="decrease">Decrease Holdings</option>
+        </select>
+
+        <label for="stock2_quantity">Quantity:</label>
+        <input type="number" id="stock2_quantity" name="stocks[2][quantity]" min="1">
+        <br><br>
 
         <input type="submit" value="Upload Presentation">
     </form>
@@ -47,8 +82,4 @@
     </form>
     <br>
 </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> d7f0de3db058a22800052c285648b8c1d355d022
