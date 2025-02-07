@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>{% block title %} Presentations {% endblock %}</title>
-	<link rel="stylesheet" href="hommePageStyles.css">
+    <title>{% block title %} Presentations {% endblock %}</title>
+    <link rel="stylesheet" href="hommePageStyles.css">
 </head>
 <body>
     <h1>{% block header %} Add Presentation {% endblock %}</h1>
@@ -15,7 +15,7 @@
         <input type="url" id="url" name="url" required>
         <br><br>
 
-        <h3>{% block header %} Stock Proposals {% endblock %}</h3>
+        <h3>{% block subheader %} Stock Proposals {% endblock %}</h3>
 
         <?php for ($i = 0; $i < 3; $i++): ?>
             <label for="stock<?= $i ?>_symbol">Stock Symbol:</label>

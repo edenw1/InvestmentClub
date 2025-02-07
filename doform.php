@@ -17,7 +17,9 @@ else {
 	if ($password == $storedPassword || (password_verify($password, $storedPassword))) {
 		session_regenerate_id(true);
 		$_SESSION['user_id'] = $user['user_id'];
-		$_SESSION['admin'] = $user['admin'];	
+		$_SESSION['admin'] = $user['admin'];
+		$_SESSION['username'] = $user['username'];
+		$_SESSION['email'] = $user['email'];
 			echo 'Login Successful';
 			header("Location: controller.php");
 			exit();
