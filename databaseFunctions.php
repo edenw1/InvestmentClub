@@ -42,15 +42,42 @@ function addMember($username, $password, $email, $admin) {
         return 'User Registered';
 }
 
-function addTransaction($transaction_type, $stock_id, $quantity, $price_per_share, $buy_sell_date){
+function addTransaction($transaction_type, $stock_id, $quantity, $price_per_share, $buy_sell_date) {
+    global $pdo;
+    $checkStock = "SELECT * FROM stocks WHERE stock_id = :stock_id";
+    $stmt1 = $pdo->prepare($checkStock);
+    $stmt1->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
+    $stmt1->execute();
+    $stock = $stmt1->fetch();
 
-    
+    if (!$stock) {
+        return 'Stock ID not found.';
+    } else {
+        $sql = 'INSERT INTO transactions (transaction_type, quantity, price_per_share, buy_sell_date, stock_id) 
+                VALUES (:transaction_type, :quantity, :price_per_share, :buy_sell_date, :stock_id)';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':transaction_type', $transaction_type);
+        $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+        $stmt->bindParam(':price_per_share', $price_per_share);
+        $stmt->bindParam(':buy_sell_date', $buy_sell_date);
+        $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if (!$stock['active']) {
+            $updateStock = "UPDATE stocks SET active = 1 WHERE stock_id = :stock_id";
+            $stmt2 = $pdo->prepare($updateStock);
+            $stmt2->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
+            $stmt2->execute();
+        }
+
+        return 'Transaction added successfully.';
+    }
 }
+
 
 function removeMemberByEmail($email) {
     global $pdo;
 
-    // Check if the user with the given email exists
     $checkUser = "SELECT * FROM users WHERE email = :email";
     $stmt = $pdo->prepare($checkUser);
     $stmt->bindParam(':email', $email);
