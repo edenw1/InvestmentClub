@@ -28,6 +28,8 @@ function getUsersByIds($userIds) {
 
     // Prepare the SQL query to select users by multiple IDs
     $sql = "SELECT * FROM users WHERE id IN (" . implode(',', array_fill(0, count($userIds), '?')) . ")";
+    //vulnerable to SQL injection
+    //pass in the parameters to execute
     $stmt = $pdo->prepare($sql);
     
     // Bind the user IDs to the placeholders
