@@ -1,34 +1,26 @@
 <?php
-// Start the session
 session_start();
 
-// Include the Composer autoloader
 require_once __DIR__ . '/vendor/autoload.php';
-require_once 'db.php'; // Your database connection file
+require_once 'db.php'; 
 
-// Initialize Twig
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
 $twig = new \Twig\Environment($loader, [
     'cache' => false,
     'auto_reload' => true,
 ]);
-
-// Function to connect to the database
 dbConnect();
 
 // Check if the user is authenticated
 $isAuthenticated = isset($_SESSION['user_id']);
 $isAdmin = isset($_SESSION['admin']) && $_SESSION['admin'];
 
-// Example user data
 $user = [
     'name' => $isAuthenticated ? $_SESSION['username'] : 'Guest',
     'email' => $isAuthenticated ? $_SESSION['email'] : '',
     'is_authenticated' => $isAuthenticated,
     'is_admin' => $isAdmin,
 ];
-
-// Determine the action from the query parameter
 $action = $_GET['action'] ?? 'home';
 
 // Route handling
