@@ -24,7 +24,7 @@ else {
 		
 	} else {
       echo 'Incorrect username or password';
-	  header("Location: login.php");
+	  header("Location: login.html");
 	  exit();
 }
 }
