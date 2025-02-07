@@ -19,7 +19,7 @@ if ($user != NULL) {
     exit();
 } else {
     echo 'Incorrect username or password';
-    header("Location: login.html");
+    header("Location: controller.php?action=login");
     exit();
 }
 ?>
