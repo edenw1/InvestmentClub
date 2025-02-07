@@ -48,8 +48,13 @@
         
         <label for="stock_id">Stock:</label>
         <select id="stock_id" name="stock_id" required>
+            {% for stock in stocks %}
+                <option value="{{ stock.stock_id }}">{{ stock.stock_symbol }}</option>
+            {% endfor %}
         </select><br><br>
-        
+
+
+
         <label for="quantity">Quantity:</label>
         <input type="number" id="quantity" name="quantity" required><br><br>
         
