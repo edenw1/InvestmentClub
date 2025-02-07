@@ -22,7 +22,7 @@ function addMember($username, $password, $email, $admin) {
         $stmt->execute();
 
         return 'User Registered';
-// }
+}
 // function getUsersByIds($userIds) {
 //     global $pdo; 
 
