@@ -14,31 +14,31 @@
             <h1>{% block header %}Investment Club{% endblock %}</h1>
         </header>
         <nav>
-            <a href="#">Home</a>
-            <a href="#">Transaction</a>
-            <a href="#">About</a>
-            <a href="#">Presentations</a>
+            <a href="controller.php?action=home">Home</a>
+            <a href="controller.php?action=transactions">Transaction</a>
+            <a href="controller.php?action=about">About</a>
+            <a href="controller.php?action=presentations">Presentations</a>
         </nav>
         <div class="container">
             <h2>{% block subheader %}Welcome, Investment Club!{% endblock %}</h2>
 
             {% if not user.is_authenticated %}
-                <form action="login.php" method="post">
+                <form action="controller.php?action=login" method="post">
                     <input type="submit" value="Login">
                 </form>
             {% else %}
-                <form action="transactions.php" method="post">
+                <form action="controller.php?action=transactions" method="post">
                     <input type="submit" value="See Transactions">
                 </form>
-                <form action="presentations.php" method="post">
+                <form action="controller.php?action=presentations" method="post">
                     <input type="submit" value="Presentations">
                 </form>
                 {% if user.is_admin %}
-                    <form action="adminPage.php" method="post">
+                    <form action="controller.php?action=admin" method="post">
                         <input type="submit" value="Admin Panel">
                     </form>
                 {% endif %}
-                <form action="logout.php" method="post">
+                <form action="controller.php?action=logout" method="post">
                     <input type="submit" value="Logout">
                 </form>
             {% endif %}
