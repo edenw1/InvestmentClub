@@ -14,7 +14,7 @@ use Twig\Source;
 use Twig\Template;
 use Twig\TemplateWrapper;
 
-/* index.html.twig */
+/* controller.php.twig */
 class __TwigTemplate_31cefdcc31ef8680f24597b011bdcbcf extends Template
 {
     private Source $source;
@@ -223,7 +223,7 @@ class __TwigTemplate_31cefdcc31ef8680f24597b011bdcbcf extends Template
      */
     public function getTemplateName(): string
     {
-        return "index.html.twig";
+        return "controller.php.twig";
     }
 
     /**
@@ -244,6 +244,6 @@ class __TwigTemplate_31cefdcc31ef8680f24597b011bdcbcf extends Template
 
     public function getSourceContext(): Source
     {
-        return new Source("", "index.html.twig", "C:\\Users\\anhtr\\OneDrive\\Desktop\\UniServerZ\\www\\InvestmentClub\\templates\\index.html.twig");
+        return new Source("", "controller.php.twig", "C:\\Users\\anhtr\\OneDrive\\Desktop\\UniServerZ\\www\\InvestmentClub\\templates\\controller.php.twig");
     }
 }

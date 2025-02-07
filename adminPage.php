@@ -3,7 +3,7 @@ session_start();
 REQUIRE 'db.php';
 dbConnect();
 if (!isset($_SESSION['admin'])) {
-    header("Location: index.html"); 
+    header("Location: controller.php"); 
 	//not an admin, take to home
     exit();
 }
@@ -14,7 +14,7 @@ if (!isset($_SESSION['admin'])) {
     <title>Admin Functionality </title>
 </head>
 <h1> Admin Functionality </h1>
-<form action="index.html" method="post">
+<form action="controller.php" method="post">
 	<input type="submit" value="Back to Home">
 	</form>
     <br>

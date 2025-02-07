@@ -91,8 +91,9 @@ switch ($action) {
         exit();
 
     case 'home':
+
     default:
         echo $twig->render('index.html.twig', ['user' => $user]);
-        break;
+        exit();
 }
 ?>
