@@ -46,7 +46,7 @@ dbConnect();
         <input type="submit" value="Upload Presentation">
     </form>
 
-    <form action="index.php" method="post">
+    <form action="indexx.html" method="post">
         <input type="submit" value="Back to Home">
     </form>
     <br>

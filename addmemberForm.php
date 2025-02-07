@@ -16,7 +16,7 @@ $row = checkMember($username, $email);
 if ($row) {
     echo '<br>' . 'This username or email already exists.';
     ?>
-    <form action="index.php" method="post">
+    <form action="indexx.html" method="post">
     <input type="submit" value="Back to Home"></form>
     <?php
 } else {

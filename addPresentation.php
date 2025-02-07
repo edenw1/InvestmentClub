@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     echo "Presentation and stock proposals submitted successfully!";
     ?>
-    <form action="index.php" method="post">
+    <form action="indexx.html" method="post">
         <input type="submit" value="Back to Home">
     </form>
     <?php
