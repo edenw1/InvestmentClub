@@ -11,7 +11,6 @@ $twig = new \Twig\Environment($loader, [
 ]);
 dbConnect();
 
-// Check if the user is authenticated
 $isAuthenticated = isset($_SESSION['user_id']);
 $isAdmin = isset($_SESSION['admin']) && $_SESSION['admin'];
 

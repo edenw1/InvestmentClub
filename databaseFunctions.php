@@ -22,33 +22,22 @@ function addMember($username, $password, $email, $admin) {
         $stmt->execute();
 
         return 'User Registered';
-}
-function getUsersByIds($userIds) {
-    global $pdo; // Use the global $pdo object
+// }
+// function getUsersByIds($userIds) {
+//     global $pdo; 
 
-    // Prepare the SQL query to select users by multiple IDs
-    $sql = "SELECT * FROM users WHERE id IN (" . implode(',', array_fill(0, count($userIds), '?')) . ")";
-    $stmt = $pdo->prepare($sql);
-    
-    // Bind the user IDs to the placeholders
-    foreach ($userIds as $index => $userId) {
-        $stmt->bindValue($index + 1, $userId, PDO::PARAM_INT);
-    }
-    
-    $stmt->execute();
-    $users = [];
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $users[] = [
-            'id' => $row['id'],
-            'username' => $row['username'],
-            'email' => $row['email'],
-            'password' => $row['password'], // or store hashed password as needed
-            'admin' => $row['admin'] 
-        ];
-    }
+//     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+//         $users[] = [
+//             'id' => $row['id'],
+//             'username' => $row['username'],
+//             'email' => $row['email'],
+//             'password' => $row['password'], 
+//             'admin' => $row['admin'] 
+//         ];
+//     }
 
-    return $users;
-}
+//     return $users;
+// }
 
 function removeMemberByEmail($email) {
     global $pdo;
