@@ -21,7 +21,7 @@ else {
 		$_SESSION['username'] = $user['username'];
 		$_SESSION['email'] = $user['email'];
 			echo 'Login Successful';
-			header("Location: controller.php");
+			header("Location: index.html");
 			exit();
 		
 	} else {
