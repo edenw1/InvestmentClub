@@ -3,7 +3,7 @@ session_start();
 require 'db.php';
 dbConnect();
 
-echo '<form action="indexx.html" method="post">
+echo '<form action="index.php" method="post">
 <input type="submit" value="Back To Home">
 </form>';
 

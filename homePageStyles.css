@@ -19,10 +19,14 @@ body {
     align-items: center;
 }
 
-.sidebar img {
-    max-width: 100%;
+.sidebar img.sidebar-logo {
+    width: 100%;
+    height: auto;
+    max-width: 100px;
+    max-height: 180px;
+    object-fit: contain;
     border-radius: 50%;
-    margin-bottom: 1rem;
+    margin-bottom: 1 rem;
 }
 
 .content {
@@ -92,4 +96,30 @@ footer {
     position: fixed; /* Keep footer at the bottom */
     bottom: 0;
     left: 0;
+}
+
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.transactions-table th, 
+.transactions-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.transactions-table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.transactions-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.transactions-table tr:hover {
+    background-color: #ddd;
 }

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+    <title>{% block title %}Investment Club{% endblock %}</title>
+    <link rel="stylesheet" href="stylee.css">
+</head>
+<body>
+    <div class="sidebar">
+        <img src="Inv_Logo.jpg" alt="Logo">
+        <p></p>
+    </div>
+    <div class="content">
+        <header>
+            <h1>{% block header %}Homepage{% endblock %}</h1>
+        </header>
+        <nav>
+            <a href="#">Transaction</a>
+            <a href="#">About</a>
+            <a href="#">Presentations</a>
+        </nav>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+        <footer>
+            <p>&copy; 2025 Stock Tracker. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>

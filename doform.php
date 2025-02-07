@@ -19,7 +19,7 @@ else {
 		$_SESSION['user_id'] = $user['user_id'];
 		$_SESSION['admin'] = $user['admin'];	
 			echo 'Login Successful';
-			header("Location: indexx.html");
+			header("Location: index.php");
 			exit();
 		
 	} else {

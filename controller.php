@@ -1,47 +1,117 @@
 <?php
-require 'databaseFunctions.php';
-require_once 'vendor/autoload.php';
+// Start the session
+session_start();
 
-$loader = new \Twig\Loader\FilesystemLoader('templates');
-$twig = new \Twig\Environment($loader);
+// Include the Composer autoloader
+require_once __DIR__ . '/vendor/autoload.php';
+require_once 'db.php'; // Your database connection file
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
-    $admin = isset($_POST['admin']) ? 1 : 0;
+// Initialize Twig
+$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
+$twig = new \Twig\Environment($loader, [
+    'cache' => false,
+    'auto_reload' => true,
+]);
 
-    if (empty($username) || empty($email) || empty($password)) {
-        echo $twig->render('form.twig', [
-            'error' => 'All fields are required!',
-            'username' => $username,
-            'email' => $email,
-            'url' => 'process_form.php'  // Form action URL
-        ]);
-    } else {
-        // Call the addMember function
-        $result = addMember($username, $password, $email, $admin);
+// Function to connect to the database
+dbConnect();
 
-        if ($result === 'User Registered') {
-            header("Location: addmember.php");
-            exit();
+// Check if the user is authenticated
+$isAuthenticated = isset($_SESSION['user_id']);
+$isAdmin = isset($_SESSION['admin']) && $_SESSION['admin'];
+
+// Example user data
+$user = [
+    'name' => $isAuthenticated ? $_SESSION['username'] : 'Guest',
+    'email' => $isAuthenticated ? $_SESSION['email'] : '',
+    'is_authenticated' => $isAuthenticated,
+    'is_admin' => $isAdmin,
+];
+
+// Determine the action from the query parameter
+$action = $_GET['action'] ?? 'home';
+
+// Route handling
+switch ($action) {
+    case 'login':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Check if 'username' and 'password' are set in the POST data
+            if (isset($_POST['username']) && isset($_POST['password'])) {
+                $username = $_POST['username'];
+                $password = $_POST['password'];
+
+                // Prepare and execute the query to fetch user data
+                $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
+                $stmt->bindParam(':username', $username);
+                $stmt->execute();
+                $userRecord = $stmt->fetch();
+
+                if ($userRecord && password_verify($password, $userRecord['password'])) {
+                    // Password is correct, set session variables
+                    session_regenerate_id(true);
+                    $_SESSION['user_id'] = $userRecord['user_id'];
+                    $_SESSION['username'] = $userRecord['username'];
+                    $_SESSION['email'] = $userRecord['email'];
+                    $_SESSION['admin'] = $userRecord['admin'];
+
+                    // Redirect to home page
+                    header('Location: controller.php?action=home');
+                    exit();
+                } else {
+                    // Invalid credentials
+                    echo 'Invalid username or password.';
+                }
+            } else {
+                // Missing username or password
+                echo $twig->render('login.html.twig', ['user' => $user]);
+            }
         } else {
-            // If registration fails (e.g., username/email exists)
-            echo $twig->render('form.twig', [
-                'error' => $result,
-                'username' => $username,
-                'email' => $email,
-                'url' => 'process_form.php'  // Form action URL
-            ]);
+            // Display login form
+            echo $twig->render('login.html.twig', ['user' => $user]);
         }
-    }
-} else {
-    echo $twig->render('form.twig', [
-        'url' => 'process_form.php'  // Form action URL
-    ]);
-}
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_email'])) {
-    $email = $_POST['remove_email'];
-    removeMemberByEmail($email);
+        break;
+
+    case 'transactions':
+        if ($isAuthenticated) {
+            echo $twig->render('transactions.html.twig', ['user' => $user]);
+        } else {
+            // Redirect to login if not authenticated
+            header('Location: controller.php?action=login');
+            exit();
+        }
+        break;
+
+    case 'presentations':
+        if ($isAuthenticated) {
+            echo $twig->render('presentations.html.twig', ['user' => $user]);
+        } else {
+            // Redirect to login if not authenticated
+            echo 'Please login before clicking on transaction';
+            header('Location: controller.php?action=login');
+            exit();
+        }
+        break;
+
+    case 'admin':
+        if ($isAuthenticated && $isAdmin) {
+            echo $twig->render('adminPage.html.twig', ['user' => $user]);
+        } else {
+            // Redirect to home if not authorized
+            header('Location: controller.php?action=home');
+            exit();
+        }
+        break;
+
+    case 'logout':
+        session_start();
+        session_unset();
+        session_destroy();
+        header('Location: controller.php?action=home');
+        exit();
+
+    case 'home':
+    default:
+        echo $twig->render('index.html.twig', ['user' => $user]);
+        break;
 }
 ?>
