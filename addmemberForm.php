@@ -16,12 +16,12 @@ $row = checkMember($username, $email);
 if ($row) {
     echo '<br>' . 'This username or email already exists.';
     ?>
-    <form action="index.php" method="post">
+    <form action="controller.php" method="post">
     <input type="submit" value="Back to Home"></form>
     <?php
 } else {
     addMember($username, $password, $email, $admin);
-    header("Location: index.php?action=admin");
+    header("Location: controller.php?action=admin");
     exit();
 }
 ?>
