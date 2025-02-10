@@ -22,61 +22,89 @@ $user = [
 ];
 $action = $_GET['action'] ?? 'home';
 
-
 switch ($action) {
     case 'login':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['username']) && isset($_POST['password'])) {
                 $username = $_POST['username'];
                 $password = $_POST['password'];
-
-                $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
-                $stmt->bindParam(':username', $username);
-                $stmt->execute();
-                $userRecord = $stmt->fetch();
-
-                if ($userRecord && password_verify($password, $userRecord['password'])) {
-                    session_regenerate_id(true);
-                    $_SESSION['user_id'] = $userRecord['user_id'];
-                    $_SESSION['username'] = $userRecord['username'];
-                    $_SESSION['email'] = $userRecord['email'];
-                    $_SESSION['admin'] = $userRecord['admin'];
-
-                    header('Location: controller.php?action=home');
-                    exit();
-                } else {
-                    echo 'Invalid username or password.';
+                try {
+                    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
+                    $stmt->bindParam(':username', $username);
+                    $stmt->execute();
+                    $userRecord = $stmt->fetch();
+                    if ($userRecord && password_verify($password, $userRecord['password'])) {
+                        session_regenerate_id(true);
+                        $_SESSION['user_id'] = $userRecord['user_id'];
+                        $_SESSION['username'] = $userRecord['username'];
+                        $_SESSION['email'] = $userRecord['email'];
+                        $_SESSION['admin'] = $userRecord['admin'];
+                        echo "Login successful! Redirecting...";
+                        header('Refresh:2; url=controller.php?action=home');
+                        exit();
+                    } else {
+                        echo "Invalid username or password.";
+                    }
+                } catch (Exception $e) {
+                    echo "Error logging in: " . $e->getMessage();
                 }
-            } else {
-                echo $twig->render('login.html.twig', ['user' => $user]);
             }
-        } else {
-            echo $twig->render('login.html.twig', ['user' => $user]);
         }
+        echo $twig->render('login.html.twig', ['user' => $user]);
         break;
 
     case 'transactions':
         if ($isAuthenticated) {
-            $sql = "SELECT s.name AS stock_name, t.transaction_type, t.quantity, t.price_per_share, t.buy_sell_date 
-            FROM transactions t
-            JOIN stocks s ON t.stock_id = s.stock_id
-            ORDER BY t.buy_sell_date DESC";
-    
-
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute();
-            $transactions = $stmt->fetchAll();
-
-            echo $twig->render('transactions.html.twig', [
-                'user' => $user,
-                'transactions' => $transactions
-            ]);
+            try {
+                $sql = "SELECT s.name AS stock_name, t.transaction_type, t.quantity, t.price_per_share, t.buy_sell_date 
+                        FROM transactions t
+                        JOIN stocks s ON t.stock_id = s.stock_id
+                        ORDER BY t.buy_sell_date DESC";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
+                $transactions = $stmt->fetchAll();
+                echo $twig->render('transactions.html.twig', [
+                    'user' => $user,
+                    'transactions' => $transactions
+                ]);
+            } catch (Exception $e) {
+                echo "Error fetching transactions: " . $e->getMessage();
+            }
         } else {
             header('Location: controller.php?action=login');
             exit();
         }
         break;
 
+    case 'admin':
+        if ($isAuthenticated && $isAdmin) {
+            try {
+                $stmt = $pdo->prepare("SELECT stock_id, symbol FROM stocks");
+                $stmt->execute();
+                $stocks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $stmt = $pdo->prepare("SELECT * FROM stockProposal WHERE status = 'pending'");
+                $stmt->execute();
+                $proposals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                echo $twig->render('adminPage.html.twig', [
+                    'user' => $user,
+                    'stocks' => $stocks,
+                    'proposals' => $proposals
+                ]);
+            } catch (Exception $e) {
+                echo "Error loading admin page: " . $e->getMessage();
+            }
+        } else {
+            header('Location: controller.php?action=home');
+            exit();
+        }
+        break;
+    
+    case 'logout':
+        session_unset();
+        session_destroy();
+        echo "Logged out successfully! Redirecting...";
+        header('Refresh:2; url=controller.php?action=home');
+        exit();
     case 'presentations':
         if ($isAuthenticated) {
             echo $twig->render('presentations.html.twig', ['user' => $user]);
@@ -86,74 +114,15 @@ switch ($action) {
             exit();
         }
         break;
-
-    case 'admin':
-        if ($isAuthenticated && $isAdmin) {
-            $stmt = $pdo->prepare("SELECT stock_id, symbol FROM stocks");
-            $stmt->execute();
-            $stocks = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            $stockProposalsQuery = "SELECT * FROM stockProposal WHERE status = 'pending'";
-            $stmt = $pdo->prepare($stockProposalsQuery);
-            $stmt->execute();
-            $proposals = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-            echo $twig->render('adminPage.html.twig', [
-                'user' => $user,
-                'stocks' => $stocks,
-                'proposals' => $proposals
-            ]);
-        } else {
-            header('Location: controller.php?action=home');
-            exit();
-        }
-        break;
-    
-    case 'logout':
-        session_start();
-        session_unset();
-        session_destroy();
-        header('Location: controller.php?action=home');
-        exit();
     case 'about':
-              echo $twig->render('about.html.twig', ['user' => $user]);
-
+        echo $twig->render('about.html.twig', ['user' => $user]);
         break;
     
-        
     case 'home':
     default:
-    {
-        echo $twig->render('index.html.twig', ['user' => $user]);
-
-
-
-        global $pdo;
-  
-        /*
-        // Select all stock symbols
-        $query = "SELECT symbol FROM stocks";
-        $stmt = $pdo->prepare($query);
-        $stmt->execute();
-      echo "<stocks>";
-        if ($stmt->rowCount() > 0) {
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $symbol = $row['symbol'];
-                echo "<div class='stock-card'>";
-                // Example of processing the stock symbol with an API call
-                parseProfile(getProfile($symbol));
-                parseQuote(getQuote($symbol));
-                parseTrends(getTrends($symbol));
-                parseNews(getNews($symbol, 1)); //input the scope of prior days to include in the news call. Can not exceed 1 yr
-                echo "</div>";
-            }
-        } else {
-            echo "No stocks found.";
+        try {
+            echo $twig->render('index.html.twig', ['user' => $user]);
+        } catch (Exception $e) {
+            echo "Error loading home page: " . $e->getMessage();
         }
-        echo "</stocks>";
-        */
-
-    }
-
 }
-?>
