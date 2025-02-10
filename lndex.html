@@ -15,27 +15,27 @@
         <h1>{% block header %}Investment Club{% endblock % }</h1>
       </header>
       <nav>
-        <a href="index.php">Home</a>
-        <a href="index.php?action=transactions">Transaction</a>
+        <a href="controller.php">Home</a>
+        <a href="controller.php?action=transactions">Transaction</a>
         <a href="#">About</a>
-        <a href="index.php?action=presentations">Presentations</a>
+        <a href="controller.php?action=presentations">Presentations</a>
       </nav>
       <div class="container">
         <h2>{% block subheader %}Welcome, Investment Club!{% endblock %}</h2>
 
         {% if not user.is_authenticated %}
-        <form action="index.php?action=login" method="post">
+        <form action="controller.php?action=login" method="post">
           <input type="submit" value="Login" />
         </form>
         {% else %}
-        <form action="index.php?action=transactions" method="post">
+        <form action="controller.php?action=transactions" method="post">
           <input type="submit" value="See Transactions" />
         </form>
-        <form action="index.php?action=presentation" method="post">
+        <form action="controller.php?action=presentation" method="post">
           <input type="submit" value="Presentations" />
         </form>
         {% if user.is_admin %}
-        <form action="index.php?action=admin" method="post">
+        <form action="controller.php?action=admin" method="post">
           <input type="submit" value="Admin Panel" />
         </form>
         {% endif %}

@@ -15,11 +15,11 @@ if ($user != NULL) {
     $_SESSION['email'] = $user['email'];
 
     echo 'Login Successful';
-    header("Location: index.php");
+    header("Location: controller.php");
     exit();
 } else {
     echo 'Incorrect username or password';
-    header("Location: index.php?action=login");
+    header("Location: controller.php?action=login");
     exit();
 }
 ?>
