@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}About Us{% endblock %}</title>
+    <link rel="stylesheet" href="homePageStyles.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <img src="Inv_Logo.png" alt="Investment Club Logo">
+        <a href="controller.php" class="button">Back To Home</a>
+    </div>
+
+    <div class="content">
+        <header>
+            <h1>{% block header %}About Us{% endblock %}</h1>
+        </header>
+
+        <div class="container">
+            {% block content %}
+            <p>Welcome to the Investment Club! We are dedicated to providing members with hands-on experience in financial markets and investment strategies.</p>
+            <p>Our mission is to educate and empower students by offering real-world investment opportunities and networking with industry professionals.</p>
+            {% endblock %}
+        </div>
+
+        <footer>
+            <p>{% block footer %}&copy; 2025 Investment Club. All rights reserved.{% endblock %}</p>
+        </footer>
+    </div>
+
+</body>
+</html>

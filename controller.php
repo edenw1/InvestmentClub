@@ -116,6 +116,11 @@ switch ($action) {
         header('Location: controller.php?action=home');
         exit();
     case 'about':
+              echo $twig->render('about.html.twig', ['user' => $user]);
+
+        break;
+    
+        
     case 'home':
     default:
     {
