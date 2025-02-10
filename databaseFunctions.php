@@ -1,6 +1,7 @@
 <?php
 require 'db.php'; 
 dbConnect(); 
+//return true or false, don't redirect to another location
 function checkLogin($username, $password){
     global $pdo;
     $checkUsername = "SELECT * FROM users WHERE username = :username";
@@ -38,7 +39,7 @@ function addMember($username, $password, $email, $admin) {
         $stmt->bindParam(':password', $encryptedPass);
         $stmt->bindParam(':admin', $admin, PDO::PARAM_INT);
         $stmt->execute();
-
+        //add try catch
         return 'User Registered';
 }
 
