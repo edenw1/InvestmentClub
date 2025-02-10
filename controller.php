@@ -130,28 +130,24 @@ switch ($action) {
 
         global $pdo;
   
-        /*
+        
         // Select all stock symbols
         $query = "SELECT symbol FROM stocks";
         $stmt = $pdo->prepare($query);
         $stmt->execute();
-      echo "<stocks>";
         if ($stmt->rowCount() > 0) {
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $symbol = $row['symbol'];
-                echo "<div class='stock-card'>";
                 // Example of processing the stock symbol with an API call
                 parseProfile(getProfile($symbol));
                 parseQuote(getQuote($symbol));
                 parseTrends(getTrends($symbol));
                 parseNews(getNews($symbol, 1)); //input the scope of prior days to include in the news call. Can not exceed 1 yr
-                echo "</div>";
             }
         } else {
             echo "No stocks found.";
         }
-        echo "</stocks>";
-        */
+        
 
     }
 
