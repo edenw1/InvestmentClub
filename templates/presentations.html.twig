@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+<div class="container">
     <title>{% block title %} Presentations {% endblock %}</title>
-    <link rel="stylesheet" href="hommePageStyles.css">
+    <link rel="stylesheet" href="homePageStyles.css">
 </head>
 <body>
     <h1>{% block header %} Add Presentation {% endblock %}</h1>
     <form action="addPresentation.php" method="post">
+        <h3>{% block subheader2 %} Upload Presentation {% endblock %}</h3>
         <label for="title">Presentation Title:</label>
         <input type="text" id="title" name="title" required>
         <br><br>
@@ -20,10 +22,10 @@
         <?php for ($i = 0; $i < 3; $i++): ?>
             <label for="stock<?= $i ?>_symbol">Stock Symbol:</label>
             <input type="text" id="stock<?= $i ?>_symbol" name="stocks[<?= $i ?>][symbol]" placeholder="AAPL">
-            
+            <br>
             <label for="stock<?= $i ?>_name">Stock Name:</label>
             <input type="text" id="stock<?= $i ?>_name" name="stocks[<?= $i ?>][name]" placeholder="Apple Inc.">
-            
+            <br>
             <label for="stock<?= $i ?>_action">Action:</label>
             <select id="stock<?= $i ?>_action" name="stocks[<?= $i ?>][action]">
                 <option value="">Select Action</option>
@@ -32,7 +34,7 @@
                 <option value="increase">Increase Holdings</option>
                 <option value="decrease">Decrease Holdings</option>
             </select>
-
+            <br>
             <label for="stock<?= $i ?>_quantity">Quantity:</label>
             <input type="number" id="stock<?= $i ?>_quantity" name="stocks[<?= $i ?>][quantity]" min="1">
             
@@ -46,5 +48,59 @@
         <input type="submit" value="Back to Home">
     </form>
     <br>
+     <h1>All Presentations</h1>
+
+    <table border="2">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Proposed By</th>
+                <th>URL</th>
+                <th>Stock Proposals</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if presentations is not empty %}
+                {% for presentation in presentations %}
+                    <tr>
+                        <td>{{presentation.title}}</td>
+                        <td>{{presentation.date}}</td>
+                        <td>{{presentation.username}}</td>
+                        <td>
+                            <a href="{{ presentation.file_path }}" target="_blank">{{ presentation.title }}</a>
+                        </td>
+                        <td>
+                            <ul>
+                            {% for proposal in presentation.stock_proposals %}
+                                    Symbol: {{proposal.stock_symbol}}<br>
+                                    Name: {{proposal.stock_name}}<br>
+                                    Action: 
+                                    {% if proposal.action == 'add' %}
+                                        Add to Portfolio
+                                    {% elseif proposal.action == 'remove' %}
+                                        Remove from Portfolio
+                                    {% elseif proposal.action == 'increase' %}
+                                        Increase Holdings
+                                    {% elseif proposal.action == 'decrease' %}
+                                        Decrease Holdings
+                                    {% else %}
+                                        {{proposal.action}}
+                                    {% endif %}<br>
+                                    Quantity: {{proposal.quantity}}
+
+                            {% else %}
+                                <li>No stock proposals</li>
+                            {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="4">No presentations found.</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+    </div>
 </body>
 </html>

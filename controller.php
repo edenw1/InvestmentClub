@@ -105,11 +105,37 @@ switch ($action) {
         echo "Logged out successfully! Redirecting...";
         header('Refresh:2; url=controller.php?action=home');
         exit();
+
     case 'presentations':
         if ($isAuthenticated) {
-            echo $twig->render('presentations.html.twig', ['user' => $user]);
+            try {
+                $sql = "SELECT p.presentation_id, p.title, p.date, p.file_path, u.username
+                FROM presentation p
+                JOIN users u ON p.user_id = u.user_id
+                ORDER BY p.date DESC";
+        
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
+                $presentations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+                foreach ($presentations as &$presentation) {
+                    $sql = "SELECT sp.stock_symbol, sp.stock_name, sp.action, sp.quantity
+                            FROM stockProposal sp
+                            WHERE sp.presentation_id = :presentation_id";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->bindParam(':presentation_id', $presentation['presentation_id']);
+                    $stmt->execute();
+                    $presentation['stock_proposals'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                }
+    
+                echo $twig->render('presentations.html.twig', [
+                    'user' => $user,
+                    'presentations' => $presentations
+                ]);
+            } catch (Exception $e) {
+                echo "Error fetching presentations: " . $e->getMessage();
+            }
         } else {
-            echo 'Please login before clicking on transaction';
             header('Location: controller.php?action=login');
             exit();
         }
