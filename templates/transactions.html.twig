@@ -3,6 +3,18 @@
 <head>
     <title>{% block title %}Transaction History{% endblock %}</title>
     <link rel="stylesheet" href="homePageStyles.css">
+    <style>
+        /* Add styling for stock links */
+        .stock-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .stock-link:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+    </style>
 </head>
 <body>
 
@@ -28,7 +40,11 @@
                 </tr>
                 {% for transaction in transactions %}
                 <tr>
-                    <td>{{ transaction.stock_name }}</td>
+                    <td>
+                        <a href="/controller.php?action=stock&symbol={{ transaction.stock_symbol }}" class="stock-link">
+                            {{ transaction.stock_name }}
+                        </a>
+                    </td>
                     <td>{{ transaction.transaction_type }}</td>
                     <td>{{ transaction.quantity }}</td>
                     <td>${{ transaction.price_per_share | number_format(2) }}</td>

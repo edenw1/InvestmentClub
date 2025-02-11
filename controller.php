@@ -54,29 +54,35 @@ switch ($action) {
         echo $twig->render('login.html.twig', ['user' => $user]);
         break;
 
-    case 'transactions':
-        if ($isAuthenticated) {
-            try {
-                $sql = "SELECT s.name AS stock_name, t.transaction_type, t.quantity, t.price_per_share, t.buy_sell_date 
-                        FROM transactions t
-                        JOIN stocks s ON t.stock_id = s.stock_id
-                        ORDER BY t.buy_sell_date DESC";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute();
-                $transactions = $stmt->fetchAll();
-                echo $twig->render('transactions.html.twig', [
-                    'user' => $user,
-                    'transactions' => $transactions
-                ]);
-            } catch (Exception $e) {
-                echo "Error fetching transactions: " . $e->getMessage();
+        case 'transactions':
+            if ($isAuthenticated) {
+                try {
+                    $sql = "SELECT s.symbol AS stock_symbol, 
+                                   s.name AS stock_name, 
+                                   t.transaction_type, 
+                                   t.quantity, 
+                                   t.price_per_share, 
+                                   t.buy_sell_date 
+                            FROM transactions t
+                            JOIN stocks s ON t.stock_id = s.stock_id
+                            ORDER BY t.buy_sell_date DESC";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute();
+                    $transactions = $stmt->fetchAll();
+                    
+                    echo $twig->render('transactions.html.twig', [
+                        'user' => $user,
+                        'transactions' => $transactions
+                    ]);
+                    
+                } catch (Exception $e) {
+                    echo "Error fetching transactions: " . $e->getMessage();
+                }
+            } else {
+                header('Location: controller.php?action=login');
+                exit();
             }
-        } else {
-            header('Location: controller.php?action=login');
-            exit();
-        }
-        break;
-
+            break;
     case 'admin':
         if ($isAuthenticated && $isAdmin) {
             try {
