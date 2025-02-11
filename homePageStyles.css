@@ -96,15 +96,58 @@ nav a:hover {
     text-align: center; /* Centers text within cards */
 }
 
-.stock-card {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 1rem 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 300px; /* Adjust width if necessary */
+.stock-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
 }
+
+.stock-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+
+.stock-card:hover {
+    transform: translateY(-5px);
+}
+
+.stock-header h3 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.company-name {
+    color: #7f8c8d;
+    margin: 5px 0;
+}
+
+.stock-info p {
+    margin: 8px 0;
+    font-size: 0.9em;
+}
+
+.stock-news {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ecf0f1;
+}
+
+.stock-news h4 {
+    margin: 0 0 10px 0;
+    color: #3498db;
+}
+
+.positive { color: #27ae60; }
+.negative { color: #c0392b; }
+.no-stocks {
+    text-align: center;
+    color: #7f8c8d;
+    padding: 20px;
+}   
 
 footer {
     background-color: #333;

@@ -124,7 +124,7 @@
             }
 
             function parseQuote($quoteData){
-                echo "Stock Quote:";
+                /*echo "Stock Quote:";
                 echo "<pre>";
                 if ($quoteData) {
                     echo "Current Price: " . $quoteData['c'] . "\n";
@@ -137,5 +137,14 @@
                     echo "Failed to fetch stock quote data.\n";
                 }
                 echo "</pre>";
-            }
+                */
+                    return [
+                        'c' => $quoteData['c'] ?? null,  // Current price
+                        'h' => $quoteData['h'] ?? null,  // High price
+                        'l' => $quoteData['l'] ?? null,  // Low price
+                        'o' => $quoteData['o'] ?? null,  // Open price
+                        'pc' => $quoteData['pc'] ?? null, // Previous close
+                        't' => $quoteData['t'] ?? null   // Timestamp
+                    ];
+                }
 ?>

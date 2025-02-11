@@ -3,6 +3,7 @@ session_start();
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once 'db.php'; 
+require 'API.php';
 
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
 $twig = new \Twig\Environment($loader, [
@@ -145,10 +146,36 @@ switch ($action) {
         break;
     
     case 'home':
-    default:
+        default:
         try {
-            echo $twig->render('index.html.twig', ['user' => $user]);
+            
+            $stocks = [];
+    
+            $query = "SELECT symbol FROM stocks";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute();
+    
+            if ($stmt->rowCount() > 0) {
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $symbol = $row['symbol'];
+                    $stockData = [
+                        'symbol' => $symbol,
+                        'profile' => (getProfile($symbol)),
+                        'quote' => parseQuote(getQuote($symbol)),
+                        'trends' => (getTrends($symbol)),
+                        //'news' => parseNews(getNews($symbol, 1))
+                    ];
+                    $stocks[] = $stockData;
+                }
+            }
+            
+            // Pass both stocks and user in a single array
+            echo $twig->render('index.html.twig', [
+                'stocks' => $stocks,
+                'user' => $user
+            ]);
+    
         } catch (Exception $e) {
             echo "Error loading home page: " . $e->getMessage();
         }
-}
+    }
