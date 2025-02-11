@@ -149,6 +149,25 @@ nav a:hover {
     padding: 20px;
 }   
 
+/* Remove default link styling for stock cards */
+.stock-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* Ensure proper spacing in the grid */
+.stock-grid {
+    display: grid;
+    gap: 1rem;
+    /* Keep your existing grid styles */
+}
+
+/* Existing stock-card styles - add position: relative if needed */
+.stock-card {
+    position: relative;
+    /* Your existing card styles */
+}
 footer {
     background-color: #333;
     color: white;

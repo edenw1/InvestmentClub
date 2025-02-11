@@ -35,32 +35,33 @@
             <h2>{% block subheader %}Welcome, Investment Club!{% endblock %}</h2>
 
             {% if stocks %}
-                <div class="stock-grid">
-                    {% for stock in stocks %}
+            <div class="stock-grid">
+                {% for stock in stocks %}
+                    <a href="/controller.php?action=stock&symbol={{ stock.symbol }}" class="stock-card-link">
                         <div class="stock-card">
-    <div class="stock-header">
-        <h3>{{ stock.symbol }}</h3>
-        <p class="company-name">{{ stock.profile.companyName }}</p>
+                            <div class="stock-header">
+                                <h3>{{ stock.symbol }}</h3>
+                                <p class="company-name">{{ stock.profile.companyName }}</p>
+                            </div>
+                            <div class="stock-body">
+                                <div class="stock-info">
+                                    <p>Current Price: ${{ stock.quote.c|number_format(2) }}</p>
+                                    <p>Timestamp: {{ stock.quote.t|date('Y-m-d H:i:s') }}</p>
+                                    <p>Previous Close: ${{ stock.quote.pc|number_format(2) }}</p>
+                                    <p>Day's Range: ${{ stock.quote.l|number_format(2) }} - ${{ stock.quote.h|number_format(2) }}</p>
+                                    <p class="{{ stock.quote.c >= stock.quote.pc ? 'positive' : 'negative' }}">
+                                        Change: ${{ (stock.quote.c - stock.quote.pc)|number_format(2) }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-stocks">No stocks found in the portfolio.</p>
+        {% endif %}
     </div>
-    <div class="stock-body">
-        <div class="stock-info">
-            <p>Current Price: ${{ stock.quote.c|number_format(2) }}</p>
-            <p>Timestamp: {{ stock.quote.t|date('Y-m-d H:i:s') }}</p>
-            <p>Previous Close: ${{ stock.quote.pc|number_format(2) }}</p>
-            <p>Day's Range: ${{ stock.quote.l|number_format(2) }} - ${{ stock.quote.h|number_format(2) }}</p>
-            <p class="{{ stock.quote.c >= stock.quote.pc ? 'positive' : 'negative' }}">
-                Change: ${{ (stock.quote.c - stock.quote.pc)|number_format(2) }}
-            </p>
-        </div>
-        <!-- Rest of your card content -->
-    </div>
-</div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p class="no-stocks">No stocks found in the portfolio.</p>
-            {% endif %}
-        </div>
         <footer>
             <p>{% block footer %}Muskingum University 2025 Stock Tracker{% endblock %}</p>
         </footer>

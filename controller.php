@@ -141,10 +141,77 @@ switch ($action) {
             exit();
         }
         break;
+
     case 'about':
         echo $twig->render('about.html.twig', ['user' => $user]);
         break;
-    
+
+    case 'stock':
+        try {
+            // 1. Get requested symbol
+            $symbol = $_GET['symbol'] ?? null;
+            if (!$symbol) throw new Exception("No stock symbol specified");
+        
+            // 2. Fetch raw data using your existing functions
+            $profileRaw = getProfile($symbol);
+            $quoteRaw = getQuote($symbol);
+            $trendsRaw = getTrends($symbol);
+            $financialsRaw = getFinancials($symbol);
+            $newsRaw = getNews($symbol, 5); // Get 5 news items
+        
+            // 3. Structure data for Twig template
+            $data = [
+                'profile' => [
+                    'name' => $profileRaw['name'] ?? 'N/A',
+                    'ticker' => $profileRaw['ticker'] ?? $symbol,
+                    'country' => $profileRaw['country'] ?? 'N/A',
+                    'currency' => $profileRaw['currency'] ?? 'N/A',
+                    'ipo' => $profileRaw['ipo'] ?? 'N/A',
+                    'marketCap' => $profileRaw['marketCapitalization'] ?? 0,
+                    'website' => $profileRaw['weburl'] ?? '#',
+                    'industry' => $profileRaw['finnhubIndustry'] ?? 'N/A'
+                ],
+                
+                'quote' => [
+                    'current' => $quoteRaw['c'] ?? 0,
+                    'high' => $quoteRaw['h'] ?? 0,
+                    'low' => $quoteRaw['l'] ?? 0,
+                    'open' => $quoteRaw['o'] ?? 0,
+                    'previousClose' => $quoteRaw['pc'] ?? 0,
+                    'timestamp' => isset($quoteRaw['t']) ? date('Y-m-d H:i:s', $quoteRaw['t']) : 'N/A'
+                ],
+                
+                'trends' => array_map(function($t) {
+                    return [
+                        'period' => $t['period'] ?? 'N/A',
+                        'strongBuy' => $t['strongBuy'] ?? 0,
+                        'buy' => $t['buy'] ?? 0,
+                        'hold' => $t['hold'] ?? 0,
+                        'sell' => $t['sell'] ?? 0,
+                        'strongSell' => $t['strongSell'] ?? 0
+                    ];
+                }, $trendsRaw ?? []),
+                
+                'financials' => isset($financialsRaw['data'][0]['report']['bs']) 
+                    ? $financialsRaw['data'][0]['report']['bs'] 
+                    : [],
+                    
+                'news' => array_map(function($n) {
+                    return [
+                        'headline' => $n['headline'] ?? 'No headline',
+                        'source' => $n['source'] ?? 'Unknown',
+                        'url' => $n['url'] ?? '#'
+                    ];
+                }, $newsRaw ?? [])
+            ];
+        
+           
+            echo $twig->render('stock.html.twig', $data);
+        
+        } catch (Exception $e) {
+            die("Error loading stock data: " . $e->getMessage());
+        }
+        break;
     case 'home':
         default:
         try {
