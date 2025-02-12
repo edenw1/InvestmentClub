@@ -1,17 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{% block title %}About Us{% endblock %}</title>
-    <link rel="stylesheet" href="homePageStyles.css">
-</head>
-<body>
-
-    <div class="sidebar">
-        <img src="Inv_Logo.png" alt="Investment Club Logo">
-        <a href="controller.php" class="button">Back To Home</a>
-    </div>
-
-    <div class="content">
+{% include 'header.html.twig' %} 
         <header>
             <h1>{% block header %}About Us{% endblock %}</h1>
         </header>
@@ -22,11 +9,4 @@
             <p>The mission of the Muskingum University Investment Club is to provide students with an educational experience in the areas of equity analysis, portfolio management, and market research. <br>Students will build financial skill sets not learned in a traditional curriculum and can expect an open forum environment where they can learn from one another.<br>Our purpose is to provide a place of gathering where like-minded students can come to share a love of the financial markets and develop skill sets that will be applicable to careers in finance and business.</p>
             {% endblock %}
         </div>
-
-        <footer>
-            <p>{% block footer %}&copy; 2025 Investment Club. All rights reserved.{% endblock %}</p>
-        </footer>
-    </div>
-
-</body>
-</html>
+{% include 'footer.html.twig' %}
