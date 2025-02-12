@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<div class="container">
-	<title>{% block title %}Admin Functionality{% endblock %}</title>
-	<link rel="stylesheet" href="homePageStyles.css">
-</head>
+{% include 'header.html.twig' %}
 <body>
     <h1>{% block header_main %}Admin Functionality{% endblock %}</h1>
     <form action="controller.php" method="post">
@@ -91,5 +85,4 @@
         <p>No pending stock proposals.</p>
     {% endif %}
 </body>
-</div>
-</html>
+{% include 'footer.html.twig' %}
