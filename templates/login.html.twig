@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>{% block title %}Returning User{% endblock %}</title>
-	<link rel="stylesheet" href="homePageStyles.css">
-</head>
-<body>
+{% include 'header.html.twig' %}
 <div>
 	<h1>{% block header %}User Login{% endblock %}</h1>
 	<form action="doform.php" method="POST">
@@ -17,6 +11,4 @@
 <form action="controller.php" method="post">
 	<input type="submit" value="Continue as Guest">
 </form>
-</div> 
-</body>
-</html>
+{% include 'footer.html.twig' %}
