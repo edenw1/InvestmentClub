@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     echo "Presentation and stock proposals submitted successfully!";
     ?>
-    <form action="controller.php" method="post">
+    <form action="InvestmentClub" method="post">
         <input type="submit" value="Back to Home">
     </form>
     <?php

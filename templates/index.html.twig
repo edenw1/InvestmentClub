@@ -6,7 +6,7 @@
             {% if stocks %}
             <div class="stock-grid">
                 {% for stock in stocks %}
-                    <a href="/controller.php?action=stock&symbol={{ stock.symbol }}" class="stock-card-link">
+                    <a href="/InvestmentClub/Stock/{{ stock.symbol }}" class="stock-card-link">
                         <div class="stock-card">
                             <div class="stock-header">
                                 <h3>{{ stock.symbol }}</h3>
@@ -21,7 +21,7 @@
                                     <p class="{{ stock.quote.c >= stock.quote.pc ? 'positive' : 'negative' }}">
                                         Change: ${{ (stock.quote.c - stock.quote.pc)|number_format(2) }}
                                     </p>
-                                </div>
+                                </div> 
                             </div>
                         </div>
                     </a>

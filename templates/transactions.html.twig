@@ -15,7 +15,7 @@
                 {% for transaction in transactions %}
                 <tr>
                     <td>
-                        <a href="/controller.php?action=stock&symbol={{ transaction.stock_symbol }}" class="stock-link">
+                        <a href="/InvestmentClub/Stock/{{ transaction.stock_symbol }}" class="stock-link">
                             {{ transaction.stock_name }}
                         </a>
                     </td>

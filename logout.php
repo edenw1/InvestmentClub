@@ -2,5 +2,5 @@
 session_start();
 session_unset ();
 session_destroy();
-	header("Location: controller.php?action=login"); 
+	header("/InvestmentClub/logout"); 
 	exit();

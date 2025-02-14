@@ -41,7 +41,7 @@ $router->map('GET', '/about', function () {
     handleAbout($twig, $user);
 });
 
-$router->map('GET', '/stock/[*:symbol]', function ($symbol) {
+$router->map('GET', '/Stock/[*:symbol]', function ($symbol) {
     global $twig;
     $_GET['symbol'] = $symbol; 
     handleStock($twig);

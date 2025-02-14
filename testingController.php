@@ -55,7 +55,7 @@ function handleLogin($twig, $user) {
                 $_SESSION['username'] = $userRecord['username'];
                 $_SESSION['email'] = $userRecord['email'];
                 $_SESSION['admin'] = $userRecord['admin'];
-                header('Location: controller.php?action=home');
+                header('Location: /InvestmentClub');
                 exit();
             }
         } catch (Exception $e) {
@@ -68,7 +68,7 @@ function handleLogin($twig, $user) {
 function handleTransactions($twig, $user, $isAuthenticated) {
     global $pdo;
     if (!$isAuthenticated) {
-        header('Location: controller.php?action=login');
+        header('Location: /InvestmentClub/login');
         exit();
     }
     try {
@@ -83,7 +83,7 @@ function handleTransactions($twig, $user, $isAuthenticated) {
 function handleAdmin($twig, $user, $isAuthenticated, $isAdmin) {
     global $pdo;
     if (!$isAuthenticated || !$isAdmin) {
-        header('Location: controller.php?action=home');
+        header('Location: /InvestmentClub');
         exit();
     }
     try {
@@ -98,14 +98,14 @@ function handleAdmin($twig, $user, $isAuthenticated, $isAdmin) {
 function handleLogout() {
     session_unset();
     session_destroy();
-    header('Location: controller.php?action=home');
+    header('Location: /InvestmentClub');
     exit();
 }
 
 function handlePresentations($twig, $user, $isAuthenticated) {
     global $pdo;
     if (!$isAuthenticated) {
-        header('Location: controller.php?action=login');
+        header('Location: /InvestmentClub/login');
         exit();
     }
     try {

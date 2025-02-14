@@ -14,18 +14,18 @@
             <h1>{% block header %}Investment Club{% endblock %}</h1>
         </header>
         <nav>
-                <a href="controller.php?action=home">Home</a>
-                <a href="controller.php?action=about">About</a>
+                <a href="/InvestmentClub">Home</a>
+                <a href="/InvestmentClub/about">About</a>
 
         {% if not user.is_authenticated %}
-                <a href="controller.php?action=login">Login</a>
+                <a href="/InvestmentClub/login">Login</a>
         {% else %}
-                <a href="controller.php?action=transactions">Transactions</a>
-                <a href="controller.php?action=presentations">Presentations</a>
+                <a href="/InvestmentClub/transactions">Transactions</a>
+                <a href="/InvestmentClub/presentations">Presentations</a>
 
         {% if user.is_admin %}
-             <a href="controller.php?action=admin">Admin Panel</a>
+             <a href="/InvestmentClub/admin">Admin Panel</a>
         {% endif %}
-             <a href="controller.php?action=logout">Logout</a>
+             <a href="/InvestmentClub/logout">Logout</a>
         {% endif %}
         </nav>

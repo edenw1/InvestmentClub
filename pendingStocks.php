@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION['admin'])) {
-    header("Location: controller.php");
+    header("Location: /InvestmentClub/admin");
     exit();
 }
 
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['proposal_id']) && isse
             }
         }
     }
-    header("Location: controller.php?action=admin");
+    header("Location: /InvestmentClub/admin");
     exit();
 }
 
@@ -59,6 +59,6 @@ $stmt->execute();
 $proposals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<form action="controller.php" method="post">
+<form action="/InvestmentClub" method="post">
     <input type="submit" value="Back to Home">
 </form>
