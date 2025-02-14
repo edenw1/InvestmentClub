@@ -1,5 +1,6 @@
 {% include 'header.html.twig' %}
     <h1>{% block header %} Add Presentation {% endblock %}</h1>
+    <div class="form-container">
     <form action="addPresentation.php" method="post">
         <h3>{% block subheader2 %} Upload Presentation {% endblock %}</h3>
         <label for="title">Presentation Title:</label>
@@ -12,7 +13,6 @@
 
         <h3>{% block subheader %} Stock Proposals {% endblock %}</h3>
 
-        <?php for ($i = 0; $i < 3; $i++): ?>
             <label for="stock<?= $i ?>_symbol">Stock Symbol:</label>
             <input type="text" id="stock<?= $i ?>_symbol" name="stocks[<?= $i ?>][symbol]" placeholder="AAPL">
             <br>
@@ -32,15 +32,15 @@
             <input type="number" id="stock<?= $i ?>_quantity" name="stocks[<?= $i ?>][quantity]" min="1">
             
             <br><br>
-        <?php endfor; ?>
 
         <input type="submit" value="Upload Presentation">
     </form>
-
+   </div>
     <br>
      <h1>All Presentations</h1>
 
-    <table border="2">
+<div class="table-container">
+    <table class="presentations-table">
         <thead>
             <tr>
                 <th>Title</th>
@@ -91,6 +91,7 @@
             {% endif %}
         </tbody>
     </table>
+</div>
     <br>
     <br>
     <br>

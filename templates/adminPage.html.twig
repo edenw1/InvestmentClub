@@ -1,10 +1,8 @@
 {% include 'header.html.twig' %}
 <body>
-    <h1>{% block header_main %}Admin Functionality{% endblock %}</h1>
-    <form action="/InvestmentClub" method="post">
-        <input type="submit" value="Back to Home">
-    </form>
-    <br>
+    <h1>{% block header_main %} Admin Functions{% endblock %}</h1>
+    <br>     
+    <div class="form-container">
     <h2>{% block header_add_member %}Add New Club Member{% endblock %}</h2>
     <form action="addmemberForm.php" method="post">
         <label for="username">Username:</label><br>
@@ -23,7 +21,8 @@
         <input type="submit" value="Add Member">
         <br>
     </form>
-    
+    </div>
+    <div class="form-container">
     <h2>{% block header_remove_member %}Remove Club Member{% endblock %}</h2>
     <form action="removeMemberForm.php" method="post">
         <label for="email">Email:</label><br>
@@ -31,7 +30,8 @@
         
         <input type="submit" value="Remove Member"><br>
     </form>
-
+    </div>
+    <div class="form-container">
     <h2>{% block header_transaction %}Make Stock Transaction{% endblock %}</h2>
     <form action="addTransaction.php" method="post">
         <label for="transaction_type">Transaction Type:</label>
@@ -59,11 +59,13 @@
 
         <input type="submit" value="Make Transaction">
     </form>
+    </div>
+
     <h2>{% block header_pending_proposals %}Pending Stock Proposals{% endblock %}</h2>
 
     {% if proposals is not empty %}
         {% for proposal in proposals %}
-            <div>
+         <div class="form-container">
                 <p><strong>Proposal ID:</strong> {{ proposal.proposal_id }}</p>
                 <p><strong>Stock Symbol:</strong> {{ proposal.stock_symbol }}</p>
                 <p><strong>Stock Name:</strong> {{ proposal.stock_name }}</p>
