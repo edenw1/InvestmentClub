@@ -1,4 +1,4 @@
 Options +FollowSymLinks
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule . inde2x.php [L]
+RewriteRule (.*) inde2x.php [L]

@@ -21,25 +21,6 @@ $user = [
     'is_admin' => $isAdmin,
 ];
 
-$action = $_GET['action'] ?? 'home';
-
-$actions = [
-    'login' => 'handleLogin',
-    'transactions' => 'handleTransactions',
-    'admin' => 'handleAdmin',
-    'logout' => 'handleLogout',
-    'presentations' => 'handlePresentations',
-    'about' => 'handleAbout',
-    'stock' => 'handleStock',
-    'home' => 'handleHome'
-];
-
-if (isset($actions[$action])) {
-    call_user_func($actions[$action], $twig, $user, $isAuthenticated, $isAdmin);
-} else {
-    handleHome($twig, $user);
-}
-
 function handleLogin($twig, $user) {
     global $pdo;
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['password'])) {
