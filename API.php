@@ -14,11 +14,11 @@
 
                 $response = curl_exec($ch);
 
-                if ($response === false) {
-                    echo "cURL Error: " . curl_error($ch);
-                    curl_close($ch);
-                    return null;
-                }
+                // if ($response === false) {
+                //     echo "cURL Error: " . curl_error($ch);
+                //     curl_close($ch);
+                //     return null;
+                // }
 
                 curl_close($ch);
                 return json_decode($response, true);

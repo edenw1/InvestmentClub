@@ -169,15 +169,16 @@ nav a:hover {
     /* Your existing card styles */
 }
 footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-    width: 100%;
-    position: fixed; /* Keep footer at the bottom */
+    position: fixed;
     bottom: 0;
     left: 0;
+    width: 100%;
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
 }
+
 
 .transactions-table {
     width: 100%;
@@ -203,4 +204,81 @@ footer {
 
 .transactions-table tr:hover {
     background-color: #ddd;
+}
+
+.presentations-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.presentations-table th, 
+.presentations-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    font-size: 1em;
+    vertical-align: middle;
+}
+
+.presentations-table th {
+    background-color: #4CAF50;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+}
+
+.presentations-table td a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.presentations-table td a:hover {
+    color: #2980b9;
+}
+
+.presentations-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.presentations-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.presentations-table td ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.presentations-table td ul li {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+.presentations-table td ul li span {
+    font-weight: bold;
+}
+
+.table-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-container {
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    max-width: 800px;
+    width: 100%;
 }
