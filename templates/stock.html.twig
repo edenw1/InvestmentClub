@@ -12,8 +12,10 @@
             <div class="col">
                 <h1>{{ profile.name }} ({{ profile.ticker }})</h1>
                 <h2 class="{{ quote.current >= quote.previousClose ? 'text-success' : 'text-danger' }}">
-                    ${{ quote.current|number_format(2) }}
-                    <small>({{ ((quote.current - quote.previousClose)/quote.previousClose * 100)|number_format(2) }}%)</small>
+                    ${{ quote.current|number_format(2) }}{% if quote.previousClose != 0 %}
+                    <small>({{ ((quote.current - quote.previousClose) / quote.previousClose * 100)|number_format(2) }}%)</small>
+                    {% endif %}
+
                 </h2>
             </div>
         </div>
