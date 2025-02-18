@@ -7,44 +7,45 @@
 </head>
 <body>
     <div class="container mt-4">
-        <!-- Header Section -->
-        <div class="row mb-4">
-            <div class="col">
-                <h1>{{ profile.name }} ({{ profile.ticker }})</h1>
-                <h2 class="{{ quote.current >= quote.previousClose ? 'text-success' : 'text-danger' }}">
-                    ${{ quote.current|number_format(2) }}{% if quote.previousClose != 0 %}
-                    <small>({{ ((quote.current - quote.previousClose) / quote.previousClose * 100)|number_format(2) }}%)</small>
-                    {% endif %}
-
-                </h2>
-            </div>
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col">
+            <h1>{{ profile.name }} ({{ profile.ticker }})</h1>
+            <h2 class="{{ quote.c >= quote.pc ? 'text-success' : 'text-danger' }}">
+                ${{ quote.c|number_format(2) }}{% if quote.pc != 0 %}
+                <small>({{ ((quote.c - quote.pc) / quote.pc * 100)|number_format(2) }}%)</small>
+                {% endif %}
+            </h2>
         </div>
+    </div>
 
-        <!-- Profile Data -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Company Profile</div>
-                    <div class="card-body">
-                        <dl class="row">
-                            <dt class="col-sm-4">Country</dt>
-                            <dd class="col-sm-8">{{ profile.country }}</dd>
-                            
-                            <dt class="col-sm-4">IPO Date</dt>
-                            <dd class="col-sm-8">{{ profile.ipo }}</dd>
-                            
-                            <dt class="col-sm-4">Market Cap</dt>
-                            <dd class="col-sm-8">${{ profile.marketCap|number_format }}</dd>
-                            
-                            <dt class="col-sm-4">Industry</dt>
-                            <dd class="col-sm-8">{{ profile.industry }}</dd>
-                            
-                            <dt class="col-sm-4">Website</dt>
-                            <dd class="col-sm-8"><a href="{{ profile.website }}" target="_blank">{{ profile.website }}</a></dd>
-                        </dl>
-                    </div>
+
+
+    <!-- Profile Data -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Company Profile</div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Country</dt>
+                        <dd class="col-sm-8">{{ profile.country }}</dd>
+                        
+                        <dt class="col-sm-4">IPO Date</dt>
+                        <dd class="col-sm-8">{{ profile.ipo }}</dd>
+                        
+                        <dt class="col-sm-4">Market Cap</dt>
+                        <dd class="col-sm-8">${{ profile.marketCapitalization|number_format }}</dd>
+                        
+                        <dt class="col-sm-4">Industry</dt>
+                        <dd class="col-sm-8">{{ profile.finnhubIndustry }}</dd>
+                        
+                        <dt class="col-sm-4">Website</dt>
+                        <dd class="col-sm-8"><a href="{{ profile.weburl }}" target="_blank">{{ profile.weburl }}</a></dd>
+                    </dl>
                 </div>
             </div>
+        </div>
 
             <!-- Quote Data -->
             <div class="col-md-6">
@@ -53,19 +54,19 @@
                     <div class="card-body">
                         <dl class="row">
                             <dt class="col-sm-4">High</dt>
-                            <dd class="col-sm-8">${{ quote.high|number_format(2) }}</dd>
-                            
+                            <dd class="col-sm-8">${{ quote.h|number_format(2) }}</dd>
+
                             <dt class="col-sm-4">Low</dt>
-                            <dd class="col-sm-8">${{ quote.low|number_format(2) }}</dd>
-                            
+                            <dd class="col-sm-8">${{ quote.l|number_format(2) }}</dd>
+
                             <dt class="col-sm-4">Open</dt>
-                            <dd class="col-sm-8">${{ quote.open|number_format(2) }}</dd>
-                            
+                            <dd class="col-sm-8">${{ quote.o|number_format(2) }}</dd>
+
                             <dt class="col-sm-4">Previous Close</dt>
-                            <dd class="col-sm-8">${{ quote.previousClose|number_format(2) }}</dd>
-                            
+                            <dd class="col-sm-8">${{ quote.pc|number_format(2) }}</dd>
+
                             <dt class="col-sm-4">Last Updated</dt>
-                            <dd class="col-sm-8">{{ quote.timestamp }}</dd>
+                            <dd class="col-sm-8">{{ quote.t|date("Y-m-d H:i:s") }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -111,28 +112,73 @@
             </div>
         </div>
 
-        <!-- Financials -->
-        <div class="row mb-4">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">Balance Sheet</div>
-                    <div class="card-body">
-                        <div class="row">
-                            {% for item in financials %}
-                            <div class="col-md-4 mb-2">
-                                <strong>{{ item.label }}:</strong> ${{ item.value|number_format }}
-                            </div>
-                            {% else %}
-                            <div class="col">
-                                No financial data available
-                            </div>
-                            {% endfor %}
+       <!-- Financials -->
+<!-- Financials -->
+<div class="row mb-4">
+    <!-- Balance Sheet -->
+<div class="col">
+    <div class="card">
+        <div class="card-header">Balance Sheet</div>
+        <div class="card-body">
+            <div class="row">
+                {% if financials.data[0].report.bs is defined and financials.data[0].report.bs|length > 0 %}
+                    {% for entry in financials.data[0].report.bs %}
+                        <div class="col-md-4 mb-2">
+                            <strong>{{ entry.label }}:</strong> ${{ entry.value|default(0)|number_format }}
                         </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col">
+                        No balance sheet data available
                     </div>
-                </div>
+                {% endif %}
             </div>
         </div>
+    </div>
+</div>
+<!-- Cash Flow -->
+<div class="col">
+    <div class="card">
+        <div class="card-header">Cash Flow</div>
+        <div class="card-body">
+            <div class="row">
+                {% if financials.data[0].report.cf is defined and financials.data[0].report.cf|length > 0 %}
+                    {% for entry in financials.data[0].report.cf %}
+                        <div class="col-md-4 mb-2">
+                            <strong>{{ entry.label }}:</strong> ${{ entry.value|default(0)|number_format }}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col">
+                        No cash flow data available
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Income Statement -->
+<div class="col">
+    <div class="card">
+        <div class="card-header">Income Statement</div>
+        <div class="card-body">
+            <div class="row">
+                {% if financials.data[0].report.ic is defined and financials.data[0].report.ic|length > 0 %}
+                    {% for entry in financials.data[0].report.ic %}
+                        <div class="col-md-4 mb-2">
+                            <strong>{{ entry.label }}:</strong> ${{ entry.value|default(0)|number_format }}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col">
+                        No income statement data available
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
         <!-- News -->
         <div class="row">
             <div class="col">
