@@ -106,17 +106,29 @@ function handleStock($twig) {
     try {
         $symbol = $_GET['symbol'] ?? null;
         if (!$symbol) throw new Exception("No stock symbol specified");
+
+        $profile = getProfile($symbol);
+        $quote = getQuote($symbol);
+        $trends = getTrends($symbol);
+        $financials = getFinancials($symbol);
+        //$financials_json = $financials;/* ... the JSON string you get from the API or wherever ... */
+        //$financials = json_decode($financials_json, true);
+        $news = getNews($symbol, 5);
+
+        //var_dump($financials); // Add this to check results
+
         echo $twig->render('stock.html.twig', [
-            'profile' => getProfile($symbol),
-            'quote' => getQuote($symbol),
-            'trends' => getTrends($symbol),
-            'financials' => getFinancials($symbol),
-            'news' => getNews($symbol, 5)
+            'profile' => $profile,
+            'quote' => $quote,
+            'trends' => $trends,
+            'financials' => $financials,
+            'news' => $news
         ]);
     } catch (Exception $e) {
         die("Error loading stock data: " . $e->getMessage());
     }
 }
+
 
 function handleHome($twig, $user) {
     global $pdo;
