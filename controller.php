@@ -111,11 +111,7 @@ function handleStock($twig) {
         $quote = getQuote($symbol);
         $trends = getTrends($symbol);
         $financials = getFinancials($symbol);
-        //$financials_json = $financials;/* ... the JSON string you get from the API or wherever ... */
-        //$financials = json_decode($financials_json, true);
         $news = getNews($symbol, 5);
-
-        //var_dump($financials); // Add this to check results
 
         echo $twig->render('stock.html.twig', [
             'profile' => $profile,
