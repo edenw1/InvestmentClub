@@ -19,7 +19,7 @@ if ($user != NULL) {
     exit();
 } else {
     echo 'Incorrect username or password';
-    header("Location: /InvestmentClub/login");
+    header("Location: login");
     exit();
 }
 ?>

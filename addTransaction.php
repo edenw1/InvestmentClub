@@ -10,6 +10,7 @@ $buy_sell_date = $_POST['buy_sell_date'];
 $result = addTransaction($transaction_type, $stock_id, $quantity, $price_per_share, $buy_sell_date);
 
 if ($result == 'Transaction added successfully.') {
+
     ?>
     Transaction Made
     <form action="/InvestmentClub" method="post">
