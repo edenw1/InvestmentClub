@@ -68,7 +68,7 @@ function handleLogin($twig, $user) {
 function handleTransactions($twig, $user, $isAuthenticated) {
     global $pdo;
     if (!$isAuthenticated) {
-        header('Location: /InvestmentClub/login');
+        header('Location: login');
         exit();
     }
     try {
@@ -105,7 +105,7 @@ function handleLogout() {
 function handlePresentations($twig, $user, $isAuthenticated) {
     global $pdo;
     if (!$isAuthenticated) {
-        header('Location: /InvestmentClub/login');
+        header('Location: login');
         exit();
     }
     try {

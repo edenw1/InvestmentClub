@@ -17,7 +17,7 @@ if ($user) {
     $stmtDelete->execute();
 
     echo "User successfully removed.";
-    header("Location: /InvestmentClub/admin");
+    header("Location: admin");
 } else {
     echo "No user found with this email.";
 }

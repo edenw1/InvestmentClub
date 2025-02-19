@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION['admin'])) {
-    header("Location: /InvestmentClub/admin");
+    header("Location: admin");
     exit();
 }
 
@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['proposal_id']) && isse
     $status = $_POST['status'];
 
     if (reviewStocks($proposal_id, $status)) {
-        header("Location: /InvestmentClub/admin");
+        header("Location: admin");
         exit();
     } else {
         echo "Error reviewing stock proposal.";

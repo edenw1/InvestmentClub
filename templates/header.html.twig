@@ -15,17 +15,17 @@
         </header>
         <nav>
                 <a href="/InvestmentClub">Home</a>
-                <a href="/InvestmentClub/about">About</a>
+                <a href="about">About</a>
 
         {% if not user.is_authenticated %}
-                <a href="/InvestmentClub/login">Login</a>
+                <a href="login">Login</a>
         {% else %}
-                <a href="/InvestmentClub/transactions">Transactions</a>
-                <a href="/InvestmentClub/presentations">Presentations</a>
+                <a href="transactions">Transactions</a>
+                <a href="presentations">Presentations</a>
 
         {% if user.is_admin %}
-             <a href="/InvestmentClub/admin">Admin Panel</a>
+             <a href="admin">Admin Panel</a>
         {% endif %}
-             <a href="/InvestmentClub/logout">Logout</a>
+             <a href="logout">Logout</a>
         {% endif %}
         </nav>

@@ -21,7 +21,7 @@ if ($row) {
     <?php
 } else {
     addMember($username, $password, $email, $admin);
-    header("/InvestmentClub/Admin");
+    header("admin");
     exit();
 }
 ?>
