@@ -21,7 +21,13 @@ if ($row) {
     <?php
 } else {
     addMember($username, $password, $email, $admin);
-    header("admin");
+    header("/InvestmentClub/Admin");
+    ?>
+        Member Added!
+    <form action="/InvestmentClub" method="post">
+    <input type="submit" value="Back to Home">
+    </form>
+    <?php
     exit();
 }
 ?>

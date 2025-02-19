@@ -66,10 +66,9 @@
     {% if proposals is not empty %}
         {% for proposal in proposals %}
          <div class="form-container">
-                <p><strong>Proposal ID:</strong> {{ proposal.proposal_id }}</p>
                 <p><strong>Stock Symbol:</strong> {{ proposal.stock_symbol }}</p>
                 <p><strong>Stock Name:</strong> {{ proposal.stock_name }}</p>
-                <p><strong>Proposed By User ID:</strong> {{ proposal.proposed_by }}</p>
+                <p><strong>Proposed By:</strong> {{ proposal.username }}</p>
                 <p><strong>Action:</strong> {{ proposal.action }}</p>
                 <p><strong>Quantity:</strong> {{ proposal.quantity }}</p>
                 <form action="pendingStocks.php" method="post">

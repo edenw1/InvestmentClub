@@ -68,12 +68,19 @@ function handleAdmin($twig, $user, $isAuthenticated, $isAdmin) {
     }
     try {
         $stocks = $pdo->query("SELECT stock_id, symbol FROM stocks")->fetchAll(PDO::FETCH_ASSOC);
-        $proposals = $pdo->query("SELECT * FROM stockProposal WHERE status = 'pending'")->fetchAll(PDO::FETCH_ASSOC);
+        $proposals = $pdo->query("
+            SELECT sp.*, u.username 
+            FROM stockProposal sp
+            JOIN users u ON sp.proposed_by = u.user_id
+            WHERE sp.status = 'pending'
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
         echo $twig->render('adminPage.html.twig', ['user' => $user, 'stocks' => $stocks, 'proposals' => $proposals]);
     } catch (Exception $e) {
         echo "Error loading admin page: " . $e->getMessage();
     }
 }
+
 
 function handleLogout() {
     session_unset();
