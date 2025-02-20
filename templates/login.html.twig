@@ -1,14 +1,22 @@
 {% include 'header.html.twig' %}
-<div>
-	<h1>{% block header %}User Login{% endblock %}</h1>
-	<form action="doform.php" method="POST">
- 	Username: <input type="text" name="username"><br>
- 	Password: <input type="password" name="password"><br>
+
+<div class="form-container">
+    <h2>{% block header %}User Login{% endblock %}</h2>
+    <form action="doform.php" method="POST">
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+
         <input type="submit" value="Submit">
     </form>
-	
-<br>
-<form action="inde2x.php" method="post">
-	<input type="submit" value="Continue as Guest">
-</form>
+
+    <br>
+
+    <form action="inde2x.php" method="post">
+        <input type="submit" value="Continue as Guest">
+    </form>
+</div>
+
 {% include 'footer.html.twig' %}
