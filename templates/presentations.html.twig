@@ -37,31 +37,18 @@
     </form>
    </div>
     <br>
-     <h1>All Presentations</h1>
-
-<div class="table-container">
-    <table class="presentations-table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Date</th>
-                <th>Proposed By</th>
-                <th>URL</th>
-                <th>Stock Proposals</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if presentations is not empty %}
-                {% for presentation in presentations %}
-                    <tr>
-                        <td>{{presentation.title}}</td>
-                        <td>{{presentation.date}}</td>
-                        <td>{{presentation.username}}</td>
-                        <td>
-                            <a href="{{ presentation.file_path }}" target="_blank">{{ presentation.title }}</a>
-                        </td>
-                        <td>
-                            <ul>
+    <h1>All Presentations</h1>
+    <div class="presentations-container">
+        {% if presentations is not empty %}
+            {% for presentation in presentations %}
+                <div class="presentation-box">
+                    <h3>{{ presentation.title }}</h3>
+                    <p><strong>Date:</strong> {{ presentation.date }}</p>
+                    <p><strong>Proposed By:</strong> {{ presentation.username }}</p>
+                    <p><a href="{{ presentation.file_path }}" target="_blank">View Presentation</a></p>
+                    <h4>Stock Proposals:</h4>
+                    <ul>
+                        {% if presentation.stock_proposals is not empty %}
                             {% for proposal in presentation.stock_proposals %}
                                     Symbol: {{proposal.stock_symbol}}<br>
                                     Name: {{proposal.stock_name}}<br>
@@ -77,20 +64,29 @@
                                     {% else %}
                                         {{proposal.action}}
                                     {% endif %}<br>
-                                    Quantity: {{proposal.quantity}}
-
-                            {% else %}
-                                <li>No stock proposals</li>
+                                    {% if proposal.quantity is not none %}
+                                        Quantity: {{ proposal.quantity }}<br>
+                                    {% endif %}
                             {% endfor %}
-                            </ul>
-                        </td>
-                    </tr>
+                        {% else %}
+                            <li>No stock proposals</li>
+                        {% endif %}
+                    </ul>
+
+                    
+                    <h4>Votes:</h4>
+                    <p>Yes: {{ presentation.votes_yes }} | No: {{ presentation.votes_no }}</p>
+                    
+                    <form action="voteForm.php" method="post">
+                        <input type="hidden" name="presentation_id" value="{{ presentation.presentation_id }}">
+                        <button type="submit" name="vote" value="1">Vote Yes</button>
+                        <button type="submit" name="vote" value="0">Vote No</button>
+                    </form>
+                </div>
                 {% endfor %}
             {% else %}
-                <tr><td colspan="4">No presentations found.</td></tr>
+               <p>No presentations found.</p>
             {% endif %}
-        </tbody>
-    </table>
 </div>
     <br>
     <br>

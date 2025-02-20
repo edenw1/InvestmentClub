@@ -95,11 +95,37 @@ function handlePresentations($twig, $user, $isAuthenticated) {
         header('Location: login');
         exit();
     }
+
     try {
-        $stmt = $pdo->prepare("SELECT p.presentation_id, p.title, p.date, p.file_path, u.username FROM presentation p JOIN users u ON p.user_id = u.user_id ORDER BY p.date DESC");
+        $stmt = $pdo->prepare("
+            SELECT p.presentation_id, p.title, p.date, p.file_path, u.username 
+            FROM presentation p 
+            JOIN users u ON p.user_id = u.user_id 
+            ORDER BY p.date DESC
+        ");
         $stmt->execute();
         $presentations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo $twig->render('presentations.html.twig', ['user' => $user, 'presentations' => $presentations]);
+
+        //this fetches stock proposals for presentations
+        //NOTE i have a function for these in database functions, but when i call it i get
+        //error:  Call to undefined function getStockProposals() and getPresentations() 
+        //so this is temporary until we can figure out why 
+        $stmt = $pdo->prepare("SELECT sp.proposal_id, sp.presentation_id, sp.stock_symbol, sp.stock_name, sp.action, sp.quantity FROM stockProposal sp");
+        $stmt->execute();
+        $stockProposals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $presentationsById = [];
+        foreach ($presentations as $presentation) {
+            $presentationsById[$presentation['presentation_id']] = array_merge($presentation, ['stock_proposals' => []]);
+        }
+        foreach ($stockProposals as $proposal) {
+            if (isset($presentationsById[$proposal['presentation_id']])) {
+                $presentationsById[$proposal['presentation_id']]['stock_proposals'][] = $proposal;
+            }
+        }
+        echo $twig->render('presentations.html.twig', [
+            'user' => $user,
+            'presentations' => array_values($presentationsById)
+        ]);
     } catch (Exception $e) {
         echo "Error fetching presentations: " . $e->getMessage();
     }
