@@ -37,6 +37,12 @@ body {
     flex-direction: column;
 }
 
+h1 {
+    margin-left: 20px; 
+    border-left: 5px; 
+    padding-left: 10px; 
+}
+
 /* Header */
 header {
     background-color: #315a6d;
