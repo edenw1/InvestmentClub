@@ -136,7 +136,7 @@ function handleStock($twig) {
 function handleHome($twig, $user) {
     global $pdo;
     try {
-        $stmt = $pdo->query("SELECT symbol FROM stocks");
+        $stmt = $pdo->query("SELECT symbol FROM stocks WHERE watchlist = 1");        
         $stocks = array_map(fn($row) => [
             'symbol' => $row['symbol'],
             'profile' => getProfile($row['symbol']),
