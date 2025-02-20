@@ -60,6 +60,27 @@ function handleTransactions($twig, $user, $isAuthenticated) {
     }
 }
 
+function handlePortfolio($twig, $user, $isAuthenticated) {
+    if (!$isAuthenticated) {
+        header('Location: home');
+        exit();
+    }
+    global $pdo;
+    try {
+        $stmt = $pdo->query("SELECT symbol FROM stocks WHERE active = 1");        
+        $stocks = array_map(fn($row) => [
+            'symbol' => $row['symbol'],
+            'profile' => getProfile($row['symbol']),
+            'quote' => getQuote($row['symbol']),
+            'trends' => getTrends($row['symbol'])
+        ], $stmt->fetchAll(PDO::FETCH_ASSOC));
+        echo $twig->render('index.html.twig', ['stocks' => $stocks, 'user' => $user]);
+    } catch (Exception $e) {
+        echo "Error portfolio: " . $e->getMessage();
+    }
+}
+
+
 function handleAdmin($twig, $user, $isAuthenticated, $isAdmin) {
     global $pdo;
     if (!$isAuthenticated || !$isAdmin) {

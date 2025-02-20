@@ -22,6 +22,11 @@ $router->map('GET', '/transactions', function () {
     handleTransactions($twig, $user, $isAuthenticated);
 });
 
+$router->map('GET', '/portfolio', function () {
+    global $twig, $user, $isAuthenticated;
+    handlePortfolio($twig, $user, $isAuthenticated);
+});
+
 $router->map('GET', '/admin', function () {
     global $twig, $user, $isAuthenticated, $isAdmin;
     handleAdmin($twig, $user, $isAuthenticated, $isAdmin);
