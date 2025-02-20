@@ -129,6 +129,55 @@ function removeMemberByEmail($email) {
     }
 }
 
+function getPresentations() {
+    global $pdo;
+    try {
+        $stmt = $pdo->prepare("SELECT p.presentation_id, p.title, p.date, p.file_path, u.username 
+            FROM presentation p 
+            JOIN users u ON p.user_id = u.user_id 
+            ORDER BY p.date DESC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+function getStockProposals() {
+    global $pdo;
+    try {
+        $stmt = $pdo->prepare("SELECT sp.proposal_id, sp.presentation_id, sp.stock_symbol, sp.stock_name, sp.action, sp.quantity
+            FROM stockProposal sp");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+function voteOnPresentation($user_id, $presentation_id, $vote) {
+    global $pdo;
+
+    try {
+        $checkVoteinDB = "SELECT * FROM vote WHERE user_id = ? AND presentation_id = ?";
+        $stmt = $pdo->prepare($checkVoteinDB);
+        $stmt->execute([$user_id, $presentation_id]);
+        $existing_vote = $stmt->fetch();
+
+        if ($existing_vote) {
+            return 'You have already voted on this presentation.';
+        } else {
+
+            $insertVote = "INSERT INTO vote (user_id, presentation_id, yes_or_no) VALUES (?, ?, ?)";
+            $stmt = $pdo->prepare($insertVote);
+            $stmt->execute([$user_id, $presentation_id, $vote]);
+            return 'Voted successfully';
+        }
+    } catch (Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+}
+
 function addPresentation($user_id, $title, $url) {
     global $pdo;
     try {
