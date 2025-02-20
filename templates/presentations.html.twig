@@ -42,6 +42,12 @@
         {% if presentations is not empty %}
             {% for presentation in presentations %}
                 <div class="presentation-box">
+                {% if user.is_admin %}
+                <form action="deletePresentation.php" method="post" >
+                <input type="hidden" name="presentation_id" value="{{ presentation.presentation_id }}">
+                <button type="submit" class="delete-button">Delete</button>
+                </form>
+                {% endif %}
                     <h3>{{ presentation.title }}</h3>
                     <p><strong>Date:</strong> {{ presentation.date }}</p>
                     <p><strong>Proposed By:</strong> {{ presentation.username }}</p>
