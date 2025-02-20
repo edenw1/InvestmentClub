@@ -15,10 +15,13 @@ body {
     box-sizing: border-box;
     color: white;
     height: 100vh;
+    position: sticky; /* Makes it sticky */
+    top: 0; /* Makes it stick to the top when scrolling */
+    align-items: center;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
+
 
 .sidebar img.sidebar-logo {
     width: 100%;
@@ -37,7 +40,7 @@ body {
     flex-direction: column;
 }
 
-h1 {
+h1, h2 {
     margin-left: 20px; 
     border-left: 5px; 
     padding-left: 10px; 
