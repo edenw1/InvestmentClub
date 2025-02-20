@@ -7,8 +7,9 @@ body {
     display: flex;
 }
 
+/* Sidebar */
 .sidebar {
-    background-color: #4CAF50;
+    background-color: #315a6d;
     width: 200px;
     padding: 1rem;
     box-sizing: border-box;
@@ -26,17 +27,19 @@ body {
     max-height: 180px;
     object-fit: contain;
     border-radius: 50%;
-    margin-bottom: 1 rem;
+    margin-bottom: 1rem;
 }
 
+/* Content Area */
 .content {
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
+/* Header */
 header {
-    background-color: #4CAF50;
+    background-color: #315a6d;
     color: white;
     padding: 1rem 2rem;
     display: flex;
@@ -44,27 +47,31 @@ header {
     justify-content: center;
 }
 
+/* Navigation */
 nav {
     display: flex;
-    justify-content: center; /* Centers the menu items */
+    justify-content: center;
     background-color: #333;
     padding: 1rem;
-    gap: 1rem; /* Adds spacing between menu items */
+    gap: 1rem;
 }
 
 nav a {
     color: white;
     text-decoration: none;
     padding: 0.75rem 1.5rem;
-    background-color: #4CAF50;
     border-radius: 5px;
-    transition: background 0.3s;
-    display: inline-block; /* Ensures they stay in a row */
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease;
+    display: inline-block;
 }
 
 nav a:hover {
-    background-color: #45a049;
+    background-color: #315a6d;
+    transform: translateY(-2px);
 }
+
+/* Main Container */
 .container {
     display: flex;
     flex-direction: column;
@@ -73,6 +80,7 @@ nav a:hover {
     width: 100%;
 }
 
+/* Forms */
 .container form {
     display: block;
     width: 100%;
@@ -84,16 +92,16 @@ nav a:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-
+/* Stocks Section */
 .stocks {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centers the cards horizontally */
-    justify-content: flex-start; /* Aligns cards to the top */
+    align-items: center;
+    justify-content: flex-start;
     padding: 2rem;
-    margin-top: 100px; /* Adjust this to move the cards down */
-    width: 100%; /* Make sure the container takes full width */
-    text-align: center; /* Centers text within cards */
+    margin-top: 80px;
+    width: 100%;
+    text-align: center;
 }
 
 .stock-grid {
@@ -103,16 +111,18 @@ nav a:hover {
     padding: 20px;
 }
 
+/* Stock Cards */
 .stock-card {
     background: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .stock-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .stock-header h3 {
@@ -141,45 +151,23 @@ nav a:hover {
     color: #3498db;
 }
 
+/* Stock Performance Colors */
 .positive { color: #27ae60; }
 .negative { color: #c0392b; }
 .no-stocks {
     text-align: center;
     color: #7f8c8d;
     padding: 20px;
-}   
+}
 
-/* Remove default link styling for stock cards */
+/* Stock Card Links */
 .stock-card-link {
     text-decoration: none;
     color: inherit;
     display: block;
 }
 
-/* Ensure proper spacing in the grid */
-.stock-grid {
-    display: grid;
-    gap: 1rem;
-    /* Keep your existing grid styles */
-}
-
-/* Existing stock-card styles - add position: relative if needed */
-.stock-card {
-    position: relative;
-    /* Your existing card styles */
-}
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #333;
-    color: white;
-    text-align: center;
-    padding: 10px;
-}
-
-
+/* Table Styling */
 .transactions-table {
     width: 100%;
     border-collapse: collapse;
@@ -206,6 +194,7 @@ footer {
     background-color: #ddd;
 }
 
+/* Table Container */
 .table-container {
     width: 100%;
     max-width: 1200px;
@@ -215,24 +204,26 @@ footer {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Forms */
 .form-container {
     padding: 20px;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 40px; 
+    margin-bottom: 40px;
     max-width: 400px;
     width: 100%;
-    margin-right: auto; 
+    margin-right: auto;
 }
 
+/* Presentations */
 .presentations-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
-    padding-top: 20px; 
+    padding-top: 20px;
 }
 
 .presentation-box {
@@ -265,5 +256,17 @@ footer {
 }
 
 .presentation-box button:nth-child(2) {
-    background-color:#28a745;
+    background-color: #28a745;
+}
+
+/* Footer */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
 }
