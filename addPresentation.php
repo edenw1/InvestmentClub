@@ -27,9 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     echo "Presentation and stock proposals submitted successfully!";
     ?>
-    <form action="/InvestmentClub" method="post">
-        <input type="submit" value="Back to Home">
-    </form>
+    <a href="presentations">Presentations</a>
     <?php
 } else {
     echo "Invalid request.";

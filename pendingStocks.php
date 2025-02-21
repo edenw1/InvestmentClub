@@ -23,6 +23,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['proposal_id']) && isse
     }
 }
 ?>
-<form action="/InvestmentClub" method="post">
-    <input type="submit" value="Back to Home">
-</form>
+    <a href="admin">Admin Panel</a>

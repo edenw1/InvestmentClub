@@ -16,17 +16,14 @@ $row = checkMember($username, $email);
 if ($row) {
     echo '<br>' . 'This username or email already exists.';
     ?>
-    <form action="/InvestmentClub" method="post">
-    <input type="submit" value="Back to Home"></form>
+    <a href="admin">Admin Panel</a>
     <?php
 } else {
     addMember($username, $password, $email, $admin);
     header("/InvestmentClub/Admin");
     ?>
         Member Added!
-    <form action="/InvestmentClub" method="post">
-    <input type="submit" value="Back to Home">
-    </form>
+    <a href="admin">Admin Panel</a>
     <?php
     exit();
 }

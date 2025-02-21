@@ -13,9 +13,7 @@ if ($result == 'Transaction added successfully.') {
 
     ?>
     Transaction Made
-    <form action="/InvestmentClub" method="post">
-    <input type="submit" value="Back to Home">
-    </form>
+    <a href="transactions">Transactions</a>
     <?php
 } else {
     echo '<br>' . $result; 
