@@ -1,33 +1,68 @@
 {% include 'header.html.twig' %}
 
-        <div class="container">
-            <h2>{% block subheader %}Welcome, Investment Club!{% endblock %}</h2>
+<div class="container">
+    <h2>{% block subheader %}Welcome, Investment Club!{% endblock %}</h2>
 
-            {% if stocks %}
-            <div class="stock-grid">
-                {% for stock in stocks %}
-                    <a href="Stock/{{ stock.symbol }}" class="stock-card-link">
-                        <div class="stock-card">
-                            <div class="stock-header">
-                                <h3>{{ stock.symbol }}</h3>
-                                <p class="company-name">{{ stock.profile.companyName }}</p>
-                            </div>
-                            <div class="stock-body">
-                                <div class="stock-info">
-                                    <p>Current Price: ${{ stock.quote.c|number_format(2) }}</p>
-                                    <p>Timestamp: {{ stock.quote.t|date('Y-m-d H:i:s') }}</p>
-                                    <p>Previous Close: ${{ stock.quote.pc|number_format(2) }}</p>
-                                    <p>Day's Range: ${{ stock.quote.l|number_format(2) }} - ${{ stock.quote.h|number_format(2) }}</p>
-                                    <p class="{{ stock.quote.c >= stock.quote.pc ? 'positive' : 'negative' }}">
-                                        Change: ${{ (stock.quote.c - stock.quote.pc)|number_format(2) }}
-                                    </p>
-                                </div> 
-                            </div>
+    {% if stocks %}
+        <!-- Load Google Chart API -->
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Stock Name');
+                data.addColumn('number', 'Current Price');
+
+                var stockData = [
+                    {% for stock in stocks %}
+                        ['{{ stock.symbol }}', {{ stock.quote.c }}]{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ];
+
+                data.addRows(stockData);
+
+                var options = {
+                    title: 'Stock Prices in Portfolio',
+                    width: 500,
+                    height: 350
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                chart.draw(data, options);
+            }
+        </script>
+
+        <!-- Chart Container -->
+        <div id="chart_div"></div>
+
+        <div class="stock-grid">
+            {% for stock in stocks %}
+                <a href="Stock/{{ stock.symbol }}" class="stock-card-link">
+                    <div class="stock-card">
+                        <div class="stock-header">
+                            <h3>{{ stock.symbol }}</h3>
+                            <p class="company-name">{{ stock.profile.companyName }}</p>
                         </div>
-                    </a>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="no-stocks">No stocks found in the portfolio.</p>
-        {% endif %}
+                        <div class="stock-body">
+                            <div class="stock-info">
+                                <p>Current Price: ${{ stock.quote.c|number_format(2) }}</p>
+                                <p>Timestamp: {{ stock.quote.t|date('Y-m-d H:i:s') }}</p>
+                                <p>Previous Close: ${{ stock.quote.pc|number_format(2) }}</p>
+                                <p>Day's Range: ${{ stock.quote.l|number_format(2) }} - ${{ stock.quote.h|number_format(2) }}</p>
+                                <p class="{{ stock.quote.c >= stock.quote.pc ? 'positive' : 'negative' }}">
+                                    Change: ${{ (stock.quote.c - stock.quote.pc)|number_format(2) }}
+                                </p>
+                            </div> 
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-stocks">No stocks found in the portfolio.</p>
+    {% endif %}
+</div>
+
 {% include 'footer.html.twig' %}
