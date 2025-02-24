@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/vendor/autoload.php';
-require_once 'db.php'; 
+//require_once 'db.php'; 
 require 'API.php';
 require 'databaseFunctions.php';
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');

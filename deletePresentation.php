@@ -4,7 +4,7 @@ require 'databaseFunctions.php';
 
 if (isset($_POST['presentation_id'])) {
     $presentation_id = $_POST['presentation_id'];
-    if ($db->deletePresentation($presentation_id)) {
+    if (deletePresentation($presentation_id)) {
         echo "Presentation deleted";
         ?>
         <form action="/InvestmentClub" method="post">
