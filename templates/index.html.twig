@@ -3,6 +3,32 @@
 <div class="container">
     <h2>{% block subheader %}Welcome, Investment Club!{% endblock %}</h2>
 
+    <!--Search Function-->
+<div class="form-container">
+    <h2>{% block header %}Stock Search{% endblock %}</h2>
+    <form id="stockForm">
+        <label for="symbol">Stock Ticker:</label><br>
+        <input type="text" id="symbol" name="symbol" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+<script>
+    document.getElementById("stockForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        let ticker = document.getElementById("symbol").value.trim();
+        if (ticker) {
+            window.location.href = `Stock/${ticker}`;
+        }
+    });
+</script>
+
+    <br>
+
+
+
+
+
     {% if stocks %}
         <!-- Load Google Chart API -->
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
