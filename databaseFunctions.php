@@ -101,6 +101,17 @@ function addTransaction($transaction_type, $stock_id, $quantity, $price_per_shar
         return false;
     }
 }
+function deletePresentation($presentation_id) {
+    global $pdo;
+    try {
+        $deletePresentation = "DELETE FROM presentation WHERE presentation_id = ?";
+        $stmt = $pdo->prepare($deletePresentation);
+        $stmt->execute([$presentation_id]);
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
 
 function removeMemberByEmail($email) {
     global $pdo;
