@@ -270,7 +270,6 @@ nav a:hover {
     background-color: #28a745;
 }
 
-/* Footer */
 footer {
     position: fixed;
     bottom: 0;
@@ -280,4 +279,128 @@ footer {
     color: white;
     text-align: center;
     padding: 10px;
+}
+
+
+
+/*Changes*/
+
+/* Layout Wrapper */
+.layout-wrapper {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+.left-column {
+    width: 25%;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.right-column {
+    flex: 1;
+}
+
+#stock-search-form {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+#stock-search-form h2 {
+    margin-top: 0;
+    margin-left: 0;
+    padding-left: 0;
+    font-size: 1.5rem;
+}
+
+#stockForm {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+}
+
+#stockForm label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#stockForm input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#stockForm input[type="submit"] {
+    padding: 8px;
+    background-color: #315a6d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#stockForm input[type="submit"]:hover {
+    background-color: #254556;
+}
+
+/* Chart Styling */
+#chart_div {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Update Stock Grid to display 4 cards per row */
+.stock-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1400px) {
+    .stock-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1100px) {
+    .stock-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .layout-wrapper {
+        flex-direction: column;
+    }
+    
+    .left-column {
+        width: 100%;
+    }
+    
+    .stock-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+/* Adjust stock card for better fit */
+.stock-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    padding: 20px;
+    box-sizing: border-box;
 }
