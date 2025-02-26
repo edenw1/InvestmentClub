@@ -425,7 +425,7 @@ footer {
 
 /* Adjust stock card for better fit */
 .stock-card {
-    height: 100%;
+    height: 80%; /*100% overlapped*/
     display: flex;
     flex-direction: column;
 }
