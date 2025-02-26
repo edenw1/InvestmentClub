@@ -153,6 +153,24 @@ function getPresentations() {
         return false;
     }
 }
+function getVotesByPresentationId($presentation_id) {
+    global $pdo;
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM vote WHERE presentation_id = :presentation_id");
+        $stmt->bindParam(':presentation_id', $presentation_id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $votes = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $votes[] = $row;
+        }
+        
+        return $votes;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 
 function getStockProposals() {
     global $pdo;
