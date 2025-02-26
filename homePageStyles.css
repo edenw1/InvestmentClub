@@ -434,3 +434,20 @@ footer {
     padding: 20px;
     box-sizing: border-box;
 }
+.vote-bar-container {
+    display: flex;
+    height: 20px;
+    width: 100%;
+    background-color: #f0f0f0;
+    margin-bottom: 5px;
+}
+
+.vote-bar-yes {
+    background-color: green;
+    height: 100%;
+}
+
+.vote-bar-no {
+    background-color: red;
+    height: 100%;
+}

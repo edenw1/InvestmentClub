@@ -118,27 +118,48 @@ function handlePresentations($twig, $user, $isAuthenticated) {
     }
 
     try {
-        $stmt = $pdo->prepare("
-            SELECT p.presentation_id, p.title, p.date, p.file_path, u.username 
-            FROM presentation p 
-            JOIN users u ON p.user_id = u.user_id 
-            ORDER BY p.date DESC
-        ");
-        $stmt->execute();
-        $presentations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $stmt = $pdo->prepare("SELECT sp.proposal_id, sp.presentation_id, sp.stock_symbol, sp.stock_name, sp.action, sp.quantity FROM stockProposal sp");
-        $stmt->execute();
-        $stockProposals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $presentations = getPresentations();
+        $stockProposals = getStockProposals();
+        
         $presentationsById = [];
         foreach ($presentations as $presentation) {
-            $presentationsById[$presentation['presentation_id']] = array_merge($presentation, ['stock_proposals' => []]);
+            $presentationId = $presentation['presentation_id'];
+            $votes = getVotesByPresentationId($presentationId);
+            
+            $numYes = 0;
+            $numNo = 0;
+            
+            foreach ($votes as $vote) {
+                if ($vote['yes_or_no'] == 1) {
+                    $numYes++;
+                } elseif ($vote['yes_or_no'] == 0) {
+                    $numNo++;
+                }
+            }
+            $totalVotes = $numYes + $numNo;
+            if ($totalVotes > 0) {
+                $percentYes = ($numYes / $totalVotes) * 100;
+                $percentNo = ($numNo / $totalVotes) * 100;
+            } else {
+                $percentYes = 100;
+                $percentNo = 0;
+            }
+            
+            $presentationsById[$presentationId] = array_merge($presentation, [
+                'stock_proposals' => [],
+                'numYes' => $numYes,
+                'numNo' => $numNo,
+                'percentYes' => $percentYes,
+                'percentNo' => $percentNo
+            ]);
         }
+
         foreach ($stockProposals as $proposal) {
             if (isset($presentationsById[$proposal['presentation_id']])) {
                 $presentationsById[$proposal['presentation_id']]['stock_proposals'][] = $proposal;
             }
         }
+
         echo $twig->render('presentations.html.twig', [
             'user' => $user,
             'presentations' => array_values($presentationsById)
@@ -147,6 +168,7 @@ function handlePresentations($twig, $user, $isAuthenticated) {
         echo "Error fetching presentations: " . $e->getMessage();
     }
 }
+
 
 function handleAbout($twig, $user) {
     echo $twig->render('about.html.twig', ['user' => $user]);
