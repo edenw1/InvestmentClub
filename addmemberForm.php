@@ -16,15 +16,11 @@ $row = checkMember($username, $email);
 if ($row) {
     echo '<br>' . 'This username or email already exists.';
     ?>
-    <a href="admin">Admin Panel</a>
+    <a href="admin">Back to Admin Panel</a>
     <?php
 } else {
     addMember($username, $password, $email, $admin);
-    header("/InvestmentClub/Admin");
-    ?>
-        Member Added!
-    <a href="admin">Admin Panel</a>
-    <?php
+    header('Location: admin');
     exit();
 }
 ?>

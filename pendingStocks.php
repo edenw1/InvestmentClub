@@ -20,6 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['proposal_id']) && isse
         exit();
     } else {
         echo "Error reviewing stock proposal.";
+        ?>
+            <a href="admin">Admin Panel</a>
+        <?php
     }
 }
 ?>

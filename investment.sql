@@ -68,4 +68,10 @@ CREATE TABLE vote (
     FOREIGN KEY (presentation_id) REFERENCES presentation(presentation_id) ON DELETE CASCADE 
 ) ENGINE=InnoDB; 
 
+CREATE TABLE content ( 
+    content_id INT AUTO_INCREMENT PRIMARY KEY, 
+    url VARCHAR(100) NOT NULL, 
+    type ENUM('photo', 'video', 'text') 
+) ENGINE=InnoDB; 
+
 INSERT INTO users (username, password, email, admin) VALUES ('root', '$2y$10$nHi7VJxiVO3Dju8eTlYSROcceAIH9E8MrVbd.deAFHr2fZJmTB0ty', 'admin@muskingum.edu', 1); 

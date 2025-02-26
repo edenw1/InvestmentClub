@@ -1,16 +1,19 @@
 <?php
-require 'db.php'; 
-dbConnect(); 
+session_start();
+require 'databaseFunctions.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['presentation_id'], $_POST['vote'])) {
-    $user_id = $_SESSION['user_id'] ?? null;
+    $user_id = $_SESSION['user_id'];
     $presentation_id = (int)$_POST['presentation_id'];
     $vote = $_POST['vote'] == '1' ? 1 : 0;
-    
-    if (!$user_id) {
-        echo 'You must be logged in to vote.';
+    $result = voteOnPresentation($user_id, $presentation_id, $vote);
+    if ($result == true){
+    header("Location: presentations");
     } else {
-        $result = voteOnPresentation($user_id, $presentation_id, $vote);
-        echo $result;
+        echo("You have already voted on this presentation");
+        ?>
+        <br>
+        <a href="presentations">Back to Presentations </a>
+        <?php
     }
-}
+    }

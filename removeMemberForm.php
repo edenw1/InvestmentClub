@@ -15,10 +15,12 @@ if ($user) {
     $stmtDelete = $pdo->prepare($deleteUser);
     $stmtDelete->bindParam(':email', $email);
     $stmtDelete->execute();
-
-    echo "User successfully removed.";
     header("Location: admin");
 } else {
     echo "No user found with this email.";
+    ?>
+    <br>
+    <a href="admin">Admin Panel</a>
+<?php
 }
 ?>

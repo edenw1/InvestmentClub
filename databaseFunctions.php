@@ -194,13 +194,13 @@ function voteOnPresentation($user_id, $presentation_id, $vote) {
         $existing_vote = $stmt->fetch();
 
         if ($existing_vote) {
-            return 'You have already voted on this presentation.';
+            return false;
         } else {
 
             $insertVote = "INSERT INTO vote (user_id, presentation_id, yes_or_no) VALUES (?, ?, ?)";
             $stmt = $pdo->prepare($insertVote);
             $stmt->execute([$user_id, $presentation_id, $vote]);
-            return 'Voted successfully';
+            return true;
         }
     } catch (Exception $e) {
         return 'Error: ' . $e->getMessage();
