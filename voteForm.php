@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['presentation_id'], $_P
         echo("You have already voted on this presentation");
         ?>
         <br>
-        <a href="presentations">Back to presentations </a>
+        <a href="presentations">Back to Presentations </a>
         <?php
     }
     }

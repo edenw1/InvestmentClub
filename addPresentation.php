@@ -25,11 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    echo "Presentation and stock proposals submitted successfully!";
-    ?>
-    <a href="presentations">Presentations</a>
-    <?php
+    header('Location: presentations');
+    exit();
 } else {
-    echo "Invalid request.";
+    echo "Could not add presentation";
+    ?>
+    <br>
+    <a href="presentations">Back to Presentations</a>
+    <?php
 }
 ?>
