@@ -288,4 +288,23 @@ function reviewStocks($proposal_id, $status) {
     }
 }
 
+function addToWatchlist($symbol, $name) {
+    global $pdo;
+    try {
+        $addWatchlist = "INSERT INTO stocks (symbol, name, watchlist) VALUES (:symbol, :name, TRUE) ON DUPLICATE KEY UPDATE watchlist = TRUE";
+        $stmt = $pdo->prepare($addWatchlist);
+        $stmt->bindParam(':symbol', $symbol, PDO::PARAM_STR);
+        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+
 

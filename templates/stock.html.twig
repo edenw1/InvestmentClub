@@ -16,6 +16,12 @@
                 <small>({{ ((quote.c - quote.pc) / quote.pc * 100)|number_format(2) }}%)</small>
                 {% endif %}
             </h2>
+            <!-- THIS HAS NOT BEEN TESTED YET -->
+                    <form action="addToWatchlist.php" method="POST">
+                    <input type="hidden" name="symbol" value="{{profile.ticker}}">
+                    <input type="hidden" name="name" value="{{profile.name}}">
+                    <button type="submit" class="btn btn-primary">Add to Watchlist</button>
+                </form>
         </div>
     </div>
 
