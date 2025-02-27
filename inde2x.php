@@ -52,6 +52,27 @@ $router->map('GET', '/Stock/[*:symbol]', function ($symbol) {
     handleStock($twig);
 });
 
+$router->map('GET|POST', '/Stock/[*:symbol]', function ($symbol) {
+    global $twig;
+    //require 'databaseFunctions.php';
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $name = $_POST['name'];
+        if (!empty($symbol) && !empty($name)) {
+            if (addToWatchlist($symbol, $name)) {
+                $_SESSION['message'] = "Stock added to watchlist successfully.";
+            } else {
+                $_SESSION['error'] = "Error adding stock to watchlist.";
+            }
+        } else {
+            $_SESSION['error'] = "Error: Name is required.";
+        }
+    }
+
+    $_GET['symbol'] = $symbol;
+    handleStock($twig);
+});
+
 $match = $router->match();
 
 if ($match && is_callable($match['target'])) {
