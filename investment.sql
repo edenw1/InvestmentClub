@@ -70,8 +70,13 @@ CREATE TABLE vote (
 
 CREATE TABLE content ( 
     content_id INT AUTO_INCREMENT PRIMARY KEY, 
-    url VARCHAR(100) NOT NULL, 
-    type ENUM('photo', 'video', 'text') 
-) ENGINE=InnoDB; 
+    title VARCHAR(255), 
+    description TEXT, 
+    url VARCHAR(255), 
+    type ENUM('photo', 'video', 'text') NOT NULL, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
 
 INSERT INTO users (username, password, email, admin) VALUES ('root', '$2y$10$nHi7VJxiVO3Dju8eTlYSROcceAIH9E8MrVbd.deAFHr2fZJmTB0ty', 'admin@muskingum.edu', 1); 

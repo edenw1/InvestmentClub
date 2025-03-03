@@ -8,8 +8,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!empty($symbol) && !empty($name)) {
         if (addToWatchlist($symbol, $name)) {
-            //not sure how to redirect back to that specific stock page after watchlisting, but that would be ideal
-            //possibly use $symbol to add to the redirect "url"
             header("Location: /InvestmentClub");
             exit();
         } else {
