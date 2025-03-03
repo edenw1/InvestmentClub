@@ -1,22 +1,29 @@
 {% include 'header.html.twig' %}
 
-<div class="form-container">
-    <h2>{% block header %}User Login{% endblock %}</h2>
-    <form action="doform.php" method="POST">
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username" required><br><br>
+<div class="login-container">
+    <div class="login-form-container">
+        <h2 class="login-header">{% block header %}User Login{% endblock %}</h2>
+        
+        <form action="doform.php" method="POST" class="login-form">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required class="input-field">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required class="input-field">
+            </div>
+            
+            <div class="form-group">
+                <input type="submit" value="Login" class="submit-btn">
+            </div>
+        </form>
 
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <input type="submit" value="Submit">
-    </form>
-
-    <br>
-
-    <form action="inde2x.php" method="post">
-        <input type="submit" value="Continue as Guest">
-    </form>
-</div>
+        <div class="guest-login">
+            <form action="inde2x.php" method="post">
+                <input type="submit" value="Continue as Guest" class="guest-btn">
+            </form>
+        </div>
 
 {% include 'footer.html.twig' %}

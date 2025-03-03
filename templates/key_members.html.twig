@@ -1,0 +1,55 @@
+{% include 'header.html.twig' %} 
+
+        <header>
+            <h1>Key Members of the Investment Club</h1>
+        </header>
+        <nav>
+            <a href="/InvestmentClub">Home</a>
+            <div class="dropdown">
+                <a href="about">About The Club</a>
+                <div class="dropdown-content">
+                    <a href="about">About The Club</a>
+                    <a href="key-members">Key Members</a>
+                </div>
+            </div>
+            
+            {% if not user.is_authenticated %}
+                <a href="login">Login</a>
+            {% else %}
+                <a href="transactions">Transactions</a>
+                <a href="presentations">Presentations</a>
+                <a href="portfolio">Portfolio</a>
+
+                {% if user.is_admin %}
+                    <a href="admin">Admin Panel</a>
+                {% endif %}
+                <a href="logout">Logout</a>
+            {% endif %}
+        </nav>
+
+        <section class="members-list">
+            <h2>Meet Our Key Members</h2>
+            <ul>
+                <li>
+                    <h3>John Doe</h3>
+                    <p>Role: President</p>
+                    <p>John has been leading the club for over 5 years and brings a wealth of investment knowledge to the team.</p>
+                </li>
+                <li>
+                    <h3>Jane Smith</h3>
+                    <p>Role: Vice President</p>
+                    <p>Jane has extensive experience in financial analysis and helps guide our investment strategies.</p>
+                </li>
+                <li>
+                    <h3>Emily Johnson</h3>
+                    <p>Role: Treasurer</p>
+                    <p>Emily manages our finances and ensures that we make sound financial decisions in all our investments.</p>
+                </li>
+                <li>
+                    <h3>Michael Brown</h3>
+                    <p>Role: Secretary</p>
+                    <p>Michael keeps all our records organized and manages our communication with members.</p>
+                </li>
+            </ul>
+        </section>
+{% include 'footer.html.twig' %}
