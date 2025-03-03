@@ -46,6 +46,11 @@ $router->map('GET', '/about', function () {
     handleAbout($twig, $user);
 });
 
+$router->map('GET', '/key_members', function () {
+    global $twig, $user;
+    handleKey_Members($twig, $user);
+});
+
 $router->map('GET', '/Stock/[*:symbol]', function ($symbol) {
     global $twig;
     $_GET['symbol'] = $symbol; 
