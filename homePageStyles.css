@@ -311,6 +311,90 @@ footer {
     padding: 10px;
 }
 
+/* Login Page */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.login-form-container {
+    background-color: #34495E; /* Slightly lighter dark shade for the form */
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    width: 320px;
+    text-align: center;
+}
+
+.login-header {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #ECF0F1; /* Light color for the header */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #BDC3C7;
+    border-radius: 5px;
+    background-color: #ECF0F1;
+    color: #34495E;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #1ABC9C;
+    background-color: #fff;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #1ABC9C; /* Teal color for the login button */
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.submit-btn:hover {
+    background-color: #16A085;
+}
+
+.guest-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #BDC3C7; /* Light gray for guest button */
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.guest-btn:hover {
+    background-color: #95A5A6;
+}
+
+.login-form {
+        width: 100%;
+    }
+
 
 
 /*Changes*/
