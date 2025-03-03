@@ -46,7 +46,7 @@ $router->map('GET', '/about', function () {
     handleAbout($twig, $user);
 });
 
-$router->map('GET', '/key_members', function () {
+$router->map('GET', '/key-members', function () {
     global $twig, $user;
     handleKey_Members($twig, $user);
 });
