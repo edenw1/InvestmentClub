@@ -15,6 +15,9 @@
                 Our purpose is to create a community for like-minded students to share a passion for financial markets and gain skills applicable to careers in finance and business.
             </p>
         </div>
+        {% if user.is_admin %}
+        <a href="edit">Edit About Page</a>
+        {% endif %}
         {% endblock %}
     </div>
 </div>
