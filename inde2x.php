@@ -55,6 +55,11 @@ $router->map('GET', '/key-members', function () {
     handleKey_Members($twig, $user);
 });
 
+$router->map('GET', '/key-members/edit', function () {
+    global $twig, $user;
+    keyMemberEdit($twig, $user);
+});
+
 $router->map('GET', '/Stock/[*:symbol]', function ($symbol) {
     global $twig;
     $_GET['symbol'] = $symbol; 

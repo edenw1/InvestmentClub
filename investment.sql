@@ -78,5 +78,13 @@ CREATE TABLE content (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+CREATE TABLE member (
+    member_id INT AUTO_INCREMENT PRIMARY KEY,
+    position VARCHAR(100),
+    name VARCHAR(100),
+    description VARCHAR(255),
+    photo_path VARCHAR(255)
+) ENGINE=InnoDB;
+
 
 INSERT INTO users (username, password, email, admin) VALUES ('root', '$2y$10$nHi7VJxiVO3Dju8eTlYSROcceAIH9E8MrVbd.deAFHr2fZJmTB0ty', 'admin@muskingum.edu', 1); 

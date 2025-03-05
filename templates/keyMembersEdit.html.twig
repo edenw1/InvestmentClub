@@ -1,0 +1,26 @@
+{% include 'header.html.twig' %}
+
+<div>
+    <h1>Edit Key Member</h1>
+    <form action="editKeyMembers.php" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="member_id" value="{{member.member_id}}">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="{{member.name}}" required>
+        </div>
+        <div>
+            <label for="position">Position:</label>
+            <input type="text" id="position" name="position" value="{{member.position}}" required>
+        </div>
+        <div>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required>{{member.description}}</textarea>
+        </div>
+        <div>
+            <label for="photo">Photo:</label>
+            <input type="file" id="photo" name="photo" accept="image/*">
+        </div>
+        <button type="submit">Update Member</button>
+    </form>
+</div>
+{% include 'footer.html.twig' %}

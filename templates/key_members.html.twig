@@ -1,12 +1,7 @@
 {% include 'header.html.twig' %} 
-	<a href="/InvestmentClub">Home</a>
-    <div class="dropdown">
-                <a href="about">About The Club</a>
-                <div class="dropdown-content">
-                    <a href="about">About The Club</a>
-                    <a href="key-members">Key Members</a>
-                </div>
-            </div>
+        {% if user.is_admin %}
+        <a href="key-members/edit">Edit Key Members</a> |
+        {% endif %}
             
             <section class="members-list">
             <h2>Meet Our Key Members</h2>

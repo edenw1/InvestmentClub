@@ -220,3 +220,6 @@ function handleKey_Members($twig, $user) {
 function edit_About($twig, $user) {
     echo $twig->render('edit.html.twig', ['user' => $user]);
 }
+function keyMemberEdit($twig, $user){
+    echo $twig->render('keyMembersEdit.html.twig', ['user' => $user]);
+}

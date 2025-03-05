@@ -318,5 +318,15 @@ function addContent($title, $description, $url, $type){
     }
 }
 
+//this is for carter to use later
+function showContent($title, $description, $url, $type){
+//     global $pdo;
+//     try{
+//         $showContent = "";
+//     } catch (Exception $e){
+//         return false;
+//     }
+}
+
 
 
