@@ -1,23 +1,13 @@
-{% include 'header.html.twig' %} 
+{% include 'header.html.twig' %}
 
 <div class="container mt-5">
     <div class="text-center">
         {% block content %}
         <h1 class="mb-4 text-primary">Welcome to the Investment Club Website!</h1>
-        <div class="card shadow-lg p-4 border-0">
-            <p class="lead">
-                The mission of the <strong>Muskingum University Investment Club</strong> is to provide students with an educational experience in equity analysis, portfolio management, and market research.
-            </p>
-            <p>
-                Students will develop financial skill sets beyond the traditional curriculum in an open forum environment where they can learn from one another.
-            </p>
-            <p>
-                Our purpose is to create a community for like-minded students to share a passion for financial markets and gain skills applicable to careers in finance and business.
-            </p>
-        </div>
         {% if user.is_admin %}
-        <a href="edit">Edit About Page</a>
+        <a href="edit">Edit About Page</a> |
         {% endif %}
+        
         {% endblock %}
     </div>
 </div>

@@ -8,21 +8,7 @@
                 </div>
             </div>
             
-            {% if not user.is_authenticated %}
-                <a href="login">Login</a>
-            {% else %}
-                <a href="transactions">Transactions</a>
-                <a href="presentations">Presentations</a>
-                <a href="portfolio">Portfolio</a>
-
-                {% if user.is_admin %}
-                    <a href="admin">Admin Panel</a>
-                {% endif %}
-                <a href="logout">Logout</a>
-            {% endif %}
-        </nav>
-
-        <section class="members-list">
+            <section class="members-list">
             <h2>Meet Our Key Members</h2>
             <ul>
                 <li>
