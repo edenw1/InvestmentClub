@@ -535,3 +535,9 @@ label {
     background-color: red;
     height: 100%;
 }
+
+.members-list img {
+    width: 250px;
+    height: 250px;
+    object-fit: cover; 
+}
