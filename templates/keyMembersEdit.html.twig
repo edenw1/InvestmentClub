@@ -1,7 +1,7 @@
 {% include 'header.html.twig' %}
 
 <div>
-    <h1>Edit Key Member</h1>
+    <h1>Edit Key Members</h1>
     <form action="editKeyMembers.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="member_id" value="{{member.member_id}}">
         <div>
@@ -22,5 +22,8 @@
         </div>
         <button type="submit">Update Member</button>
     </form>
+    <br>
+    <br>
+    	<a href="key-members">Back to Key Members</a>
 </div>
 {% include 'footer.html.twig' %}

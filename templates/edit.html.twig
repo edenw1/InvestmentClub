@@ -29,6 +29,12 @@
                 </div>
                 <button type="submit">Save Content</button>
             </form>
+            <br>
+            <br>
+        {% if user.is_admin %}
+        <a href="about">Back to About Page</a> 
+        {% endif %}
+        
         </div>
     </div>
 </div>
