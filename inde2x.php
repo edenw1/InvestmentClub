@@ -55,7 +55,7 @@ $router->map('GET', '/key-members', function () {
     handleKey_Members($twig, $user);
 });
 
-$router->map('GET', '/key-members/edit', function () {
+$router->map('GET', '/key-members-edit', function () {
     global $twig, $user;
     keyMemberEdit($twig, $user);
 });
