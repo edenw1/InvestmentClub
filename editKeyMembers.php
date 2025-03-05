@@ -3,13 +3,11 @@ session_start();
 require 'databaseFunctions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $member_id = $_POST['member_id'];
     $name = $_POST['name'];
     $position = $_POST['position'];
     $description = $_POST['description'];
 
     $params = [
-        ':member_id' => $member_id,
         ':name' => $name,
         ':position' => $position,
         ':description' => $description
@@ -21,17 +19,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if (move_uploaded_file($_FILES['photo']['tmp_name'], $target_file)) {
             $params[':photo_path'] = $target_file;
-            $sql = "UPDATE member SET name = :name, position = :position, description = :description, photo_path = :photo_path WHERE member_id = :member_id";
+            $sql = "INSERT INTO member (name, position, description, photo_path) VALUES (:name, :position, :description, :photo_path)";
         } else {
             echo "Error uploading file.";
             exit;
         }
     } else {
-        $sql = "UPDATE member SET name = :name, position = :position, description = :description WHERE member_id = :member_id";
+        $sql = "INSERT INTO member (name, position, description) VALUES (:name, :position, :description)";
     }
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
-    header('Location: about');
+    header('Location: key-members');
     exit;
 }

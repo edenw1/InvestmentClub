@@ -215,8 +215,18 @@ function handleHome($twig, $user) {
 }
 
 function handleKey_Members($twig, $user) {
-    echo $twig->render('key_members.html.twig', ['user' => $user]);
+    global $pdo;
+    try{
+    $sql = "SELECT name, position, description, photo_path FROM member";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo $twig->render('key_members.html.twig', ['user' => $user,'members' => $members]);
+} catch (Exception $e){
+    echo "Error loading key mems page: " . $e->getMessage();
 }
+}
+
 function edit_About($twig, $user) {
     echo $twig->render('edit.html.twig', ['user' => $user]);
 }
