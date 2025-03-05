@@ -1,4 +1,5 @@
 <?php
+session_start();
 require 'databaseFunctions.php';
 
 $transaction_type = $_POST['transaction_type'];

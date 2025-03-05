@@ -306,5 +306,17 @@ function addToWatchlist($symbol, $name) {
     }
 }
 
+function addContent($title, $description, $url, $type){
+    global $pdo;
+    try {
+        $sql = "INSERT content SET title = :title, description = :description, url = :url, type = :type, updated_at = NOW()"; 
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':title' => $title,':description' => $description,':url' => $url,':type' => $type]);
+        return true;
+    } catch (Exception $e){
+        return false;
+    }
+}
+
 
 
