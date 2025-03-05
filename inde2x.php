@@ -45,6 +45,10 @@ $router->map('GET', '/about', function () {
     global $twig, $user;
     handleAbout($twig, $user);
 });
+$router->map('GET', '/edit', function () {
+    global $twig, $user;
+    edit_About($twig, $user);
+});
 
 $router->map('GET', '/key-members', function () {
     global $twig, $user;
@@ -56,6 +60,7 @@ $router->map('GET', '/Stock/[*:symbol]', function ($symbol) {
     $_GET['symbol'] = $symbol; 
     handleStock($twig);
 });
+
 
 $router->map('GET|POST', '/Stock/[*:symbol]', function ($symbol) {
     global $twig;

@@ -217,3 +217,6 @@ function handleHome($twig, $user) {
 function handleKey_Members($twig, $user) {
     echo $twig->render('key_members.html.twig', ['user' => $user]);
 }
+function edit_About($twig, $user) {
+    echo $twig->render('edit.html.twig', ['user' => $user]);
+}
