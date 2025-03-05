@@ -89,12 +89,44 @@ function addTransaction($transaction_type, $stock_id, $quantity, $price_per_shar
         $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
         $stmt->execute();
 
-        if (!$stock['active']) {
-            $updateStock = "UPDATE stocks SET active = 1 WHERE stock_id = :stock_id";
-            $stmt2 = $pdo->prepare($updateStock);
-            $stmt2->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
-            $stmt2->execute();
+
+        $plusQuery = "SELECT COALESCE(SUM(quantity), 0) AS total FROM transactions WHERE transaction_type = 'Buy' AND stock_id = :stock_id";
+        $stmt = $pdo->prepare($plusQuery);
+        $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $plusResult = $stmt->fetch(PDO::FETCH_ASSOC);
+        $plusTotal = $plusResult['total'];
+
+        $lessQuery = "SELECT COALESCE(SUM(quantity), 0) AS total FROM transactions WHERE transaction_type = 'Sell' AND stock_id = :stock_id";
+        $stmt = $pdo->prepare($lessQuery);
+        $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $lessResult = $stmt->fetch(PDO::FETCH_ASSOC);
+        $lessTotal = $lessResult['total'];
+
+        $total = $plusTotal - $lessTotal;
+
+        if ($total <= 0) { 
+            if ($stock['active']) { 
+                $updateStock = "UPDATE stocks SET active = 0 WHERE stock_id = :stock_id";
+                $stmt2 = $pdo->prepare($updateStock);
+                $stmt2->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
+                $stmt2->execute();
+            }
+        } else {
+            if (!$stock['active']) {
+                $updateStock = "UPDATE stocks SET active = 1 WHERE stock_id = :stock_id";
+                $stmt2 = $pdo->prepare($updateStock);
+                $stmt2->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
+                $stmt2->execute();
+            }
         }
+
+        if (!$stock) {
+            return false;
+        }
+
+
 
         return true;
     } catch (Exception $e) {
