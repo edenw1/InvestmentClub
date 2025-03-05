@@ -338,27 +338,57 @@ function addToWatchlist($symbol, $name) {
     }
 }
 
-function addContent($title, $description, $url, $type){
-    global $pdo;
-    try {
-        $sql = "INSERT content SET title = :title, description = :description, url = :url, type = :type, updated_at = NOW()"; 
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([':title' => $title,':description' => $description,':url' => $url,':type' => $type]);
-        return true;
-    } catch (Exception $e){
-        return false;
-    }
-}
-
-//this is for carter to use later
-function showContent($title, $description, $url, $type){
+// function addContent($title, $description, $url, $type){
 //     global $pdo;
-//     try{
-//         $showContent = "";
+//     try {
+//         $sql = "INSERT content SET title = :title, description = :description, url = :url, type = :type, updated_at = NOW()"; 
+//         $stmt = $pdo->prepare($sql);
+//         $stmt->execute([':title' => $title,':description' => $description,':url' => $url,':type' => $type]);
+//         return true;
 //     } catch (Exception $e){
 //         return false;
 //     }
-}
+// }
 
+function addContent($title, $description, $url, $type) {
+    global $pdo;
+    try {
+        $sql = "INSERT INTO content (title, description, url, type) VALUES (:title, :description, :url, :type)";
+        
+        $stmt = $pdo->prepare($sql);
+        
+        $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+        $stmt->bindParam(':description', $description, PDO::PARAM_STR);
+        $stmt->bindParam(':url', $url, PDO::PARAM_STR);
+        $stmt->bindParam(':type', $type, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (Exception $e) {
+        error_log("Error inserting content: " . $e->getMessage());
+        return false;
+    }
+}
+//this is for carter to use later
+function showContent() {
+    global $pdo;
+    try {
+        $sql = "SELECT * FROM content ORDER BY created_at DESC";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        
+        $contents = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $contents[] = $row;
+        }
+        
+        return $contents;
+    } catch (Exception $e) {
+        return false;
+    }
+}
 
 

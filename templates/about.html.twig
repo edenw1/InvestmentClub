@@ -2,13 +2,34 @@
 
 <div class="container mt-5">
     <div class="text-center">
-        {% block content %}
+        {%if user.is_admin% }
+        <a href="edit"> Edit About Page </a>
+        
+        {% endif %}
         <h1 class="mb-4 text-primary">Welcome to the Investment Club Website!</h1>
-        {% if user.is_admin %}
-        <a href="edit">Edit About Page</a> |
+        
+        {% if contents is not empty %}
+            {% for content in contents %}
+                <div class="content-item mb-4">
+                    <h3>{{ content.title }}</h3>
+                    <p>{{ content.description }}</p>
+                    
+                    {% if content.type == 'photo' %}
+                        <img src="{{ content.url }}" alt="{{ content.title }}" class="img-fluid" />
+                    {% elseif content.type == 'video' %}
+                        <video controls class="img-fluid">
+                            <source src="{{ content.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% elseif content.type == 'text' %}
+                        <p>{{ content.url }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No content available.</p>
         {% endif %}
         
-        {% endblock %}
     </div>
 </div>
 
