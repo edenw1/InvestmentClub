@@ -2,9 +2,8 @@
 
 <div class="container mt-5">
     <div class="text-center">
-        {%if user.is_admin% }
-        <a href="edit"> Edit About Page </a>
-        
+        {% if user.is_admin %}
+             <a href="edit">Edit About Page</a>
         {% endif %}
         <h1 class="mb-4 text-primary">Welcome to the Investment Club Website!</h1>
         

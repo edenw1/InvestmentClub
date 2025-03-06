@@ -391,4 +391,14 @@ function showContent() {
     }
 }
 
-
+function deleteMember($member_id) {
+    global $pdo;
+        $deleteMem = "DELETE FROM member WHERE member_id = ?";
+        $stmt = $pdo->prepare($deleteMem);
+        $stmt->bindParam(1, $member_id, PDO::PARAM_INT);
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+}
