@@ -207,17 +207,24 @@ function removeMemberByEmail($email) {
 
 function getPresentations() {
     global $pdo;
+    $presentations = [];
     try {
-        $stmt = $pdo->prepare("SELECT p.presentation_id, p.title, p.date, p.file_path, u.username 
+        $stmt = $pdo->prepare("
+            SELECT p.presentation_id, p.title, p.date, p.file_path, u.username 
             FROM presentation p 
             JOIN users u ON p.user_id = u.user_id 
-            ORDER BY p.date DESC");
+            ORDER BY p.date DESC
+        ");
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $presentations[] = $row;
+        }
     } catch (Exception $e) {
-        return false;
+        error_log("Error fetching presentations: " . $e->getMessage());
     }
+    return $presentations;
 }
+
 function getVotesByPresentationId($presentation_id) {
     global $pdo;
     try {
@@ -243,7 +250,13 @@ function getStockProposals() {
         $stmt = $pdo->prepare("SELECT sp.proposal_id, sp.presentation_id, sp.stock_symbol, sp.stock_name, sp.action, sp.quantity
             FROM stockProposal sp");
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $proposals = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $proposals[] = $row;
+        }
+        
+        return $proposals;
     } catch (Exception $e) {
         return false;
     }
@@ -386,11 +399,18 @@ function selectActiveStocks() {
     global $pdo;
     try {
         $stmt = $pdo->query("SELECT symbol FROM stocks WHERE active = 1");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $stocks = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $stocks[] = $row;
+        }
+
+        return $stocks;
     } catch (Exception $e) {
         throw new Exception("Error selecting active stocks: " . $e->getMessage());
     }
 }
+
 
 function addContent($title, $description, $url, $type) {
     global $pdo;
@@ -460,12 +480,19 @@ function getAllTransactions() {
             ORDER BY t.buy_sell_date DESC
         ");
         $stmt->execute();
-        return $stmt->fetchAll();
+
+        $transactions = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $transactions[] = $row;
+        }
+
+        return $transactions;
     } catch (Exception $e) {
         error_log("Error fetching transactions: " . $e->getMessage());
         return [];
     }
 }
+
 
 function fetchWatchlistStocks() {
     global $pdo;
