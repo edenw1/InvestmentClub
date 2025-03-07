@@ -411,3 +411,25 @@ function deleteMember($member_id) {
             return false;
         }
 }
+function getAllTransactions() {
+    try {
+        global $pdo;
+        $stmt = $pdo->prepare("
+            SELECT 
+                s.symbol AS stock_symbol, 
+                s.name AS stock_name, 
+                t.transaction_type, 
+                t.quantity, 
+                t.price_per_share, 
+                t.buy_sell_date 
+            FROM transactions t 
+            JOIN stocks s ON t.stock_id = s.stock_id 
+            ORDER BY t.buy_sell_date DESC
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    } catch (Exception $e) {
+        error_log("Error fetching transactions: " . $e->getMessage());
+        return [];
+    }
+}
