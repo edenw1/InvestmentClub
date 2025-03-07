@@ -64,8 +64,41 @@ function addMember($username, $password, $email, $admin) {
         return false;
     }
 }
+function fetchPendingProposals() {
+    global $pdo;
+    $proposals = [];
+    try {
+        $stmt = $pdo->query("
+            SELECT sp.*, u.username 
+            FROM stockProposal sp
+            JOIN users u ON sp.proposed_by = u.user_id
+            WHERE sp.status = 'pending'
+        ");
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $proposals[] = [
+                'proposal_id' => $row['proposal_id'],
+                'stock_name' => $row['stock_name'],
+                'symbol' => $row['symbol'],
+                'proposed_by' => $row['username'],
+                'status' => $row['status'],
+                'proposed_at' => $row['proposed_at']
+            ];
+        }
+    } catch (Exception $e) {
+        error_log("Error fetching pending proposals: " . $e->getMessage());
+    }
+    return $proposals;
+}
 
-
+function fetchAllStocks() {
+    global $pdo;
+    try {
+        return $pdo->query("SELECT stock_id, symbol FROM stocks")->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        error_log("Error fetching stocks: " . $e->getMessage());
+        return [];
+    }
+}
 function addTransaction($transaction_type, $stock_id, $quantity, $price_per_share, $buy_sell_date) {
     global $pdo;
     try {
@@ -433,3 +466,39 @@ function getAllTransactions() {
         return [];
     }
 }
+
+function fetchWatchlistStocks() {
+    global $pdo;
+    $stocks = [];
+    try {
+        $stmt = $pdo->query("SELECT symbol FROM stocks WHERE watchlist = 1");        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $stocks[] = [
+                'symbol' => $row['symbol'],
+                'profile' => getProfile($row['symbol']),
+                'quote' => getQuote($row['symbol']),
+                'trends' => getTrends($row['symbol'])
+            ];
+        }
+    } catch (Exception $e) {
+        error_log("Error fetching watchlist stocks: " . $e->getMessage());
+    }
+    return $stocks;
+}
+
+function fetchKeyMembers() {
+    global $pdo;
+    $members = [];
+    try {
+        $sql = "SELECT name, position, description, photo_path FROM member";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $members[] = $row;
+        }
+    } catch (Exception $e) {
+        error_log("Error fetching key members: " . $e->getMessage());
+    }
+    return $members;
+}
+
