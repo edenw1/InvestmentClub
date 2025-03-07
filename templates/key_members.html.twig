@@ -3,10 +3,9 @@
     <a href="key-members-edit">Edit Key Members</a>
 {% endif %}
 <section class="members-list">
-    <h2>Meet Our Key Members</h2>
+    <h1>Meet Our Key Members</h1>
     <ul>
         {% for member in members %}
-            <li>
                 <h3>{{ member.name }}</h3>
                 <p>Role: {{ member.position }}</p>
                 <p>{{ member.description }}</p>
@@ -19,7 +18,6 @@
                     <button type="submit">Delete</button>
                 </form>
                 {% endif %}
-            </li>
         {% endfor %}
     </ul>
 </section>
