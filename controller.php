@@ -22,14 +22,11 @@ $user = [
 ];
 
 function handleLogin($twig, $user) {
-    global $pdo;
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['password'])) {
         try {
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
-            $stmt->bindParam(':username', $_POST['username']);
-            $stmt->execute();
-            $userRecord = $stmt->fetch();
-            if ($userRecord && password_verify($_POST['password'], $userRecord['password'])) {
+            $userRecord = checkLogin($_POST['username'], $_POST['password']);
+            
+            if ($userRecord) {
                 session_regenerate_id(true);
                 $_SESSION['user_id'] = $userRecord['user_id'];
                 $_SESSION['username'] = $userRecord['username'];
@@ -37,11 +34,14 @@ function handleLogin($twig, $user) {
                 $_SESSION['admin'] = $userRecord['admin'];
                 header('Location: /InvestmentClub');
                 exit();
+            } else {
+                echo "Invalid username or password.";
             }
         } catch (Exception $e) {
             echo "Error logging in: " . $e->getMessage();
         }
     }
+
     echo $twig->render('login.html.twig', ['user' => $user]);
 }
 
@@ -65,20 +65,21 @@ function handlePortfolio($twig, $user, $isAuthenticated) {
         header('Location: home');
         exit();
     }
-    global $pdo;
     try {
-        $stmt = $pdo->query("SELECT symbol FROM stocks WHERE active = 1");        
+        $activeStocks = selectActiveStocks(); 
         $stocks = array_map(fn($row) => [
             'symbol' => $row['symbol'],
             'profile' => getProfile($row['symbol']),
             'quote' => getQuote($row['symbol']),
             'trends' => getTrends($row['symbol'])
-        ], $stmt->fetchAll(PDO::FETCH_ASSOC));
+        ], $activeStocks);
+        
         echo $twig->render('index.html.twig', ['stocks' => $stocks, 'user' => $user]);
     } catch (Exception $e) {
         echo "Error portfolio: " . $e->getMessage();
     }
 }
+
 
 
 function handleAdmin($twig, $user, $isAuthenticated, $isAdmin) {

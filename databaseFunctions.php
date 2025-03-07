@@ -349,6 +349,15 @@ function addToWatchlist($symbol, $name) {
 //         return false;
 //     }
 // }
+function selectActiveStocks() {
+    global $pdo;
+    try {
+        $stmt = $pdo->query("SELECT symbol FROM stocks WHERE active = 1");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        throw new Exception("Error selecting active stocks: " . $e->getMessage());
+    }
+}
 
 function addContent($title, $description, $url, $type) {
     global $pdo;
