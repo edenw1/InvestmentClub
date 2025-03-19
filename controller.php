@@ -22,14 +22,11 @@ $user = [
 ];
 
 function handleLogin($twig, $user) {
-    global $pdo;
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['password'])) {
         try {
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
-            $stmt->bindParam(':username', $_POST['username']);
-            $stmt->execute();
-            $userRecord = $stmt->fetch();
-            if ($userRecord && password_verify($_POST['password'], $userRecord['password'])) {
+            $userRecord = checkLogin($_POST['username'], $_POST['password']);
+            
+            if ($userRecord) {
                 session_regenerate_id(true);
                 $_SESSION['user_id'] = $userRecord['user_id'];
                 $_SESSION['username'] = $userRecord['username'];
@@ -37,11 +34,14 @@ function handleLogin($twig, $user) {
                 $_SESSION['admin'] = $userRecord['admin'];
                 header('Location: /InvestmentClub');
                 exit();
+            } else {
+                echo "Invalid username or password.";
             }
         } catch (Exception $e) {
             echo "Error logging in: " . $e->getMessage();
         }
     }
+
     echo $twig->render('login.html.twig', ['user' => $user]);
 }
 
@@ -52,9 +52,11 @@ function handleTransactions($twig, $user, $isAuthenticated) {
         exit();
     }
     try {
-        $stmt = $pdo->prepare("SELECT s.symbol AS stock_symbol, s.name AS stock_name, t.transaction_type, t.quantity, t.price_per_share, t.buy_sell_date FROM transactions t JOIN stocks s ON t.stock_id = s.stock_id ORDER BY t.buy_sell_date DESC");
-        $stmt->execute();
-        echo $twig->render('transactions.html.twig', ['user' => $user, 'transactions' => $stmt->fetchAll()]);
+        $transactions = getAllTransactions();
+        echo $twig->render('transactions.html.twig', [
+            'user' => $user,
+            'transactions' => $transactions
+        ]);
     } catch (Exception $e) {
         echo "Error fetching transactions: " . $e->getMessage();
     }
@@ -65,15 +67,15 @@ function handlePortfolio($twig, $user, $isAuthenticated) {
         header('Location: home');
         exit();
     }
-    global $pdo;
     try {
-        $stmt = $pdo->query("SELECT symbol FROM stocks WHERE active = 1");        
+        $activeStocks = selectActiveStocks(); 
         $stocks = array_map(fn($row) => [
             'symbol' => $row['symbol'],
             'profile' => getProfile($row['symbol']),
             'quote' => getQuote($row['symbol']),
             'trends' => getTrends($row['symbol'])
-        ], $stmt->fetchAll(PDO::FETCH_ASSOC));
+        ], $activeStocks);
+        
         echo $twig->render('index.html.twig', ['stocks' => $stocks, 'user' => $user]);
     } catch (Exception $e) {
         echo "Error portfolio: " . $e->getMessage();
@@ -81,25 +83,21 @@ function handlePortfolio($twig, $user, $isAuthenticated) {
 }
 
 
+
 function handleAdmin($twig, $user, $isAuthenticated, $isAdmin) {
-    global $pdo;
     if (!$isAuthenticated || !$isAdmin) {
         header('Location: home');
         exit();
     }
-    try {
-        $stocks = $pdo->query("SELECT stock_id, symbol FROM stocks")->fetchAll(PDO::FETCH_ASSOC);
-        $proposals = $pdo->query("
-            SELECT sp.*, u.username 
-            FROM stockProposal sp
-            JOIN users u ON sp.proposed_by = u.user_id
-            WHERE sp.status = 'pending'
-        ")->fetchAll(PDO::FETCH_ASSOC);
 
-        echo $twig->render('adminPage.html.twig', ['user' => $user, 'stocks' => $stocks, 'proposals' => $proposals]);
-    } catch (Exception $e) {
-        echo "Error loading admin page: " . $e->getMessage();
-    }
+    $stocks = fetchAllStocks();
+    $proposals = fetchPendingProposals();
+
+    echo $twig->render('adminPage.html.twig', [
+        'user' => $user,
+        'stocks' => $stocks,
+        'proposals' => $proposals
+    ]);
 }
 
 
@@ -171,7 +169,8 @@ function handlePresentations($twig, $user, $isAuthenticated) {
 
 
 function handleAbout($twig, $user) {
-    echo $twig->render('about.html.twig', ['user' => $user]);
+    $contents = showContent();
+    echo $twig->render('about.html.twig', ['user' => $user, 'contents' => $contents]);
 }
 
 function handleStock($twig) {
@@ -199,24 +198,18 @@ function handleStock($twig) {
 
 
 function handleHome($twig, $user) {
-    global $pdo;
-    try {
-        $stmt = $pdo->query("SELECT symbol FROM stocks WHERE watchlist = 1");        
-        $stocks = array_map(fn($row) => [
-            'symbol' => $row['symbol'],
-            'profile' => getProfile($row['symbol']),
-            'quote' => getQuote($row['symbol']),
-            'trends' => getTrends($row['symbol'])
-        ], $stmt->fetchAll(PDO::FETCH_ASSOC));
-        echo $twig->render('index.html.twig', ['stocks' => $stocks, 'user' => $user]);
-    } catch (Exception $e) {
-        echo "Error loading home page: " . $e->getMessage();
-    }
+    $stocks = fetchWatchlistStocks();
+    echo $twig->render('index.html.twig', ['stocks' => $stocks, 'user' => $user]);
 }
 
 function handleKey_Members($twig, $user) {
-    echo $twig->render('key_members.html.twig', ['user' => $user]);
+    $members = fetchKeyMembers();
+    echo $twig->render('key_members.html.twig', ['user' => $user, 'members' => $members]);
 }
+
 function edit_About($twig, $user) {
     echo $twig->render('edit.html.twig', ['user' => $user]);
+}
+function keyMemberEdit($twig, $user){
+    echo $twig->render('keyMembersEdit.html.twig', ['user' => $user]);
 }

@@ -64,8 +64,41 @@ function addMember($username, $password, $email, $admin) {
         return false;
     }
 }
+function fetchPendingProposals() {
+    global $pdo;
+    $proposals = [];
+    try {
+        $stmt = $pdo->query("
+            SELECT sp.proposal_id, sp.stock_name, sp.stock_symbol, sp.status, u.username
+            FROM stockProposal sp
+            JOIN users u ON sp.proposed_by = u.user_id
+            WHERE sp.status = 'pending'
+        ");
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $proposals[] = [
+                'proposal_id' => $row['proposal_id'],
+                'stock_name' => $row['stock_name'],
+                'symbol' => $row['stock_symbol'],
+                'proposed_by' => $row['username'],
+                'status' => $row['status'],
+            ];
+        }
+    } catch (Exception $e) {
+        error_log("Error fetching pending proposals: " . $e->getMessage());
+    }
+    return $proposals;
+}
 
 
+function fetchAllStocks() {
+    global $pdo;
+    try {
+        return $pdo->query("SELECT stock_id, symbol FROM stocks")->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        error_log("Error fetching stocks: " . $e->getMessage());
+        return [];
+    }
+}
 function addTransaction($transaction_type, $stock_id, $quantity, $price_per_share, $buy_sell_date) {
     global $pdo;
     try {
@@ -174,17 +207,24 @@ function removeMemberByEmail($email) {
 
 function getPresentations() {
     global $pdo;
+    $presentations = [];
     try {
-        $stmt = $pdo->prepare("SELECT p.presentation_id, p.title, p.date, p.file_path, u.username 
+        $stmt = $pdo->prepare("
+            SELECT p.presentation_id, p.title, p.date, p.file_path, u.username 
             FROM presentation p 
             JOIN users u ON p.user_id = u.user_id 
-            ORDER BY p.date DESC");
+            ORDER BY p.date DESC
+        ");
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $presentations[] = $row;
+        }
     } catch (Exception $e) {
-        return false;
+        error_log("Error fetching presentations: " . $e->getMessage());
     }
+    return $presentations;
 }
+
 function getVotesByPresentationId($presentation_id) {
     global $pdo;
     try {
@@ -210,7 +250,13 @@ function getStockProposals() {
         $stmt = $pdo->prepare("SELECT sp.proposal_id, sp.presentation_id, sp.stock_symbol, sp.stock_name, sp.action, sp.quantity
             FROM stockProposal sp");
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $proposals = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $proposals[] = $row;
+        }
+        
+        return $proposals;
     } catch (Exception $e) {
         return false;
     }
@@ -338,17 +384,148 @@ function addToWatchlist($symbol, $name) {
     }
 }
 
-function addContent($title, $description, $url, $type){
+// function addContent($title, $description, $url, $type){
+//     global $pdo;
+//     try {
+//         $sql = "INSERT content SET title = :title, description = :description, url = :url, type = :type, updated_at = NOW()"; 
+//         $stmt = $pdo->prepare($sql);
+//         $stmt->execute([':title' => $title,':description' => $description,':url' => $url,':type' => $type]);
+//         return true;
+//     } catch (Exception $e){
+//         return false;
+//     }
+// }
+function selectActiveStocks() {
     global $pdo;
     try {
-        $sql = "INSERT content SET title = :title, description = :description, url = :url, type = :type, updated_at = NOW()"; 
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([':title' => $title,':description' => $description,':url' => $url,':type' => $type]);
-        return true;
-    } catch (Exception $e){
-        return false;
+        $stmt = $pdo->query("SELECT symbol FROM stocks WHERE active = 1");
+
+        $stocks = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $stocks[] = $row;
+        }
+
+        return $stocks;
+    } catch (Exception $e) {
+        throw new Exception("Error selecting active stocks: " . $e->getMessage());
     }
 }
 
 
+function addContent($title, $description, $url, $type) {
+    global $pdo;
+    try {
+        $sql = "INSERT INTO content (title, description, url, type) VALUES (:title, :description, :url, :type)";
+        
+        $stmt = $pdo->prepare($sql);
+        
+        $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+        $stmt->bindParam(':description', $description, PDO::PARAM_STR);
+        $stmt->bindParam(':url', $url, PDO::PARAM_STR);
+        $stmt->bindParam(':type', $type, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (Exception $e) {
+        error_log("Error inserting content: " . $e->getMessage());
+        return false;
+    }
+}
+//this is for carter to use later
+function showContent() {
+    global $pdo;
+    try {
+        $sql = "SELECT * FROM content ORDER BY created_at DESC";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        
+        $contents = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $contents[] = $row;
+        }
+        
+        return $contents;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+function deleteMember($member_id) {
+    global $pdo;
+        $deleteMem = "DELETE FROM member WHERE member_id = ?";
+        $stmt = $pdo->prepare($deleteMem);
+        $stmt->bindParam(1, $member_id, PDO::PARAM_INT);
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+}
+function getAllTransactions() {
+    try {
+        global $pdo;
+        $stmt = $pdo->prepare("
+            SELECT 
+                s.symbol AS stock_symbol, 
+                s.name AS stock_name, 
+                t.transaction_type, 
+                t.quantity, 
+                t.price_per_share, 
+                t.buy_sell_date 
+            FROM transactions t 
+            JOIN stocks s ON t.stock_id = s.stock_id 
+            ORDER BY t.buy_sell_date DESC
+        ");
+        $stmt->execute();
+
+        $transactions = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $transactions[] = $row;
+        }
+
+        return $transactions;
+    } catch (Exception $e) {
+        error_log("Error fetching transactions: " . $e->getMessage());
+        return [];
+    }
+}
+
+
+function fetchWatchlistStocks() {
+    global $pdo;
+    $stocks = [];
+    try {
+        $stmt = $pdo->query("SELECT symbol FROM stocks WHERE watchlist = 1");        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $stocks[] = [
+                'symbol' => $row['symbol'],
+                'profile' => getProfile($row['symbol']),
+                'quote' => getQuote($row['symbol']),
+                'trends' => getTrends($row['symbol'])
+            ];
+        }
+    } catch (Exception $e) {
+        error_log("Error fetching watchlist stocks: " . $e->getMessage());
+    }
+    return $stocks;
+}
+
+function fetchKeyMembers() {
+    global $pdo;
+    $members = [];
+    try {
+        $sql = "SELECT name, position, description, photo_path FROM member";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $members[] = $row;
+        }
+    } catch (Exception $e) {
+        error_log("Error fetching key members: " . $e->getMessage());
+    }
+    return $members;
+}
 

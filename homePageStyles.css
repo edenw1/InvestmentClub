@@ -5,6 +5,7 @@ body {
     background-color: #f4f4f9;
     color: #333;
     display: flex;
+    padding-bottom: 60px; 
 }
 
 /* Sidebar */
@@ -299,7 +300,6 @@ nav a:hover {
 .presentation-box button:nth-child(2) {
     background-color: #28a745;
 }
-
 footer {
     position: fixed;
     bottom: 0;
@@ -309,6 +309,7 @@ footer {
     color: white;
     text-align: center;
     padding: 10px;
+    margin-top: 20px;
 }
 
 /* Login Page */
@@ -534,4 +535,10 @@ label {
 .vote-bar-no {
     background-color: red;
     height: 100%;
+}
+
+.members-list img {
+    width: 250px;
+    height: 250px;
+    object-fit: cover; 
 }

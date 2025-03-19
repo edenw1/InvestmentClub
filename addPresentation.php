@@ -3,7 +3,7 @@ session_start();
 require 'databaseFunctions.php';
 require 'API.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
     $title = $_POST['title'];
     $url = $_POST['url'];
     $user_id = $_SESSION['user_id'];

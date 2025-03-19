@@ -2,6 +2,8 @@
 session_start();
 require 'databaseFunctions.php';
 
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 $transaction_type = $_POST['transaction_type'];
 $stock_id = $_POST['stock_id'];
 $quantity = $_POST['quantity'];
@@ -9,7 +11,7 @@ $price_per_share = $_POST['price_per_share'];
 $buy_sell_date = $_POST['buy_sell_date'];
 
 $result = addTransaction($transaction_type, $stock_id, $quantity, $price_per_share, $buy_sell_date);
-
+}
 if ($result == true) {
 
     header('Location: admin');

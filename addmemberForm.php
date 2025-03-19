@@ -1,6 +1,9 @@
 <?php
+session_start();
 require 'databaseFunctions.php';
 
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 $username = $_POST['username'];
 $email = $_POST['email'];
 $password = $_POST['password'];
@@ -20,6 +23,7 @@ if ($row) {
     <?php
 } else {
     addMember($username, $password, $email, $admin);
+}
     header('Location: admin');
     exit();
 }
