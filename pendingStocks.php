@@ -11,7 +11,8 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['proposal_id']) && isset($_POST['status'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
+    
     $proposal_id = $_POST['proposal_id'];
     $status = $_POST['status'];
 

@@ -69,7 +69,7 @@ function fetchPendingProposals() {
     $proposals = [];
     try {
         $stmt = $pdo->query("
-            SELECT sp.*, u.username 
+            SELECT sp.proposal_id, sp.stock_name, sp.stock_symbol, sp.status, u.username
             FROM stockProposal sp
             JOIN users u ON sp.proposed_by = u.user_id
             WHERE sp.status = 'pending'
@@ -78,10 +78,9 @@ function fetchPendingProposals() {
             $proposals[] = [
                 'proposal_id' => $row['proposal_id'],
                 'stock_name' => $row['stock_name'],
-                'symbol' => $row['symbol'],
+                'symbol' => $row['stock_symbol'],
                 'proposed_by' => $row['username'],
                 'status' => $row['status'],
-                'proposed_at' => $row['proposed_at']
             ];
         }
     } catch (Exception $e) {
@@ -89,6 +88,7 @@ function fetchPendingProposals() {
     }
     return $proposals;
 }
+
 
 function fetchAllStocks() {
     global $pdo;
