@@ -66,28 +66,12 @@
 
             }
 
-
-            function parseProfile($profileData){
-                echo "Profile:";
-                echo "<pre>";
-                if ($profileData) {
-                    echo "Country: " . $profileData['country'] . "\n";
-                    echo "Currency: " . $profileData['currency'] . "\n";
-                    echo "Exchange: " . $profileData['exchange'] . "\n";
-                    echo "IPO: " . $profileData['ipo'] . "\n";
-                    echo "Market Capitalization: " . $profileData['marketCapitalization'] . "\n";
-                    echo "Name: " . $profileData['name'] . "\n";
-                    echo "Phone: " . $profileData['phone'] . "\n";
-                    echo "Shares Outstanding: " . $profileData['shareOutstanding'] . "\n";
-                    echo "Ticker: " . $profileData['ticker'] . "\n";
-                    echo "Website: <a href='" . $profileData['weburl'] . "' target='_blank'>" . $profileData['weburl'] . "</a>\n";
-                    echo "Logo URL: <a href='" . $profileData['logo'] . "' target='_blank'>" . $profileData['logo'] . "</a>\n";
-                    echo "Industry: " . $profileData['finnhubIndustry'] . "\n";
-                } else {
-                    echo "Failed to fetch profile data.\n";
+            function confirm($ticker) {
+                $profileUrl = "https://finnhub.io/api/v1/stock/profile2?symbol=" . $ticker;
+                if (fetchFromAPI($profileUrl)) {
+                    return true;
                 }
-                echo "</pre>";
-
+                return false;
             }
 
 

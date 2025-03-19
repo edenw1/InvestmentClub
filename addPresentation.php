@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'databaseFunctions.php';
+require 'API.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $title = $_POST['title'];
@@ -19,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             } else {
                 $quantity = NULL;
             }
-            if (!empty($symbol) && !empty($name) && !empty($action)) {
+            if (!empty($symbol) && !empty($name) && !empty($action) && confirm(htmlspecialchars($symbol))) { //user input
                 addStockProposal($presentation_id, $user_id, $symbol, $name, $action, $quantity );
             }
         }
