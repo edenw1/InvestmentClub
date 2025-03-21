@@ -16,10 +16,7 @@
                     {% if content.type == 'photo' %}
                         <img src="{{ content.url }}" alt="{{ content.title }}" class="img-fluid" />
                     {% elseif content.type == 'video' %}
-                        <video controls class="img-fluid">
-                            <source src="{{ content.url }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        <iframe width="560" height="315" src="{{ content.url }}" frameborder="0" allowfullscreen></iframe>
                     {% elseif content.type == 'text' %}
                         <p>{{ content.url }}</p>
                     {% endif %}
