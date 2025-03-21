@@ -464,6 +464,7 @@ function deleteMember($member_id) {
             return false;
         }
 }
+
 function getAllTransactions() {
     try {
         global $pdo;
@@ -517,7 +518,7 @@ function fetchKeyMembers() {
     global $pdo;
     $members = [];
     try {
-        $sql = "SELECT name, position, description, photo_path FROM member";
+        $sql = "SELECT member_id, name, position, description, photo_path FROM member";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
