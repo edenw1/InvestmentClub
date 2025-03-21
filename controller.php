@@ -169,15 +169,7 @@ function handlePresentations($twig, $user, $isAuthenticated) {
 
 
 function handleAbout($twig, $user) {
-   // $contents = showContent();
-    $contents = [
-        [
-            'title' => 'Sample Video',
-            'description' => 'This is a sample video from YouTube.',
-            'type' => 'video', // This tells Twig to render it as a video
-            'url' => 'https://www.youtube.com/embed/CqKSNpSm4E0' // Use the embed link format
-        ]
-    ];
+    $contents = showContent();
     
     echo $twig->render('about.html.twig', ['contents' => $contents]);
     
