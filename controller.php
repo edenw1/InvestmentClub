@@ -171,7 +171,7 @@ function handlePresentations($twig, $user, $isAuthenticated) {
 function handleAbout($twig, $user) {
     $contents = showContent();
     
-    echo $twig->render('about.html.twig', ['contents' => $contents]);
+ //   echo $twig->render('about.html.twig', ['contents' => $contents]);
     
     echo $twig->render('about.html.twig', ['user' => $user, 'contents' => $contents]);
 }
