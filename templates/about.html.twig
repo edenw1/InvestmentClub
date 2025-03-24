@@ -6,9 +6,6 @@
              <a href="edit">Edit About Page</a>
         {% endif %}
         <h1 class="mb-4 text-primary">Welcome to the Investment Club Website!</h1>
-        
-        <p class="lead">The Investment Club at Muskingum University manages a sample portfolio and is led by our president, Professor Arjun Sondhi. We hold meetings to discuss buying, selling, and modifying our portfolio. All investment suggestions are uploaded and voted upon by the club members.</p>
-        
         {% if contents is not empty %}
             {% for content in contents %}
                 <div class="content-item mb-4">
@@ -34,9 +31,6 @@
         {% else %}
             <p>No content available.</p>
         {% endif %}
-        
-        <!-- To be deleted after presentation -->
-        <img src="https://th.bing.com/th/id/R.5e69973d645d779d2138eaec2de3bb33?rik=MnBrVH6l35lAHg&pid=ImgRaw&r=0" alt="Presentation Image" class="img-fluid" style="max-width: 400px; height: auto;" />
     </div>
 </div>
 
