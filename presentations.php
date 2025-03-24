@@ -46,7 +46,7 @@ dbConnect();
         <input type="submit" value="Upload Presentation">
     </form>
 
-    <form action="/InvestmentClub" method="post">
+    <form action="/" method="post">
         <input type="submit" value="Back to Home">
     </form>
     <br>

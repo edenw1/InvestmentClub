@@ -32,7 +32,7 @@ function handleLogin($twig, $user) {
                 $_SESSION['username'] = $userRecord['username'];
                 $_SESSION['email'] = $userRecord['email'];
                 $_SESSION['admin'] = $userRecord['admin'];
-                header('Location: /InvestmentClub');
+                header('Location: /');
                 exit();
             } else {
                 echo "Invalid username or password.";
@@ -104,7 +104,7 @@ function handleAdmin($twig, $user, $isAuthenticated, $isAdmin) {
 function handleLogout() {
     session_unset();
     session_destroy();
-    header('Location: /InvestmentClub');
+    header('Location: /');
     exit();
 }
 

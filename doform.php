@@ -15,7 +15,7 @@ if ($user != NULL) {
     $_SESSION['email'] = $user['email'];
 
     echo 'Login Successful';
-    header("Location: /InvestmentClub");
+    header("Location: /");
     exit();
 } else {
     echo 'Incorrect username or password';

@@ -5,7 +5,7 @@ require_once 'controller.php';
 
 $router = new AltoRouter();
 
-$router->setBasePath('/InvestmentClub');
+$router->setBasePath('/');
 
 $router->map('GET', '/', function () {
     global $twig, $user;

@@ -16,7 +16,7 @@
                 <small>({{ ((quote.c - quote.pc) / quote.pc * 100)|number_format(2) }}%)</small>
                 {% endif %}
             </h2>
-            <form action="/InvestmentClub/Stock/{{ profile.ticker }}" method="POST">
+            <form action="//Stock/{{ profile.ticker }}" method="POST">
             <input type="hidden" name="name" value="{{ profile.name }}">
             <button type="submit" class="btn btn-primary">Add to Watchlist</button>
         </form>

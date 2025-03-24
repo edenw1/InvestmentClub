@@ -8,18 +8,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!empty($symbol) && !empty($name)) {
         if (addToWatchlist($symbol, $name)) {
-            header("Location: /InvestmentClub");
+            header("Location: /");
             exit();
         } else {
             echo "Error adding stock to watchlist";
             ?>
-            <a href="/InvestmentClub">Home</a>
+            <a href="/">Home</a>
             <?php
         }
     } else {
         echo "Error: Symbol and name are required.";
         ?>
-        <a href="/InvestmentClub">Home</a>
+        <a href="/">Home</a>
         <?php
     }
 }
