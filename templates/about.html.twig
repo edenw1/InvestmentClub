@@ -7,6 +7,8 @@
         {% endif %}
         <h1 class="mb-4 text-primary">Welcome to the Investment Club Website!</h1>
         
+        <p class="lead">The Investment Club at Muskingum University manages a sample portfolio and is led by our president, Professor Arjun Sondhi. We hold meetings to discuss buying, selling, and modifying our portfolio. All investment suggestions are uploaded and voted upon by the club members.</p>
+        
         {% if contents is not empty %}
             {% for content in contents %}
                 <div class="content-item mb-4">
@@ -17,9 +19,15 @@
                         <img src="{{ content.url }}" alt="{{ content.title }}" class="img-fluid" />
                     {% elseif content.type == 'video' %}
                         <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ content.url|replace({'https://www.youtube.com/watch?v=': ''}) }}" frameborder="0" allowfullscreen></iframe>
-
                     {% elseif content.type == 'text' %}
                         <p>{{ content.url }}</p>
+                    {% endif %}
+                    
+                    {% if user.is_admin %}
+                        <form action="deleteContent.php" method="post" class="mt-2">
+                            <input type="hidden" name="content_id" value="{{ content.content_id }}">
+                            <button type="submit">Delete Content</button>
+                        </form>
                     {% endif %}
                 </div>
             {% endfor %}
@@ -27,6 +35,8 @@
             <p>No content available.</p>
         {% endif %}
         
+        <!-- To be deleted after presentation -->
+        <img src="https://th.bing.com/th/id/R.5e69973d645d779d2138eaec2de3bb33?rik=MnBrVH6l35lAHg&pid=ImgRaw&r=0" alt="Presentation Image" class="img-fluid" style="max-width: 400px; height: auto;" />
     </div>
 </div>
 

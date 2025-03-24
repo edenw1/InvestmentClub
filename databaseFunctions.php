@@ -452,6 +452,18 @@ function showContent() {
         return false;
     }
 }
+function deleteContent($content_id) {
+    global $pdo;
+    try {
+        $sql = "DELETE FROM content WHERE content_id = :content_id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':content_id', $content_id, PDO::PARAM_INT);
+        return $stmt->execute();
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 
 function deleteMember($member_id) {
     global $pdo;
