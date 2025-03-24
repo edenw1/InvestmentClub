@@ -8,6 +8,10 @@ body {
     padding-bottom: 60px; 
 }
 
+.login-form label {
+    color: white;
+}
+
 /* Sidebar */
 .sidebar {
     background-color: #315a6d;
