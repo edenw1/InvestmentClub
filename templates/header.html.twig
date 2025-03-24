@@ -14,27 +14,27 @@
             <h1>{% block header %}Investment Club{% endblock %}</h1>
         </header>
         <nav>
-                <a href="/InvestmentClub">Home</a>
-                <!-- <a href="about">About</a> -->
+                <a href="/">Home</a>
+                <!-- <a href="/about">About</a> -->
 				
 				<div class="dropdown">
-					<a href="about">About The Club</a>
+					<a href="/about">About The Club</a>
 					<div class="dropdown-content">
-						<a href="about">About The Club</a>
-						<a href="key-members">Key Members</a>
+						<a href="/about">About The Club</a>
+						<a href="/key-members">Key Members</a>
 					</div>
 				</div>
 
         {% if not user.is_authenticated %}
-                <a href="login">Login</a>
+                <a href="/login">Login</a>
         {% else %}
-                <a href="transactions">Transactions</a>
-                <a href="presentations">Presentations</a>
-                <a href="portfolio">Portfolio</a>
+                <a href="/transactions">Transactions</a>
+                <a href="/presentations">Presentations</a>
+                <a href="/portfolio">Portfolio</a>
 
         {% if user.is_admin %}
-             <a href="admin">Admin Panel</a>
+             <a href="/admin">Admin Panel</a>
         {% endif %}
-             <a href="logout">Logout</a>
+             <a href="/logout">Logout</a>
         {% endif %}
         </nav>
