@@ -4,8 +4,9 @@
 {% endif %}
 <section class="members-list">
     <h1>Meet Our Key Members</h1>
-    <ul>
+    <div class="members-grid">
         {% for member in members %}
+            <div class="member-card">
                 <h3>{{ member.name }}</h3>
                 <p>Role: {{ member.position }}</p>
                 <p>{{ member.description }}</p>
@@ -18,7 +19,8 @@
                     <button type="submit">Delete</button>
                 </form>
                 {% endif %}
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 </section>
 {% include 'footer.html.twig' %}
