@@ -1,5 +1,6 @@
-{% include 'elements/header.html.twig' with {page_title: block('- Key_Members Page')} %}
 {% include 'header.html.twig' %}
+{% include 'elements/header.html.twig' with {page_title: block('- Key_Members Page')} %}
+
 {% if user.is_admin %}
     <a href="key-members-edit">Edit Key Members</a>
 {% endif %}
