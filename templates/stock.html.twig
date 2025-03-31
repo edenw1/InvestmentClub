@@ -1,213 +1,574 @@
-{% include 'header.html.twig' %}
+{# Assuming header.html.twig ONLY includes things like the top logo/nav, NOT the main layout structure like sidebar/content #}
 
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ profile.name }} ({{ profile.ticker }})</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>{{ profile.name|default('Stock Details') }} ({{ profile.ticker|default('N/A') }})</title>
+
+    <style>
+        /* --- Basic Reset & Body --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px; /* Base font size */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* System font stack */
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            display: flex; /* Crucial for sidebar layout IF sidebar is present */
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        h1 { font-size: 2.2rem; color: #212529; }
+        h2 { font-size: 1.8rem; }
+        h2 small { font-size: 1rem; margin-left: 10px; color: #6c757d; }
+
+        /* --- Layout --- */
+        /* Sidebar styles: Assumes a fixed sidebar IS used (defined outside this template or in header.html.twig). */
+        /* If no fixed sidebar, remove .sidebar styles and set content-wrapper margin-left to 0. */
+        .sidebar {
+            width: 200px; /* <<< MUST MATCH margin-left on .content-wrapper */
+            background-color: #343a40;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            color: #f8f9fa;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000; /* Ensure sidebar is above content */
+        }
+
+        .sidebar img {
+            max-width: 100%;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        /* End Optional Sidebar Styles */
+
+        .content-wrapper {
+             /* This margin pushes content past the fixed sidebar. */
+             /* Set to 0 if no fixed sidebar is used. */
+            margin-left: 200px; /* <<< MUST MATCH width of .sidebar */
+            padding: 20px;
+            width: calc(100% - 200px); /* Adjust width if sidebar exists */
+            /* width: 100%; */ /* Use if no sidebar */
+            flex-grow: 1;
+            position: relative; /* Needed for stacking context if sidebar uses z-index */
+            z-index: 1; /* Ensure content is below fixed sidebar if it has higher z-index */
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 15px; /* Gutters */
+            padding-right: 15px;
+        }
+
+        /* --- Grid System (Flexbox based) --- */
+        .grid-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-left: -10px; /* Gutter compensation */
+            margin-right: -10px;
+        }
+
+        .grid-row > [class*="grid-col-"] {
+            padding-left: 10px; /* Gutters */
+            padding-right: 10px;
+            margin-bottom: 1.5rem; /* Default vertical spacing */
+            width: 100%; /* Default to full width (mobile first) */
+        }
+
+        /* Column Widths */
+        .grid-col-12 { flex: 0 0 100%; max-width: 100%; }
+
+        /* Responsive Columns (Apply base, override for larger screens) */
+        @media (min-width: 768px) { /* Medium devices + */
+            .grid-col-md-6 { flex: 0 0 50%; max-width: 50%; }
+            .grid-col-md-4 { flex: 0 0 33.3333%; max-width: 33.3333%; }
+            .grid-col-md-12 { flex: 0 0 100%; max-width: 100%; }
+        }
+        @media (min-width: 992px) { /* Large devices + */
+             .grid-col-lg-6 { flex: 0 0 50%; max-width: 50%; }
+             .grid-col-lg-4 { flex: 0 0 33.3333%; max-width: 33.3333%; }
+             .grid-col-lg-12 { flex: 0 0 100%; max-width: 100%; }
+        }
+
+
+        /* --- Spacing Utilities --- */
+        .mb-1 { margin-bottom: 0.25rem !important; }
+        .mb-2 { margin-bottom: 0.5rem !important; }
+        .mb-3 { margin-bottom: 1rem !important; }
+        .mb-4 { margin-bottom: 1.5rem !important; }
+        .mt-4 { margin-top: 1.5rem !important; }
+        .mt-3 { margin-top: 1rem !important; }
+
+        /* --- Text Utilities --- */
+        .text-success { color: #198754 !important; }
+        .text-danger { color: #dc3545 !important; }
+        .text-muted { color: #6c757d !important; }
+        .text-center { text-align: center !important; }
+        .text-start { text-align: left !important; }
+
+        /* --- Cards --- */
+        .custom-card {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .custom-card-header {
+            background-color: #f7f7f7; /* Slightly lighter header */
+            padding: 0.75rem 1.25rem;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .custom-card-body {
+            padding: 1.25rem;
+            flex-grow: 1;
+        }
+
+        /* --- Definition Lists (Profile/Price) --- */
+        .definition-list { }
+        .definition-item {
+            display: flex;
+            flex-wrap: nowrap; /* Prevent wrapping for consistency */
+            margin-bottom: 0.6rem; /* Slightly more space */
+            font-size: 0.95rem;
+            line-height: 1.4; /* Adjust line height */
+        }
+        .definition-item dt {
+            flex: 0 0 130px; /* Slightly wider label */
+            max-width: 130px;
+            padding-right: 10px;
+            font-weight: 500;
+            color: #495057;
+            white-space: nowrap;
+        }
+        .definition-item dd {
+            flex: 1;
+            color: #212529;
+            margin-left: 0;
+            word-break: break-word;
+        }
+
+        /* --- Buttons --- */
+        .custom-btn {
+            display: inline-block; font-weight: 400; line-height: 1.5;
+            color: #212529; text-align: center; text-decoration: none;
+            vertical-align: middle; cursor: pointer; user-select: none;
+            background-color: transparent; border: 1px solid transparent;
+            padding: 0.375rem 0.75rem; font-size: 1rem; border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .custom-btn:hover { text-decoration: none; }
+        .custom-btn:focus-visible { outline: 2px solid #0d6efd; outline-offset: 2px; }
+
+        .btn-primary { color: #fff; background-color: #0d6efd; border-color: #0d6efd; }
+        .btn-primary:hover { color: #fff; background-color: #0b5ed7; border-color: #0a58ca; }
+
+        /* --- Tables --- */
+        .table-responsive-wrapper { overflow-x: auto; width: 100%; -webkit-overflow-scrolling: touch; }
+        .custom-table {
+            width: 100%; min-width: 600px; margin-bottom: 0; /* Remove margin if wrapper handles spacing */
+            color: #212529; vertical-align: middle; border-collapse: collapse;
+        }
+        .custom-table th, .custom-table td {
+            padding: 0.75rem; border-top: 1px solid #dee2e6;
+            text-align: center; white-space: nowrap;
+        }
+        .custom-table thead th {
+            vertical-align: bottom; border-bottom: 2px solid #dee2e6;
+            background-color: #f8f9fa; font-weight: 600;
+        }
+        .custom-table tbody tr:nth-of-type(odd) { background-color: rgba(0, 0, 0, 0.03); }
+        .custom-table tbody tr:hover { background-color: rgba(0, 0, 0, 0.06); }
+        .custom-table td[colspan] { text-align: center; }
+
+        /* --- News List --- */
+        .news-list { list-style: none; padding-left: 0; margin-bottom: 0; }
+        .news-list li { border-bottom: 1px solid #eee; }
+        .news-list li:last-child { border-bottom: none; }
+        .news-list a {
+            display: block; padding: 1rem 0; /* Pad only top/bottom if body has padding */
+            color: inherit; text-decoration: none; transition: background-color 0.15s ease-in-out;
+        }
+        .news-list a:hover { background-color: #f0f0f0; text-decoration: none; }
+        .news-item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.25rem; flex-wrap: wrap; gap: 0 1rem; }
+        .news-item-header h5 { margin-bottom: 0; font-size: 1.05rem; color: #0056b3; flex-grow: 1; }
+        .news-item-header small { white-space: nowrap; font-size: 0.85rem; color: #6c757d; padding-top: 0.1em; }
+        .news-summary { font-size: 0.9rem; color: #555; margin-bottom: 0; }
+        .no-news { padding: 1rem 0; }
+
+        /* --- Collapse Functionality --- */
+        .collapse-trigger {
+            cursor: pointer; position: relative; user-select: none;
+            transition: background-color 0.2s ease;
+        }
+        .collapse-trigger:hover { background-color: #dde2e6; }
+        .collapse-trigger:focus-visible { outline: 2px solid #0d6efd; outline-offset: 1px; background-color: #dde2e6; }
+
+        .collapse-trigger::after {
+            content: '+'; font-family: monospace; font-weight: bold; font-size: 1.4em;
+            line-height: 1; position: absolute; right: 1.25rem; top: 50%;
+            transform: translateY(-50%); transition: transform 0.25s ease-in-out; color: #555;
+        }
+        .collapse-trigger.active::after { transform: translateY(-50%) rotate(45deg); } /* Changed to X */
+
+        .collapsible-content {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.35s ease-out, padding-top 0.35s ease-out, padding-bottom 0.35s ease-out, border-top-width 0.35s ease-out;
+            padding-top: 0 !important; padding-bottom: 0 !important;
+            border-top: 0px solid transparent;
+        }
+        .collapsible-content.active {
+            padding-top: 1.25rem !important; padding-bottom: 1.25rem !important;
+            border-top: 1px solid #dee2e6;
+            /* max-height is set by JS */
+        }
+        /* Styling for content inside the collapsed financials section */
+        .financials-subsection-title {
+             font-size: 1.1rem;
+             font-weight: 600;
+             color: #333;
+             margin-top: 1rem;
+             margin-bottom: 0.75rem;
+             padding-bottom: 0.25rem;
+             border-bottom: 1px solid #eee;
+        }
+        .financials-subsection-title:first-of-type {
+             margin-top: 0; /* Remove top margin for the first title */
+        }
+        .financial-item { /* Class for each line item */
+             font-size: 0.9rem;
+             margin-bottom: 0.4rem; /* Space between items */
+             line-height: 1.4;
+        }
+        .financial-item strong {
+             display: inline-block; /* Or block if preferred */
+             color: #495057;
+             margin-right: 5px;
+             /* min-width: 200px; */ /* Optional fixed width for labels */
+        }
+
+
+        /* --- Responsive Design --- */
+        @media (max-width: 767.98px) {
+             /* Stack sidebar if it exists and is using the .sidebar class */
+            body { flex-direction: column; }
+            .sidebar {
+                width: 100%; height: auto; position: static;
+                box-shadow: none; border-bottom: 1px solid #495057;
+                /* Ensure content wrapper has no margin when sidebar stacks */
+                .content-wrapper { margin-left: 0; width: 100%; }
+            }
+             /* Adjust content wrapper padding if needed for stacked sidebar */
+             /* .content-wrapper { padding: 15px; } */
+
+
+            .definition-item { flex-wrap: wrap; } /* Allow dt/dd to wrap */
+            .definition-item dt,
+            .definition-item dd {
+                flex-basis: 100%; /* Stack definition items */
+                max-width: 100%;
+            }
+            .definition-item dt { margin-bottom: 0.1rem; }
+
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.5rem; }
+
+            .news-item-header { flex-wrap: wrap; }
+            .news-item-header small { white-space: normal; } /* Allow date/source wrap */
+        }
+
+    </style>
 </head>
 <body>
-    <div class="container mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col">
-            <h1>{{ profile.name }} ({{ profile.ticker }})</h1>
-            <h2 class="{{ quote.c >= quote.pc ? 'text-success' : 'text-danger' }}">
-                ${{ quote.c|number_format(2) }}{% if quote.pc != 0 %}
-                <small>({{ ((quote.c - quote.pc) / quote.pc * 100)|number_format(2) }}%)</small>
-                {% endif %}
-            </h2>
-            <form action="/Stock/{{ profile.ticker }}" method="POST">
-            <input type="hidden" name="name" value="{{ profile.name }}">
-            <button type="submit" class="btn btn-primary">Add to Watchlist</button>
-        </form>
-        </div>
-    </div>
 
+    {# --- Optional Sidebar --- #}
+    {# Make sure your header.html.twig OR this section correctly defines the sidebar IF you want one. #}
+    {# Example structure if NOT in header.html.twig:
+        <div class="sidebar">
+           <img src="/path/to/Inv_Logo.png" alt="Investment Club Logo">
+           {# Navigation links... #}
+        {#</div>
+    #}
 
+    {# --- Main Content Area --- #}
+    {# Ensure this div exists and has the correct margin if a fixed sidebar is used #}
+    <div class="content-wrapper">
+        <div class="page-container">
 
-    <!-- Profile Data -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">Company Profile</div>
-                <div class="card-body">
-                    <dl class="row">
-                        <dt class="col-sm-4">Country</dt>
-                        <dd class="col-sm-8">{{ profile.country }}</dd>
-                        
-                        <dt class="col-sm-4">IPO Date</dt>
-                        <dd class="col-sm-8">{{ profile.ipo }}</dd>
-                        
-                        <dt class="col-sm-4">Market Cap</dt>
-                        <dd class="col-sm-8">${{ profile.marketCapitalization|number_format }}</dd>
-                        
-                        <dt class="col-sm-4">Industry</dt>
-                        <dd class="col-sm-8">{{ profile.finnhubIndustry }}</dd>
-                        
-                        <dt class="col-sm-4">Website</dt>
-                        <dd class="col-sm-8"><a href="{{ profile.weburl }}" target="_blank">{{ profile.weburl }}</a></dd>
-                    </dl>
+            {# --- Stock Header Section --- #}
+            <div class="grid-row mb-4">
+                <div class="grid-col-12">
+                    <h1>{{ profile.name|default('Unknown Company') }} ({{ profile.ticker|default('N/A') }})</h1>
+                    {% if quote is defined and quote.c is defined %}
+                        {% set price_class = (quote.c ?? 0) >= (quote.pc ?? 0) ? 'text-success' : 'text-danger' %}
+                        <h2 class="{{ price_class }}">
+                            ${{ quote.c|number_format(2, '.', ',') }}
+                            {% if quote.pc is defined and quote.pc != 0 and quote.c is defined %}
+                                {% set change_percent = ((quote.c - quote.pc) / quote.pc * 100) %}
+                                <small>({{ change_percent|number_format(2, '.', ',') }}%)</small>
+                            {% endif %}
+                        </h2>
+                    {% else %}
+                        <h2 class="text-muted">Price data unavailable</h2>
+                    {% endif %}
+                    <form action="/Stock/{{ profile.ticker|default('') }}" method="POST">
+                        <input type="hidden" name="name" value="{{ profile.name|default('') }}">
+                        <button type="submit" class="custom-btn btn-primary">Add to Watchlist</button>
+                    </form>
                 </div>
             </div>
-        </div>
 
-            <!-- Quote Data -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Price Data</div>
-                    <div class="card-body">
-                        <dl class="row">
-                            <dt class="col-sm-4">High</dt>
-                            <dd class="col-sm-8">${{ quote.h|number_format(2) }}</dd>
-
-                            <dt class="col-sm-4">Low</dt>
-                            <dd class="col-sm-8">${{ quote.l|number_format(2) }}</dd>
-
-                            <dt class="col-sm-4">Open</dt>
-                            <dd class="col-sm-8">${{ quote.o|number_format(2) }}</dd>
-
-                            <dt class="col-sm-4">Previous Close</dt>
-                            <dd class="col-sm-8">${{ quote.pc|number_format(2) }}</dd>
-
-                            <dt class="col-sm-4">Last Updated</dt>
-                            <dd class="col-sm-8">{{ quote.t|date("Y-m-d H:i:s") }}</dd>
-                        </dl>
+            {# --- Profile & Price Data Row --- #}
+            <div class="grid-row mb-4">
+                <div class="grid-col-12 grid-col-md-6">
+                    <div class="custom-card">
+                        <div class="custom-card-header">Company Profile</div>
+                        <div class="custom-card-body">
+                            <dl class="definition-list">
+                                <div class="definition-item"><dt>Country</dt><dd>{{ profile.country|default('N/A') }}</dd></div>
+                                <div class="definition-item"><dt>IPO Date</dt><dd>{{ profile.ipo|default('N/A') }}</dd></div>
+                                <div class="definition-item"><dt>Market Cap</dt><dd>${{ profile.marketCapitalization|default(0)|number_format(0, '.', ',') }}</dd></div>
+                                <div class="definition-item"><dt>Industry</dt><dd>{{ profile.finnhubIndustry|default('N/A') }}</dd></div>
+                                <div class="definition-item"><dt>Website</dt><dd><a href="{{ profile.weburl|default('#') }}" target="_blank" rel="noopener noreferrer">{{ profile.weburl|default('N/A') }}</a></dd></div>
+                            </dl>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Analyst Trends -->
-        <div class="row mb-4">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">Analyst Recommendations</div>
-                    <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Period</th>
-                                    <th>Strong Buy</th>
-                                    <th>Buy</th>
-                                    <th>Hold</th>
-                                    <th>Sell</th>
-                                    <th>Strong Sell</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for trend in trends %}
-                                <tr>
-                                    <td>{{ trend.period }}</td>
-                                    <td>{{ trend.strongBuy }}</td>
-                                    <td>{{ trend.buy }}</td>
-                                    <td>{{ trend.hold }}</td>
-                                    <td>{{ trend.sell }}</td>
-                                    <td>{{ trend.strongSell }}</td>
-                                </tr>
-                                {% else %}
-                                <tr>
-                                    <td colspan="6">No analyst data available</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-       <!-- Financials -->
-<!-- Financials -->
-<div class="row mb-4">
-    <!-- Balance Sheet -->
-<div class="col">
-    <div class="card">
-        <div class="card-header">Balance Sheet</div>
-        <div class="card-body">
-            <div class="row">
-                {% if financials.data[0].report.bs is defined and financials.data[0].report.bs|length > 0 %}
-                    {% for entry in financials.data[0].report.bs %}
-                        <div class="col-md-4 mb-2">
-                            <strong>{{ entry.label }}:</strong> ${{ entry.value|default(0)|number_format }}
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="col">
-                        No balance sheet data available
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Cash Flow -->
-<div class="col">
-    <div class="card">
-        <div class="card-header">Cash Flow</div>
-        <div class="card-body">
-            <div class="row">
-                {% if financials.data[0].report.cf is defined and financials.data[0].report.cf|length > 0 %}
-                    {% for entry in financials.data[0].report.cf %}
-                        <div class="col-md-4 mb-2">
-                            <strong>{{ entry.label }}:</strong> ${{ entry.value|default(0)|number_format }}
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="col">
-                        No cash flow data available
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Income Statement -->
-<div class="col">
-    <div class="card">
-        <div class="card-header">Income Statement</div>
-        <div class="card-body">
-            <div class="row">
-                {% if financials.data[0].report.ic is defined and financials.data[0].report.ic|length > 0 %}
-                    {% for entry in financials.data[0].report.ic %}
-                        <div class="col-md-4 mb-2">
-                            <strong>{{ entry.label }}:</strong> ${{ entry.value|default(0)|number_format }}
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="col">
-                        No income statement data available
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-        <!-- News -->
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">Latest News</div>
-                    <div class="card-body">
-                        <div class="list-group">
-                            {% for item in news %}
-                            <a href="{{ item.url }}" class="list-group-item list-group-item-action" target="_blank">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h5 class="mb-1">{{ item.headline }}</h5>
-                                    <small>{{ item.source }}</small>
-                                </div>
-                            </a>
+                 <div class="grid-col-12 grid-col-md-6">
+                    <div class="custom-card">
+                        <div class="custom-card-header">Price Data</div>
+                        <div class="custom-card-body">
+                            {% if quote is defined %}
+                            <dl class="definition-list">
+                                <div class="definition-item"><dt>High</dt><dd>${{ quote.h|default(0)|number_format(2, '.', ',') }}</dd></div>
+                                <div class="definition-item"><dt>Low</dt><dd>${{ quote.l|default(0)|number_format(2, '.', ',') }}</dd></div>
+                                <div class="definition-item"><dt>Open</dt><dd>${{ quote.o|default(0)|number_format(2, '.', ',') }}</dd></div>
+                                <div class="definition-item"><dt>Previous Close</dt><dd>${{ quote.pc|default(0)|number_format(2, '.', ',') }}</dd></div>
+                                <div class="definition-item"><dt>Last Updated</dt><dd>{{ quote.t ? quote.t|date("Y-m-d H:i:s", "UTC") : 'N/A' }}</dd></div>
+                            </dl>
                             {% else %}
-                            <div class="list-group-item">
-                                No recent news articles
-                            </div>
-                            {% endfor %}
+                            <p class="text-muted">Quote data unavailable.</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+
+            {# --- Analyst Recommendations Row --- #}
+            <div class="grid-row mb-4">
+                <div class="grid-col-12">
+                    <div class="custom-card">
+                        <div class="custom-card-header">Analyst Recommendations</div>
+                        <div class="custom-card-body" style="padding: 0.5rem 0;"> {# Reduce padding for table wrapper #}
+                            <div class="table-responsive-wrapper">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Period</th><th>Strong Buy</th><th>Buy</th><th>Hold</th><th>Sell</th><th>Strong Sell</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for trend in trends|default([]) %}
+                                        <tr>
+                                            <td>{{ trend.period|default('N/A') }}</td><td>{{ trend.strongBuy|default(0) }}</td>
+                                            <td>{{ trend.buy|default(0) }}</td><td>{{ trend.hold|default(0) }}</td>
+                                            <td>{{ trend.sell|default(0) }}</td><td>{{ trend.strongSell|default(0) }}</td>
+                                        </tr>
+                                        {% else %}
+                                        <tr><td colspan="6" class="text-muted">No analyst data available</td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# --- Combined Financials Row (Collapsible) --- #}
+            <div class="grid-row mb-4">
+                <div class="grid-col-12">
+                    <div class="custom-card">
+                         {# Single trigger for all financials #}
+                         <div class="custom-card-header collapse-trigger" data-target="financialsContent" aria-expanded="false" aria-controls="financialsContent" role="button" tabindex="0">
+                            Financials
+                        </div>
+                        {# Single content area for all financials #}
+                        <div id="financialsContent" class="custom-card-body collapsible-content">
+                            {% if financials is defined and financials.data is defined and financials.data|length > 0 and financials.data[0].report is defined %}
+
+                                {# Balance Sheet Section #}
+                                <h5 class="financials-subsection-title">Balance Sheet</h5>
+                                {% set bs_data = financials.data[0].report.bs|default([]) %}
+                                {% if bs_data|length > 0 %}
+                                    {% for entry in bs_data %}
+                                        <div class="financial-item">
+                                            <strong>{{ entry.label|default('N/A') }}:</strong>
+                                            <span>${{ entry.value|default(0)|number_format(0, '.', ',') }}</span>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-muted mb-3">No balance sheet data available</p>
+                                {% endif %}
+
+                                {# Cash Flow Section #}
+                                <h5 class="financials-subsection-title">Cash Flow</h5>
+                                {% set cf_data = financials.data[0].report.cf|default([]) %}
+                                {% if cf_data|length > 0 %}
+                                    {% for entry in cf_data %}
+                                        <div class="financial-item">
+                                            <strong>{{ entry.label|default('N/A') }}:</strong>
+                                            <span>${{ entry.value|default(0)|number_format(0, '.', ',') }}</span>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                     <p class="text-muted mb-3">No cash flow data available</p>
+                                {% endif %}
+
+                                {# Income Statement Section #}
+                                <h5 class="financials-subsection-title">Income Statement</h5>
+                                {% set ic_data = financials.data[0].report.ic|default([]) %}
+                                {% if ic_data|length > 0 %}
+                                    {% for entry in ic_data %}
+                                        <div class="financial-item">
+                                            <strong>{{ entry.label|default('N/A') }}:</strong>
+                                            <span>${{ entry.value|default(0)|number_format(0, '.', ',') }}</span>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-muted mb-3">No income statement data available</p>
+                                {% endif %}
+
+                            {% else %}
+                                {# Fallback if the entire financials structure is missing #}
+                                <p class="text-muted">Financial data is currently unavailable.</p>
+                            {% endif %}
+                        </div> {# End #financialsContent #}
+                    </div> {# End .custom-card #}
+                </div> {# End .grid-col-12 #}
+            </div> {# End Financials Row #}
+
+
+            {# --- News Row --- #}
+            <div class="grid-row mb-4">
+                <div class="grid-col-12">
+                    <div class="custom-card">
+                        <div class="custom-card-header">Latest News</div>
+                        <div class="custom-card-body" style="padding: 0;">
+                            <ul class="news-list">
+                                {% for item in news|default([]) %}
+                                <li>
+                                    <a href="{{ item.url|default('#') }}" target="_blank" rel="noopener noreferrer" style="padding-left: 1.25rem; padding-right: 1.25rem;"> {# Add padding back here #}
+                                        <div class="news-item-header">
+                                            <h5>{{ item.headline|default('Untitled News') }}</h5>
+                                            <small>
+                                                {{ item.source|default('') }}
+                                                {% if item.datetime is defined and item.datetime %}
+                                                 - {{ item.datetime|date('Y-m-d', "UTC") }}
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                        {% if item.summary is defined and item.summary %}
+                                        <p class="news-summary">{{ item.summary|slice(0, 150) }}{% if item.summary|length > 150 %}...{% endif %}</p>
+                                        {% endif %}
+                                    </a>
+                                </li>
+                                {% else %}
+                                <li class="text-muted no-news" style="padding-left: 1.25rem; padding-right: 1.25rem;">No recent news articles available.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div> {# --- End page-container --- #}
+    </div> {# --- End content-wrapper --- #}
+
+    {# --- Footer --- #}
+    {% include 'footer.html.twig' %}
+
+
+    {# --- JavaScript for Collapse Functionality --- #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const triggers = document.querySelectorAll('.collapse-trigger');
+
+            function toggleCollapse(trigger) {
+                const targetId = trigger.getAttribute('data-target');
+                const content = document.getElementById(targetId);
+                if (!content) return;
+
+                const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+                if (isExpanded) {
+                    content.style.maxHeight = null;
+                    content.classList.remove('active');
+                    trigger.setAttribute('aria-expanded', 'false');
+                    trigger.classList.remove('active');
+                } else {
+                    content.classList.add('active');
+                     requestAnimationFrame(() => { // Calculate height after active class applied
+                           content.style.maxHeight = content.scrollHeight + 'px';
+                     });
+                    trigger.setAttribute('aria-expanded', 'true');
+                    trigger.classList.add('active');
+                }
+            }
+
+            triggers.forEach(trigger => {
+                trigger.addEventListener('keydown', ev => (ev.key === 'Enter' || ev.key === ' ') && (ev.preventDefault(), toggleCollapse(trigger)));
+                trigger.addEventListener('click', ev => (ev.preventDefault(), toggleCollapse(trigger)));
+            });
+
+             window.addEventListener('resize', () => {
+                 document.querySelectorAll('.collapsible-content.active').forEach(content => {
+                     const currentTransition = content.style.transition;
+                     content.style.transition = 'none'; // Disable transition during resize calculation
+                     content.style.maxHeight = content.scrollHeight + 'px';
+                     requestAnimationFrame(() => { content.style.transition = currentTransition; }); // Restore transition
+                 });
+             }, false);
+        });
+    </script>
+
 </body>
-{% include 'footer.html.twig' %}
+</html>
