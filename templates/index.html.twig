@@ -78,8 +78,9 @@
         data.addRows(stockData);
         var options = {
             title: 'Stock Prices in Portfolio',
-            width: 400,
-            height: 300
+            width: 275,
+            height: 200,
+            is3D: true
         };
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
         chart.draw(data, options);
