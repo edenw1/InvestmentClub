@@ -1,4 +1,4 @@
-{% include 'header.html.twig' %}
+{% include 'header.html.twig' with {page_title: ' - Key Members Page'} %}
 
 {% if user.is_admin %}
     <a href="key-members-edit">Edit Key Members</a>
