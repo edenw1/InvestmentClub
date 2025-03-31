@@ -1,5 +1,4 @@
-{% include 'header.html.twig' %}
-
+{% include 'header.html.twig' with {page_title: '- Abou'} %}
 <div class="container mt-5">
     <div class="text-center">
         {% if user.is_admin %}
