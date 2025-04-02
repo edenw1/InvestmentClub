@@ -20,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
             } else {
                 $quantity = NULL;
             }
-            if (!empty($symbol) && !empty($name) && !empty($action) && confirm(htmlspecialchars($symbol))) { //user input
-                addStockProposal($presentation_id, $user_id, $symbol, $name, $action, $quantity );
+            if (!empty($symbol) && !empty($name) && !empty($action)) {
+                addStockProposal($presentation_id, $user_id, $symbol, $name, $action, $quantity);
             }
         }
     }

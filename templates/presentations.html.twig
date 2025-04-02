@@ -14,14 +14,14 @@
 
         <h3>{% block subheader %} Stock Proposals {% endblock %}</h3>
 
-            <label for="stock<?= $i ?>_symbol">Stock Symbol:</label>
-            <input type="text" id="stock<?= $i ?>_symbol" name="stocks[<?= $i ?>][symbol]" placeholder="AAPL">
+            <label for="stock0_symbol">Stock Symbol:</label>
+            <input type="text" id="stock0_symbol" name="stocks[0][symbol]" placeholder="AAPL">
             <br>
-            <label for="stock<?= $i ?>_name">Stock Name:</label>
-            <input type="text" id="stock<?= $i ?>_name" name="stocks[<?= $i ?>][name]" placeholder="Apple Inc.">
+            <label for="stock0_name">Stock Name:</label>
+            <input type="text" id="stock0_name" name="stocks[0][name]" placeholder="Apple Inc.">
             <br>
-            <label for="stock<?= $i ?>_action">Action:</label>
-            <select id="stock<?= $i ?>_action" name="stocks[<?= $i ?>][action]">
+            <label for="stock0_action">Action:</label>
+            <select id="stock0_action" name="stocks[0][action]">
                 <option value="">Select Action</option>
                 <option value="add">Add to Portfolio</option>
                 <option value="remove">Remove from Portfolio</option>
@@ -29,9 +29,8 @@
                 <option value="decrease">Decrease Holdings</option>
             </select>
             <br>
-            <label for="stock<?= $i ?>_quantity">Quantity:</label>
-            <input type="number" id="stock<?= $i ?>_quantity" name="stocks[<?= $i ?>][quantity]" min="1">
-            
+            <label for="stock0_quantity">Quantity:</label>
+            <input type="number" id="stock0_quantity" name="stocks[0][quantity]" min="1">
             <br><br>
 
         <input type="submit" value="Upload Presentation">
