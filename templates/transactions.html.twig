@@ -1,10 +1,18 @@
 {% include 'header.html.twig' with {page_title: ' - Transaction Page'} %}
 
-    <div class="content">
-
-        <div class="container">
-            {% block content %}
-            <table class="transactions-table">
+<div class="content">
+    <div class="container">
+        {% block content %}
+        <form method="GET" action="transactions" class="sorting-form">
+            <label for="sort_by">Sort By:</label>
+            <select name="sort_by" onchange="this.form.submit()">
+                <option value="date_desc" {% if sort_by == 'date_desc' %}selected{% endif %}>Newest First</option>
+                <option value="date_asc" {% if sort_by == 'date_asc' %}selected{% endif %}>Oldest First</option>
+                <option value="stock" {% if sort_by == 'stock' %}selected{% endif %}>Group by Stock</option>
+            </select>
+        </form>
+        <hr>
+        <table class="transactions-table">
                 <tr>
                     <th>Stock</th>
                     <th>Type</th>
@@ -12,7 +20,10 @@
                     <th>Price per Share</th>
                     <th>Date</th>
                 </tr>
-                {% for transaction in transactions %}
+            </thead>
+            <tbody>
+                {% if transactions %}
+                    {% for transaction in transactions %}
                 <tr>
                     <td>
                         <a href="Stock/{{ transaction.stock_symbol }}" class="stock-link">
@@ -25,6 +36,14 @@
                     <td>{{ transaction.buy_sell_date }}</td>
                 </tr>
                 {% endfor %}
-            </table>
-            {% endblock %}
- {% include 'footer.html.twig' %}
+                {% else %}
+                    <tr>
+                        <td>No transactions found.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        {% endblock %}
+    </div>
+</div>
+{% include 'footer.html.twig' %}

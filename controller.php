@@ -52,10 +52,12 @@ function handleTransactions($twig, $user, $isAuthenticated) {
         exit();
     }
     try {
-        $transactions = getAllTransactions();
+        $sortBy = $_GET['sort_by'] ?? 'date_desc';
+        $transactions = getAllTransactions($sortBy);
         echo $twig->render('transactions.html.twig', [
             'user' => $user,
-            'transactions' => $transactions
+            'transactions' => $transactions,
+            'sort_by' => $sortBy
         ]);
     } catch (Exception $e) {
         echo "Error fetching transactions: " . $e->getMessage();
@@ -76,7 +78,7 @@ function handlePortfolio($twig, $user, $isAuthenticated) {
             'trends' => getTrends($row['symbol'])
         ], $activeStocks);
         
-        echo $twig->render('index.html.twig', ['stocks' => $stocks, 'user' => $user, 'page_title' => $- Portfolio Page)];
+        echo $twig->render('index.html.twig', ['stocks' => $stocks, 'user' => $user, 'page_title' => 'Portfolio Page']);
     } catch (Exception $e) {
         echo "Error portfolio: " . $e->getMessage();
     }
