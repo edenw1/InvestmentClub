@@ -78,7 +78,7 @@ function handlePortfolio($twig, $user, $isAuthenticated) {
             'trends' => getTrends($row['symbol'])
         ], $activeStocks);
         
-        echo $twig->render('index.html.twig', ['stocks' => $stocks, 'user' => $user, 'page_title' => 'Portfolio Page']);
+        echo $twig->render('index.html.twig', ['stocks' => $stocks, 'user' => $user, 'page_title' => '- Portfolio Page']);
     } catch (Exception $e) {
         echo "Error portfolio: " . $e->getMessage();
     }
