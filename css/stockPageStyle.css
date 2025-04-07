@@ -276,6 +276,19 @@ h2 small { font-size: 1rem; margin-left: 10px; color: #6c757d; }
      margin-right: 5px;
      /* min-width: 200px; */ /* Optional fixed width for labels */
 }
+.remove-btn {
+    margin-left: 10px;
+    padding: 2px 8px;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.remove-btn:hover {
+    background-color: #cc0000;
+}
 
 
 /* --- Responsive Design --- */
