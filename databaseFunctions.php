@@ -395,6 +395,26 @@ function removeFromWatchlist($symbol) {
         return false;
     }
 }
+
+
+function removeWatchlist($symbol, $name) {
+    global $pdo;
+    try {
+        $addWatchlist = "INSERT INTO stocks (symbol, name, watchlist) VALUES (:symbol, :name, FALSE) ON DUPLICATE KEY UPDATE watchlist = FALSE";
+        $stmt = $pdo->prepare($addWatchlist);
+        $stmt->bindParam(':symbol', $symbol, PDO::PARAM_STR);
+        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 // function addContent($title, $description, $url, $type){
 //     global $pdo;
 //     try {

@@ -42,7 +42,7 @@ h2 small { font-size: 1rem; margin-left: 10px; color: #6c757d; }
 /* If no fixed sidebar, remove .sidebar styles and set content-wrapper margin-left to 0. */
 .sidebar {
     width: 200px; /* <<< MUST MATCH margin-left on .content-wrapper */
-    background-color: #343a40;
+    background-color: #315a6d;
     padding: 20px;
     height: 100vh;
     position: fixed;
@@ -50,7 +50,7 @@ h2 small { font-size: 1rem; margin-left: 10px; color: #6c757d; }
     left: 0;
     color: #f8f9fa;
     overflow-y: auto;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    /*box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);*/
     z-index: 1000; /* Ensure sidebar is above content */
 }
 

@@ -314,7 +314,9 @@ footer {
     text-align: center;
     padding: 10px;
     margin-top: 20px;
+    z-index: 9999;
 }
+
 
 /* Login Page */
 .login-container {
