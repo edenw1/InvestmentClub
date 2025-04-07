@@ -54,7 +54,7 @@ class __TwigTemplate_31cefdcc31ef8680f24597b011bdcbcf extends Template
         yield from $this->unwrap()->yieldBlock('title', $context, $blocks);
         yield "</title>
     <!-- Link to the external CSS file -->
-    <link rel=\"stylesheet\" href=\"homePageStyles.css\">
+    <link rel=\"stylesheet\" href=\"css/homePageStyles.css\">
 </head>
 <body>
     <div class=\"sidebar\">
