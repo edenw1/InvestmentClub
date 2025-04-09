@@ -29,7 +29,7 @@ $router->map('GET', '/portfolio', function () {
 
 $router->map('GET', '/admin', function () {
     global $twig, $user, $isAuthenticated, $isAdmin;
-    handleAdmin($twig, $user, $isAuthenticated, $isAdmin);
+    handleAdmin($twig, $user, $isAuthenticated);
 });
 
 $router->map('GET', '/logout', function () {

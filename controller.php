@@ -86,8 +86,8 @@ function handlePortfolio($twig, $user, $isAuthenticated) {
 
 
 
-function handleAdmin($twig, $user, $isAuthenticated, $isAdmin) {
-    if (!$isAuthenticated || !$isAdmin) {
+function handleAdmin($twig, $user, $isAuthenticated) {
+    if (!$isAuthenticated) {
         header('Location: home');
         exit();
     }

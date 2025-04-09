@@ -1,6 +1,23 @@
-{% include 'header.html.twig' with {page_title: ' - Admin Panel'} %}
+{% include 'header.html.twig' with {page_title: ' - Profile'} %}
 
 <body>
+    {% if user.is_authenticated %}
+        <h2>Change Credentials</h2>
+        <form method="POST" action="update_credentials.php">
+            <label for="new_username">New Username (optional):</label>
+            <input type="text"name="new_username">
+            
+            <label for="new_password">New Password:</label>
+            <input type="password"  name="new_password" required>
+            
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" name="confirm_password" required>
+            
+            <button type="submit" name="update_credentials">Update</button>
+        </form>
+    {% endif %}
+
+{% if user.is_admin %}
     <h1>{% block header_main %} Admin Functions{% endblock %}</h1>
     <br>     
     <div class="form-container">
@@ -86,6 +103,7 @@
     {% else %}
         <p>No pending stock proposals.</p>
     {% endif %}
+{% endif %}
 </body>
 <br>
 <br>
