@@ -383,6 +383,18 @@ function addToWatchlist($symbol, $name) {
         return false;
     }
 }
+function removeFromWatchlist($symbol) {
+    global $pdo;
+    try {
+        $removeWatchlist = "UPDATE stocks SET watchlist = FALSE WHERE symbol = :symbol";
+        $stmt = $pdo->prepare($removeWatchlist);
+        $stmt->bindParam(':symbol', $symbol, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    } catch (Exception $e) {
+        return false;
+    }
+}
 
 
 function removeWatchlist($symbol, $name) {

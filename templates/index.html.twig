@@ -26,6 +26,12 @@
                         <div class="stock-card">
                             <div class="stock-header">
                                 <h3>{{ stock.symbol }}</h3>
+                                {% if user.is_admin %}
+                                <form action="removeFromWatchlist.php" method="POST" style="display: inline;">
+                                    <input type="hidden" name="symbol" value="{{ stock.symbol }}">
+                                    <button type="submit" class="remove-btn">Remove</button>
+                                </form>
+                                {% endif %}
                                 <p class="company-name">{{ stock.profile.companyName }}</p>
                             </div>
                             <div class="stock-body">
