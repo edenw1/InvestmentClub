@@ -79,14 +79,14 @@
                         {% endif %}
                     </ul>
 
-                    
+                    {% if user.is_admin %}
                     <h4>Votes:</h4>
                     <div class="vote-bar-container">
                         <div class="vote-bar-yes" style="width: {{ presentation.percentYes }}%;"></div>
                         <div class="vote-bar-no" style="width: {{ presentation.percentNo }}%;"></div>
                     </div>
                     <p>Yes: {{ presentation.numYes }} | No: {{ presentation.numNo }}</p>
-          
+                    {% endif %}
                     <form action="voteForm.php" method="post">
                         <input type="hidden" name="presentation_id" value="{{ presentation.presentation_id }}">
                         <button type="submit" name="vote" value="1">Vote Yes</button>
