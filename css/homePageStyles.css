@@ -155,6 +155,12 @@ nav a:hover {
     padding: 20px;
 }
 
+.move {
+    margin-left: -10px;
+    margin-bottom: 10px;
+}
+
+
 /* Stock Cards */
 .stock-card {
     background: #ffffff;
