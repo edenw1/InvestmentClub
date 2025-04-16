@@ -10,19 +10,13 @@
 </head>
 <body>
 
-    {# --- Optional Sidebar --- #}
-    {# Make sure your header.html.twig OR this section correctly defines the sidebar IF you want one. #}
         <div class="sidebar">
            <img src="/../Inv_Logo.png" alt="Investment Club Logo">
-           {# Navigation links... #}
         </div>
 
-    {# --- Main Content Area --- #}
-    {# Ensure this div exists and has the correct margin if a fixed sidebar is used #}
     <div class="content-wrapper">
         <div class="page-container">
 
-            {# --- Stock Header Section --- #}
             <div class="grid-row mb-4">
                 <div class="grid-col-12">
                     <h1>{{ profile.name|default('Unknown Company') }} ({{ profile.ticker|default('N/A') }})</h1>
@@ -112,7 +106,7 @@
                 </div>
             </div>
 
-            {# --- Combined Financials Row (Collapsible) --- #}
+            {# --- Combined Financials Row --- #}
             <div class="grid-row mb-4">
                 <div class="grid-col-12">
                     <div class="custom-card">
