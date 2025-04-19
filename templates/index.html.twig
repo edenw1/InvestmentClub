@@ -1,5 +1,10 @@
 {% include 'header.html.twig' %}
 <div class="container">
+    <!-- Display error message if passed from controller -->
+    {% if error_message is defined %}
+        <div class="alert alert-danger">{{ error_message }}</div>
+    {% endif %}
+
     <!--Search Function-->
     <div class="layout-wrapper">
         <div class="left-column">
@@ -12,91 +17,145 @@
                 </form>
             </div>
 
-            {% if stocks %}
-            <!-- Chart Container -->
-            <div id="chart_div"></div>
-            {% endif %}
-        </div>
+            {# --- CHART SECTION --- #}
+            {# Conditionally include chart div and script ONLY for portfolio view #}
+            {% if viewType is defined and viewType == 'portfolio' and displayStocks is defined and displayStocks %}
+                <!-- Chart Container - PLACE IT HERE in the left column -->
+                <div id="chart_div" style="margin-top: 20px;"></div>
 
-        <div class="right-column">
-            {% if stocks %}
+                <!-- Load Google Chart API -->
+                <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                <script type="text/javascript">
+                    google.charts.load('current', {'packages':['corechart']});
+                    google.charts.setOnLoadCallback(drawNetEarningsChart);
+
+                    function drawNetEarningsChart() {
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'Stock Symbol');
+                        data.addColumn('number', 'Net Earnings ($)');
+
+                        var earningsData = [
+                            {% for stock in displayStocks %} {# Use displayStocks #}
+                                {# Ensure net_earnings exists before adding - belt and suspenders #}
+                                {% if stock.net_earnings is defined %}
+                                    ['{{ stock.symbol }}', {{ stock.net_earnings }}]{% if not loop.last %},{% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        ];
+
+                        // Only add rows if there's data to prevent errors
+                        if (earningsData.length > 0) {
+                            data.addRows(earningsData);
+                        } else {
+                             // Optional: Handle case where portfolio has stocks but no earnings data yet
+                             console.log("No earnings data to display in chart.");
+                             // You might hide the chart div or show a message here
+                             document.getElementById('chart_div').style.display = 'none';
+                             return; // Stop chart drawing
+                        }
+
+
+                        var options = {
+                            title: 'Net Earnings per Stock in Portfolio',
+                            width: '100%',
+                            height: 350,
+                            legend: { position: 'none' },
+                            chartArea: {width: '80%', height: '70%'},
+                            hAxis: {
+                                title: 'Stock Symbol',
+                                titleTextStyle: {color: '#333'}
+                            },
+                            vAxis: {
+                                title: 'Net Earnings ($)',
+                                minValue: null,
+                                format: 'currency'
+                            },
+                            bar: { groupWidth: '75%' }
+                        };
+
+                        var chartContainer = document.getElementById('chart_div');
+                        if (chartContainer) {
+                            var chart = new google.visualization.ColumnChart(chartContainer);
+                            chart.draw(data, options);
+                        } else {
+                            console.error("Chart container 'chart_div' not found.");
+                        }
+                    }
+
+                    window.addEventListener('resize', drawNetEarningsChart);
+                </script>
+            {% endif %}
+            {# --- END CHART SECTION --- #}
+
+        </div>{# End left-column #}
+
+ <div class="right-column">
+            {# --- STOCK CARDS SECTION --- #}
+            {% if displayStocks is defined and displayStocks %}
             <div class="stock-grid">
-                {% for stock in stocks %}
-                    <a href="Stock/{{ stock.symbol }}" class="stock-card-link">
-                        <div class="stock-card">
+                {# Loop over displayStocks #}
+                {% for stock in displayStocks %}
+                    {# The link wrapper might interfere with the button click easily,
+                       so the button is outside the <a>, but inside the card div #}
+                    <div class="stock-card"> {# Card itself is not a link anymore #}
+
+                        {# --- Add the Remove Button conditionally HERE --- #}
+                       {% if viewType == 'watchlist' and user.is_admin %}
+                            {# Use the form for positioning, style the button inside #}
+                            <form class="remove-form" action="removeFromWatchlist.php" method="POST">
+                                <input type="hidden" name="symbol" value="{{ stock.symbol }}">
+                                {# Use a symbol like '×' for subtlety, add title for accessibility #}
+                                <button type="submit" class="remove-btn" title="Remove {{ stock.symbol }} from Watchlist">×</button>
+                            </form>
+                        {% endif %}
+
+                        {# Make the content clickable instead of the whole card #}
+                        <a href="Stock/{{ stock.symbol }}" class="stock-card-content-link" style="text-decoration: none; color: inherit; display: block; flex-grow: 1;">
                             <div class="stock-header">
                                 <h3>{{ stock.symbol }}</h3>
-                                <br/>
-                                {% if user.is_admin %}
+                                <p class="company-name">{{ stock.profile.name | default(stock.name | default('N/A')) }}</p>
 
-                                <form class="move" action="removeFromWatchlist.php" method="POST" style="display: inline;">
-                                    <input type="hidden" name="symbol" value="{{ stock.symbol }}">
-                                    <button type="submit" class="remove-btn">Remove</button>
-                                </form>
-                                <br/>
+                               
 
-
-                                {% endif %}
-                                <p class="company-name">{{ stock.profile.companyName }}</p>
                             </div>
                             <div class="stock-body">
-                                <div class="stock-info">
-                                    <p>Current Price: ${{ stock.quote.c|number_format(2) }}</p>
-                                    <p>Timestamp: {{ stock.quote.t|date('Y-m-d H:i:s') }}</p>
-                                    <p>Previous Close: ${{ stock.quote.pc|number_format(2) }}</p>
-                                    <p>Day's Range: ${{ stock.quote.l|number_format(2) }} - ${{ stock.quote.h|number_format(2) }}</p>
-                                    <p class="{{ stock.quote.c >= stock.quote.pc ? 'positive' : 'negative' }}">
-                                        Change: ${{ (stock.quote.c - stock.quote.pc)|number_format(2) }}
-                                    </p>
-                                </div> 
+                                {% if stock.quote and stock.quote.c is defined %}
+                                    <div class="stock-info">
+                                        <p>Current Price: ${{ stock.quote.c|number_format(2) }}</p>
+                                        {% if stock.quote.t is defined %}
+                                            <p>Timestamp: {{ stock.quote.t|date('Y-m-d H:i:s') }}</p>
+                                        {% endif %}
+                                        <p>Previous Close: ${{ stock.quote.pc|number_format(2) }}</p>
+                                        <p>Day's Range: ${{ stock.quote.l|number_format(2) }} - ${{ stock.quote.h|number_format(2) }}</p>
+                                        <p class="{{ stock.quote.c >= stock.quote.pc ? 'positive' : 'negative' }}">
+                                            Change: ${{ (stock.quote.c - stock.quote.pc)|number_format(2) }}
+                                        </p>
+                                    </div>
+                                {% else %}
+                                    <p class="text-muted">Quote data not available.</p>
+                                {% endif %}
                             </div>
-                        </div>
-                    </a>
+                        </a> {# End of clickable content link #}
+                    </div> {# End stock-card #}
                 {% endfor %}
             </div>
             {% else %}
-                <p class="no-stocks">No stocks found in the portfolio.</p>
+                {# ... (no stocks message) ... #}
             {% endif %}
-        </div>
-    </div>
-</div>
+            {# --- END STOCK CARDS SECTION --- #}
+        </div> {# End right-column #}
+    </div> {# End layout-wrapper #}
+</div> {# End container #}
+</div> {# End container #}
 
 <script>
     document.getElementById("stockForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Prevent the default form submission
+        event.preventDefault();
         let ticker = document.getElementById("symbol").value.trim();
         if (ticker) {
             window.location.href = `Stock/${ticker}`;
         }
     });
 </script>
-
-{% if stocks %}
-<!-- Load Google Chart API -->
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-    google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
-    function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Stock Name');
-        data.addColumn('number', 'Current Price');
-        var stockData = [
-            {% for stock in stocks %}
-                ['{{ stock.symbol }}', {{ stock.quote.c }}]{% if not loop.last %},{% endif %}
-            {% endfor %}
-        ];
-        data.addRows(stockData);
-        var options = {
-            title: 'Stock Prices in Portfolio',
-            width: 275,
-            height: 200,
-            is3D: true
-        };
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-    }
-</script>
-{% endif %}
 
 {% include 'footer.html.twig' %}

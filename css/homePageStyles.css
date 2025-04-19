@@ -168,8 +168,53 @@ nav a:hover {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 20px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative; /* Add this line */
+    height: 80%;
+    display: flex;
+    flex-direction: column;
 }
 
+.stock-card .remove-form {
+    position: absolute;
+    top: 5px;         /* Adjust distance from top edge */
+    right: 5px;        /* Adjust distance from right edge */
+    z-index: 10;       /* Ensure it's above other content if needed */
+    margin: 0;         /* Reset any default form margins */
+    padding: 0;        /* Reset any default form padding */
+    line-height: 1;    /* Prevent extra vertical space */
+    /* display: block;    REPLACE THIS */
+    display: inline-block; /* CHANGE TO THIS */
+    width: auto; /* Explicitly set width to auto/content size */
+}
+
+/* Style the button ('X') itself to be tiny */
+.remove-watchlist-btn {
+    display: inline-block;
+    background: none;
+    border: none;
+    color: #aaa;
+    font-family: Arial, sans-serif;
+    font-size: 1.1rem;
+    font-weight: bold;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    vertical-align: top;
+    outline: none; /* Add this line */
+}
+
+/* Optional: Add focus style that doesn't use outline */
+.remove-watchlist-btn:focus {
+    /* outline: none; /* Ensure outline is none on focus too */
+    /* You could slightly change color or add a subtle shadow if desired */
+    color: #cc0000; /* Example: Make it slightly brighter red on focus */
+}
+
+.remove-watchlist-btn:hover {
+    color: #e74c3c;
+}
 .stock-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
