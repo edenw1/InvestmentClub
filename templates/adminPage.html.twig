@@ -43,6 +43,22 @@
     </form>
     </div>
     <div class="form-container">
+        <h2>Reset User Password</h2>
+        <form action="resetPassword.php" method="post">
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required><br><br>
+            
+            <label for="password">New Password:</label><br>
+            <input type="password" id="password" name="password" required><br><br>
+            
+            <label for="check_password">Confirm New Password:</label><br>
+            <input type="password" id="check_password" name="check_password" required><br><br>
+            
+            <input type="submit" value="Update Password"><br>
+        </form>
+    </div>
+
+    <div class="form-container">
     <h2>{% block header_remove_member %}Remove Club Member{% endblock %}</h2>
     <form action="removeMemberForm.php" method="post">
         <label for="email">Email:</label><br>
