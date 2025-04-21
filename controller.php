@@ -65,7 +65,7 @@ function handleTransactions($twig, $user, $isAuthenticated) {
 }
 function handlePortfolio($twig, $user, $isAuthenticated) {
     if (!$isAuthenticated) {
-        header('Location: home');
+        header('Location: login');
         exit();
     }
     try {
@@ -119,7 +119,7 @@ function handlePortfolio($twig, $user, $isAuthenticated) {
 
 function handleAdmin($twig, $user, $isAuthenticated) {
     if (!$isAuthenticated) {
-        header('Location: home');
+        header('Location: login');
         exit();
     }
 
