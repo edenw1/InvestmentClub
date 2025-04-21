@@ -63,27 +63,58 @@ function handleTransactions($twig, $user, $isAuthenticated) {
         echo "Error fetching transactions: " . $e->getMessage();
     }
 }
-
 function handlePortfolio($twig, $user, $isAuthenticated) {
     if (!$isAuthenticated) {
         header('Location: home');
         exit();
     }
     try {
-        $activeStocks = selectActiveStocks(); 
-        $stocks = array_map(fn($row) => [
-            'symbol' => $row['symbol'],
-            'profile' => getProfile($row['symbol']),
-            'quote' => getQuote($row['symbol']),
-            'trends' => getTrends($row['symbol'])
-        ], $activeStocks);
-        
-        echo $twig->render('index.html.twig', ['stocks' => $stocks, 'user' => $user, 'page_title' => '- Portfolio Page']);
+        $portfolioDetails = getPortfolioStockDetails();
+        $stocksDataForView = [];
+
+        foreach ($portfolioDetails as $stock) {
+            $quoteData = getQuote($stock['symbol']);
+            $currentPrice = $quoteData['c'] ?? 0;
+            $profileData = getProfile($stock['symbol']);
+            $netQuantityHeld = $stock['total_quantity_bought'] - $stock['total_quantity_sold'];
+            $currentValue = ($netQuantityHeld > 0) ? ($netQuantityHeld * $currentPrice) : 0;
+            $netEarnings = ($stock['total_proceeds'] + $currentValue) - $stock['total_cost'];
+
+            $stocksDataForView[] = [
+                'stock_id' => $stock['stock_id'],
+                'symbol' => $stock['symbol'],
+                'name' => $stock['name'],
+                'total_quantity_bought' => $stock['total_quantity_bought'],
+                'total_quantity_sold' => $stock['total_quantity_sold'],
+                'net_quantity_held' => $netQuantityHeld,
+                'total_cost' => $stock['total_cost'],
+                'total_proceeds' => $stock['total_proceeds'],
+                'current_price' => $currentPrice,
+                'current_value' => $currentValue,
+                'net_earnings' => floatval($netEarnings), // Specific to portfolio
+                'quote' => $quoteData,
+                'profile' => $profileData,
+            ];
+        }
+
+        // Pass using 'displayStocks' and add 'viewType'
+        echo $twig->render('index.html.twig', [
+            'displayStocks' => $stocksDataForView, // Standardized variable name
+            'viewType' => 'portfolio',            // Flag indicating the context
+            'user' => $user,
+            'page_title' => '- Portfolio Page'
+        ]);
+
     } catch (Exception $e) {
-        echo "Error portfolio: " . $e->getMessage();
+        error_log("Error in handlePortfolio: " . $e->getMessage());
+        echo $twig->render('index.html.twig', [
+             'error_message' => 'Could not load portfolio data.',
+             'viewType' => 'portfolio', // Still indicate context on error
+             'user' => $user,
+             'page_title' => '- Portfolio Error'
+        ]);
     }
 }
-
 
 
 function handleAdmin($twig, $user, $isAuthenticated) {
@@ -178,7 +209,7 @@ function handleAbout($twig, $user) {
     echo $twig->render('about.html.twig', ['user' => $user, 'contents' => $contents]);
 }
 
-function handleStock($twig) {
+function handleStock($twig, $user) {
     try {
         $symbol = $_GET['symbol'] ?? null;
         if (!$symbol) throw new Exception("No stock symbol specified");
@@ -194,7 +225,8 @@ function handleStock($twig) {
             'quote' => $quote,
             'trends' => $trends,
             'financials' => $financials,
-            'news' => $news
+            'news' => $news,
+            'user' => $user
         ]);
     } catch (Exception $e) {
         die("Error loading stock data: " . $e->getMessage());
@@ -203,8 +235,25 @@ function handleStock($twig) {
 
 
 function handleHome($twig, $user) {
-    $stocks = fetchWatchlistStocks();
-    echo $twig->render('index.html.twig', ['stocks' => $stocks, 'user' => $user]);
+    try {
+        $watchlistStocks = fetchWatchlistStocks(); // Fetches data including profile and quote
+
+        // Pass using 'displayStocks' and add 'viewType'
+        echo $twig->render('index.html.twig', [
+            'displayStocks' => $watchlistStocks, // Standardized variable name
+            'viewType' => 'watchlist',           // Flag indicating the context
+            'user' => $user,
+            'page_title' => '- Watchlist'       // Adjust page title if needed
+        ]);
+    } catch (Exception $e) {
+         error_log("Error in handleHome: " . $e->getMessage());
+         echo $twig->render('index.html.twig', [
+              'error_message' => 'Could not load watchlist data.',
+              'viewType' => 'watchlist', // Still indicate context on error
+              'user' => $user,
+              'page_title' => '- Watchlist Error'
+         ]);
+    }
 }
 
 function handleKey_Members($twig, $user) {
