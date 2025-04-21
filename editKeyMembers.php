@@ -2,7 +2,7 @@
 session_start();
 require 'databaseFunctions.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
     $name = $_POST['name'];
     $position = $_POST['position'];
     $description = $_POST['description'];
