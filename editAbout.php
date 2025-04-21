@@ -2,9 +2,7 @@
 session_start();
 require 'databaseFunctions.php'; 
 
-global $pdo; 
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
     $title = $_POST['title'];
     $description = $_POST['description'];
     $url = $_POST['url'];
