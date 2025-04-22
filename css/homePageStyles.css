@@ -220,6 +220,15 @@ nav a:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+
+.stock-card a.stock-card-content-link,
+.stock-card a.stock-card-content-link:hover,
+.stock-card a.stock-card-content-link:visited,
+.stock-card a.stock-card-content-link * { /* Target the link and all elements inside it */
+    text-decoration: none !important; /* Use !important to override other styles if needed */
+    color: inherit; /* Ensure text color is inherited correctly */
+}
+
 .stock-header h3 {
     margin: 0;
     color: #2c3e50;
@@ -536,6 +545,7 @@ label {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
+    height: 40%
 }
 
 /* Update Stock Grid to display 4 cards per row */
@@ -624,6 +634,4 @@ label {
     height: auto;
     border-radius: 8px;
 }
-
-
 

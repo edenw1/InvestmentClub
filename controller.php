@@ -63,60 +63,87 @@ function handleTransactions($twig, $user, $isAuthenticated) {
         echo "Error fetching transactions: " . $e->getMessage();
     }
 }
+
+
+
 function handlePortfolio($twig, $user, $isAuthenticated) {
     if (!$isAuthenticated) {
         header('Location: login');
         exit();
     }
     try {
-        $portfolioDetails = getPortfolioStockDetails();
+        // Make sure this function correctly fetches data based on the logged-in user
+        $portfolioDetails = getPortfolioStockDetails($_SESSION['user_id']); // Pass user_id if necessary
         $stocksDataForView = [];
+        $totalPortfolioNetEarnings = 0;
+        $totalPortfolioCurrentValue = 0; // <-- Initialize Total Current Value
+        $totalPortfolioCost = 0;         // <-- Initialize Total Cost (Invested)
 
         foreach ($portfolioDetails as $stock) {
             $quoteData = getQuote($stock['symbol']);
             $currentPrice = $quoteData['c'] ?? 0;
             $profileData = getProfile($stock['symbol']);
-            $netQuantityHeld = $stock['total_quantity_bought'] - $stock['total_quantity_sold'];
-            $currentValue = ($netQuantityHeld > 0) ? ($netQuantityHeld * $currentPrice) : 0;
-            $netEarnings = ($stock['total_proceeds'] + $currentValue) - $stock['total_cost'];
+
+            $totalBought = floatval($stock['total_quantity_bought'] ?? 0); // Ensure float for division
+            $totalSold = floatval($stock['total_quantity_sold'] ?? 0);
+            $totalCost = floatval($stock['total_cost'] ?? 0);
+            $totalProceeds = floatval($stock['total_proceeds'] ?? 0);
+
+            $netQuantityHeld = $totalBought - $totalSold;
+            $currentValue = ($netQuantityHeld > 0 && $currentPrice > 0) ? ($netQuantityHeld * $currentPrice) : 0;
+            $netEarnings = ($totalProceeds + $currentValue) - $totalCost;
+
+            // Calculate Average Purchase Price
+            $averagePurchasePrice = ($totalBought > 0) ? ($totalCost / $totalBought) : 0; // <-- Calculate Avg Price
+
+            // Accumulate totals for the portfolio summary
+            $totalPortfolioNetEarnings += $netEarnings;
+            $totalPortfolioCurrentValue += $currentValue; // <-- Accumulate Current Value
+            $totalPortfolioCost += $totalCost;             // <-- Accumulate Total Cost
 
             $stocksDataForView[] = [
-                'stock_id' => $stock['stock_id'],
+                'stock_id' => $stock['stock_id'] ?? null,
                 'symbol' => $stock['symbol'],
-                'name' => $stock['name'],
-                'total_quantity_bought' => $stock['total_quantity_bought'],
-                'total_quantity_sold' => $stock['total_quantity_sold'],
+                'name' => $stock['name'] ?? ($profileData['name'] ?? 'N/A'),
+                'total_quantity_bought' => $totalBought,
+                'total_quantity_sold' => $totalSold,
                 'net_quantity_held' => $netQuantityHeld,
-                'total_cost' => $stock['total_cost'],
-                'total_proceeds' => $stock['total_proceeds'],
+                'total_cost' => $totalCost,
+                'total_proceeds' => $totalProceeds,
                 'current_price' => $currentPrice,
                 'current_value' => $currentValue,
-                'net_earnings' => floatval($netEarnings), // Specific to portfolio
+                'net_earnings' => $netEarnings,
+                'average_purchase_price' => $averagePurchasePrice, // <-- Add Avg Price to stock data
                 'quote' => $quoteData,
                 'profile' => $profileData,
             ];
         }
 
-        // Pass using 'displayStocks' and add 'viewType'
+        // Pass the calculated totals along with other data
         echo $twig->render('index.html.twig', [
-            'displayStocks' => $stocksDataForView, // Standardized variable name
-            'viewType' => 'portfolio',            // Flag indicating the context
+            'displayStocks' => $stocksDataForView,
+            'viewType' => 'portfolio',
             'user' => $user,
-            'page_title' => '- Portfolio Page'
+            'page_title' => '- Portfolio Page',
+            'total_portfolio_earnings' => $totalPortfolioNetEarnings,
+            'total_portfolio_value' => $totalPortfolioCurrentValue, // <-- Pass Total Value
+            'total_portfolio_cost' => $totalPortfolioCost          // <-- Pass Total Cost
         ]);
 
     } catch (Exception $e) {
         error_log("Error in handlePortfolio: " . $e->getMessage());
         echo $twig->render('index.html.twig', [
-             'error_message' => 'Could not load portfolio data.',
-             'viewType' => 'portfolio', // Still indicate context on error
+             'error_message' => 'Could not load portfolio data. Error: ' . $e->getMessage(),
+             'viewType' => 'portfolio',
              'user' => $user,
-             'page_title' => '- Portfolio Error'
+             'page_title' => '- Portfolio Error',
+             // Pass defaults or nulls for the new values on error
+             'total_portfolio_earnings' => null,
+             'total_portfolio_value' => null,
+             'total_portfolio_cost' => null
         ]);
     }
 }
-
-
 function handleAdmin($twig, $user, $isAuthenticated) {
     if (!$isAuthenticated) {
         header('Location: login');
