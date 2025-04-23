@@ -35,11 +35,12 @@
                         <td>${{ transaction.price_per_share | number_format(2) }}</td>
                         <td>{{ transaction.buy_sell_date }}</td>
                         <td>
-                            <!-- Remove Button -->
+                            {# <!-- Remove Button -->
                             <form method="POST" action="removeTransactions.php" style="display:inline;">
                                 <input type="hidden" name="transaction_id" value="{{ transaction.transaction_id }}">
                                 <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to remove this transaction?')">Remove</button>
                             </form>
+                            #}
                         </td>
                     </tr>
                     {% endfor %}
