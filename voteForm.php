@@ -2,7 +2,7 @@
 session_start();
 require 'databaseFunctions.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['presentation_id'], $_POST['vote'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
     $presentation_id = (int)$_POST['presentation_id'];
     $vote = $_POST['vote'] == '1' ? 1 : 0;

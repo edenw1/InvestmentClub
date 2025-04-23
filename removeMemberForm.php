@@ -2,6 +2,8 @@
 require 'db.php';
 dbConnect();
 
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 $email = $_POST['email'];
 
 $checkUser = "SELECT * FROM users WHERE email = :email";
@@ -22,5 +24,6 @@ if ($user) {
     <br>
     <a href="admin">Admin Panel</a>
 <?php
+}
 }
 ?>

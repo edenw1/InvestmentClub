@@ -542,6 +542,39 @@ function getAllTransactions($sortBy = 'date_desc') {
     }
 }
 
+function getPortfolioStockDetails() {
+    global $pdo;
+    try {
+        // joins stocks and transactions, calculates aggregates for active stocks
+        $sql = "
+            SELECT
+                s.stock_id,
+                s.symbol,
+                s.name,
+                COALESCE(SUM(CASE WHEN t.transaction_type = 'Buy' THEN t.quantity ELSE 0 END), 0) AS total_quantity_bought,
+                COALESCE(SUM(CASE WHEN t.transaction_type = 'Sell' THEN t.quantity ELSE 0 END), 0) AS total_quantity_sold,
+                COALESCE(SUM(CASE WHEN t.transaction_type = 'Buy' THEN t.quantity * t.price_per_share ELSE 0 END), 0.00) AS total_cost,
+                COALESCE(SUM(CASE WHEN t.transaction_type = 'Sell' THEN t.quantity * t.price_per_share ELSE 0 END), 0.00) AS total_proceeds
+            FROM
+                stocks s
+            LEFT JOIN -- Use LEFT JOIN in case a stock is active but has no transactions yet (unlikely based on addTransaction logic, but safer)
+                transactions t ON s.stock_id = t.stock_id
+            WHERE
+                s.active = 1 -- Only include stocks currently marked as active in the portfolio
+            GROUP BY
+                s.stock_id, s.symbol, s.name
+            ORDER BY
+                s.symbol; -- Optional: order the results
+        ";
+        $stmt = $pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        // Log the error for debugging
+        error_log("Error fetching portfolio stock details: " . $e->getMessage());
+        // Return an empty array or re-throw the exception depending on desired error handling
+        return [];
+    }
+}
 
 function fetchWatchlistStocks() {
     global $pdo;

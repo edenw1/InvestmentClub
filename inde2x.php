@@ -29,7 +29,7 @@ $router->map('GET', '/portfolio', function () {
 
 $router->map('GET', '/admin', function () {
     global $twig, $user, $isAuthenticated, $isAdmin;
-    handleAdmin($twig, $user, $isAuthenticated, $isAdmin);
+    handleAdmin($twig, $user, $isAuthenticated);
 });
 
 $router->map('GET', '/logout', function () {
@@ -62,13 +62,15 @@ $router->map('GET', '/key-members-edit', function () {
 
 $router->map('GET', '/Stock/[*:symbol]', function ($symbol) {
     global $twig;
+    global $user;
     $_GET['symbol'] = $symbol; 
-    handleStock($twig);
+    handleStock($twig, $user);
 });
 
 
 $router->map('GET|POST', '/Stock/[*:symbol]', function ($symbol) {
     global $twig;
+    global $user;
     //require 'databaseFunctions.php';
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -85,7 +87,7 @@ $router->map('GET|POST', '/Stock/[*:symbol]', function ($symbol) {
     }
 
     $_GET['symbol'] = $symbol;
-    handleStock($twig);
+    handleStock($twig, $user);
 });
 
 $match = $router->match();

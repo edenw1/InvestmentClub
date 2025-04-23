@@ -1,8 +1,27 @@
-{% include 'header.html.twig' with {page_title: ' - Admin Panel'} %}
+{% include 'header.html.twig' with {page_title: ' - Profile'} %}
 
 <body>
-    <h1>{% block header_main %} Admin Functions{% endblock %}</h1>
-    <br>     
+    {% if user.is_authenticated %}
+    <h1> User Functions </h1>   
+    <div class="form-container">
+        <h2>Change Credentials</h2>
+        <form method="POST" action="update_credentials.php">
+            <label for="new_username">New Username (optional):</label>
+            <input type="text"name="new_username">
+            <br>
+            <label for="new_password">New Password:</label>
+            <input type="password"  name="new_password" required>
+            <br>
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" name="confirm_password" required>
+            <br>
+            <button type="submit" name="update_credentials">Update</button>
+        </form>
+    </div>
+    {% endif %}
+
+{% if user.is_admin %}
+    <h1>{% block header_main %} Admin Functions{% endblock %}</h1>   
     <div class="form-container">
     <h2>{% block header_add_member %}Add New Club Member{% endblock %}</h2>
     <form action="addmemberForm.php" method="post">
@@ -23,6 +42,22 @@
         <br>
     </form>
     </div>
+    <div class="form-container">
+        <h2>Reset User Password</h2>
+        <form action="resetPassword.php" method="post">
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required><br><br>
+            
+            <label for="password">New Password:</label><br>
+            <input type="password" id="password" name="password" required><br><br>
+            
+            <label for="check_password">Confirm New Password:</label><br>
+            <input type="password" id="check_password" name="check_password" required><br><br>
+            
+            <input type="submit" value="Update Password"><br>
+        </form>
+    </div>
+
     <div class="form-container">
     <h2>{% block header_remove_member %}Remove Club Member{% endblock %}</h2>
     <form action="removeMemberForm.php" method="post">
@@ -86,6 +121,7 @@
     {% else %}
         <p>No pending stock proposals.</p>
     {% endif %}
+{% endif %}
 </body>
 <br>
 <br>
