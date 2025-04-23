@@ -121,7 +121,7 @@ function addTransaction($transaction_type, $stock_id, $quantity, $price_per_shar
         $stmt->bindParam(':buy_sell_date', $buy_sell_date);
         $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
         $stmt->execute();
-
+        
 
         $plusQuery = "SELECT COALESCE(SUM(quantity), 0) AS total FROM transactions WHERE transaction_type = 'Buy' AND stock_id = :stock_id";
         $stmt = $pdo->prepare($plusQuery);
@@ -576,5 +576,60 @@ function fetchKeyMembers() {
         error_log("Error fetching key members: " . $e->getMessage());
     }
     return $members;
+}
+function removeTransaction($transaction_id) {
+    global $pdo;
+
+    try {
+        $checkTransaction = "SELECT * FROM transactions WHERE transaction_id = :transaction_id";
+        $stmt1 = $pdo->prepare($checkTransaction);
+        $stmt1->bindParam(':transaction_id', $transaction_id, PDO::PARAM_INT);
+        $stmt1->execute();
+        $transaction = $stmt1->fetch();
+
+        if (!$transaction) {
+            return false;
+        }
+
+        $stock_id = $transaction['stock_id'];
+
+        $deleteQuery = "DELETE FROM transactions WHERE transaction_id = :transaction_id";
+        $stmt = $pdo->prepare($deleteQuery);
+        $stmt->bindParam(':transaction_id', $transaction_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $plusQuery = "SELECT COALESCE(SUM(quantity), 0) AS total FROM transactions WHERE transaction_type = 'Buy' AND stock_id = :stock_id";
+        $stmt = $pdo->prepare($plusQuery);
+        $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $plusResult = $stmt->fetch(PDO::FETCH_ASSOC);
+        $plusTotal = $plusResult['total'];
+
+        $lessQuery = "SELECT COALESCE(SUM(quantity), 0) AS total FROM transactions WHERE transaction_type = 'Sell' AND stock_id = :stock_id";
+        $stmt = $pdo->prepare($lessQuery);
+        $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $lessResult = $stmt->fetch(PDO::FETCH_ASSOC);
+        $lessTotal = $lessResult['total'];
+
+        $total = $plusTotal - $lessTotal;
+
+        if ($total <= 0) {
+            $updateStock = "UPDATE stocks SET active = 0 WHERE stock_id = :stock_id";
+            $stmt2 = $pdo->prepare($updateStock);
+            $stmt2->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
+            $stmt2->execute();
+        } else {
+            $updateStock = "UPDATE stocks SET active = 1 WHERE stock_id = :stock_id";
+            $stmt2 = $pdo->prepare($updateStock);
+            $stmt2->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
+            $stmt2->execute();
+        }
+
+        return true;
+
+    } catch (Exception $e) {
+        return false;
+    }
 }
 

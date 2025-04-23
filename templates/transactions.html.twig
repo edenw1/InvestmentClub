@@ -13,32 +13,39 @@
         </form>
         <hr>
         <table class="transactions-table">
-                <tr>
-                    <th>Stock</th>
-                    <th>Type</th>
-                    <th>Quantity</th>
-                    <th>Price per Share</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
+            <tr>
+                <th>Stock</th>
+                <th>Type</th>
+                <th>Quantity</th>
+                <th>Price per Share</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
             <tbody>
                 {% if transactions %}
                     {% for transaction in transactions %}
-                <tr>
-                    <td>
-                        <a href="Stock/{{ transaction.stock_symbol }}" class="stock-link">
-                            {{ transaction.stock_name }}
-                        </a>
-                    </td>
-                    <td>{{ transaction.transaction_type }}</td>
-                    <td>{{ transaction.quantity }}</td>
-                    <td>${{ transaction.price_per_share | number_format(2) }}</td>
-                    <td>{{ transaction.buy_sell_date }}</td>
-                </tr>
-                {% endfor %}
+                    <tr>
+                        <td>
+                            <a href="Stock/{{ transaction.stock_symbol }}" class="stock-link">
+                                {{ transaction.stock_name }}
+                            </a>
+                        </td>
+                        <td>{{ transaction.transaction_type }}</td>
+                        <td>{{ transaction.quantity }}</td>
+                        <td>${{ transaction.price_per_share | number_format(2) }}</td>
+                        <td>{{ transaction.buy_sell_date }}</td>
+                        <td>
+                            <!-- Remove Button -->
+                            <form method="POST" action="removeTransactions.php" style="display:inline;">
+                                <input type="hidden" name="transaction_id" value="{{ transaction.transaction_id }}">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to remove this transaction?')">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
                 {% else %}
                     <tr>
-                        <td>No transactions found.</td>
+                        <td colspan="6">No transactions found.</td>
                     </tr>
                 {% endif %}
             </tbody>
@@ -46,4 +53,5 @@
         {% endblock %}
     </div>
 </div>
+
 {% include 'footer.html.twig' %}
