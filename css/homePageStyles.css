@@ -5,7 +5,8 @@ body {
     background-color: #f4f4f9;
     color: #333;
     display: flex;
-    padding-bottom: 60px; 
+    padding-bottom: 70px !important; /* Increased padding for footer clearance */
+    display: flex;
 }
 
 .login-form label {
@@ -19,7 +20,7 @@ body {
     padding: 1rem;
     box-sizing: border-box;
     color: white;
-    height: 100vh;
+    height: 120vh;
     position: sticky; /* Makes it sticky */
     top: 0; /* Makes it stick to the top when scrolling */
     align-items: center;
@@ -545,7 +546,6 @@ label {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
-    height: 40%
 }
 
 /* Update Stock Grid to display 4 cards per row */
