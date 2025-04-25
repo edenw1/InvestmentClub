@@ -65,85 +65,92 @@ function handleTransactions($twig, $user, $isAuthenticated) {
 }
 
 
-
 function handlePortfolio($twig, $user, $isAuthenticated) {
     if (!$isAuthenticated) {
         header('Location: login');
         exit();
     }
     try {
-        // Make sure this function correctly fetches data based on the logged-in user
-        $portfolioDetails = getPortfolioStockDetails($_SESSION['user_id']); // Pass user_id if necessary
+        $portfolioDetails = getPortfolioStockDetails($_SESSION['user_id']);
+
         $stocksDataForView = [];
         $totalPortfolioNetEarnings = 0;
-        $totalPortfolioCurrentValue = 0; // <-- Initialize Total Current Value
-        $totalPortfolioCost = 0;         // <-- Initialize Total Cost (Invested)
+        $totalPortfolioCurrentValue = 0;
+
+        $totalHistoricalCostAcrossPortfolio = 0;
+        $totalProceedsAcrossPortfolio = 0;
+
 
         foreach ($portfolioDetails as $stock) {
             $quoteData = getQuote($stock['symbol']);
             $currentPrice = $quoteData['c'] ?? 0;
             $profileData = getProfile($stock['symbol']);
 
-            $totalBought = floatval($stock['total_quantity_bought'] ?? 0); // Ensure float for division
+            $totalBought = floatval($stock['total_quantity_bought'] ?? 0);
             $totalSold = floatval($stock['total_quantity_sold'] ?? 0);
-            $totalCost = floatval($stock['total_cost'] ?? 0);
-            $totalProceeds = floatval($stock['total_proceeds'] ?? 0);
+            $historicalTotalCost = floatval($stock['total_cost'] ?? 0); // Total cost for *this* stock's purchases
+            $totalProceeds = floatval($stock['total_proceeds'] ?? 0); // Total proceeds for *this* stock's sales
 
             $netQuantityHeld = $totalBought - $totalSold;
+
+            $averagePurchasePrice = ($totalBought > 0) ? ($historicalTotalCost / $totalBought) : 0;
+
             $currentValue = ($netQuantityHeld > 0 && $currentPrice > 0) ? ($netQuantityHeld * $currentPrice) : 0;
-            $netEarnings = ($totalProceeds + $currentValue) - $totalCost;
 
-            // Calculate Average Purchase Price
-            $averagePurchasePrice = ($totalBought > 0) ? ($totalCost / $totalBought) : 0; // <-- Calculate Avg Price
+            $netEarnings = ($totalProceeds + $currentValue) - $historicalTotalCost;
 
-            // Accumulate totals for the portfolio summary
-            $totalPortfolioNetEarnings += $netEarnings;
-            $totalPortfolioCurrentValue += $currentValue; // <-- Accumulate Current Value
-            $totalPortfolioCost += $totalCost;             // <-- Accumulate Total Cost
+            $totalPortfolioNetEarnings += $netEarnings;       // Sum of individual stock earnings
+            $totalPortfolioCurrentValue += $currentValue;     // Sum of current market values of held shares
+
+            $totalHistoricalCostAcrossPortfolio += $historicalTotalCost;
+            $totalProceedsAcrossPortfolio += $totalProceeds;
+
 
             $stocksDataForView[] = [
                 'stock_id' => $stock['stock_id'] ?? null,
                 'symbol' => $stock['symbol'],
                 'name' => $stock['name'] ?? ($profileData['name'] ?? 'N/A'),
-                'total_quantity_bought' => $totalBought,
-                'total_quantity_sold' => $totalSold,
                 'net_quantity_held' => $netQuantityHeld,
-                'total_cost' => $totalCost,
-                'total_proceeds' => $totalProceeds,
-                'current_price' => $currentPrice,
-                'current_value' => $currentValue,
-                'net_earnings' => $netEarnings,
-                'average_purchase_price' => $averagePurchasePrice, // <-- Add Avg Price to stock data
+                'current_price' => $currentPrice,           // Market price per share
+                'current_value' => $currentValue,           // Market value of held shares for this stock
+                'net_earnings' => $netEarnings,             // P/L for this stock (historical cost based)
+                'average_purchase_price' => $averagePurchasePrice, // Avg cost per share *bought*
                 'quote' => $quoteData,
                 'profile' => $profileData,
+            
             ];
         }
 
-        // Pass the calculated totals along with other data
+        $calculatedTotalInvestedCost = $totalHistoricalCostAcrossPortfolio - $totalProceedsAcrossPortfolio;
+        $calculatedTotalInvestedCost = max(0, $calculatedTotalInvestedCost);
+
+
         echo $twig->render('index.html.twig', [
             'displayStocks' => $stocksDataForView,
             'viewType' => 'portfolio',
             'user' => $user,
             'page_title' => '- Portfolio Page',
-            'total_portfolio_earnings' => $totalPortfolioNetEarnings,
-            'total_portfolio_value' => $totalPortfolioCurrentValue, // <-- Pass Total Value
-            'total_portfolio_cost' => $totalPortfolioCost          // <-- Pass Total Cost
+            'total_portfolio_earnings' => $totalPortfolioNetEarnings,   // Sum of (Proceeds + CurrentValue - HistCost)
+            'total_portfolio_value' => $totalPortfolioCurrentValue,    // Sum of CurrentValue
+            'total_portfolio_cost' => $calculatedTotalInvestedCost     // Sum(HistCost) - Sum(Proceeds)
         ]);
 
     } catch (Exception $e) {
         error_log("Error in handlePortfolio: " . $e->getMessage());
+        // Ensure default/null values are passed on error
         echo $twig->render('index.html.twig', [
              'error_message' => 'Could not load portfolio data. Error: ' . $e->getMessage(),
              'viewType' => 'portfolio',
              'user' => $user,
              'page_title' => '- Portfolio Error',
-             // Pass defaults or nulls for the new values on error
              'total_portfolio_earnings' => null,
              'total_portfolio_value' => null,
-             'total_portfolio_cost' => null
+             'total_portfolio_cost' => null // Pass null for cost on error too
         ]);
     }
 }
+
+    
 function handleAdmin($twig, $user, $isAuthenticated) {
     if (!$isAuthenticated) {
         header('Location: login');

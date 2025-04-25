@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'databaseFunctions.php';
-require 'API.php';
+require '   .php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
     $title = $_POST['title'];
