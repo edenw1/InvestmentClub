@@ -1,7 +1,8 @@
-{% include 'header.html.twig' %}
+{% include 'header.html.twig' %} {# Assumes header sets page title or you handle it elsewhere #}
+
 <div class="container">
     <!-- Display error message if passed from controller -->
-    {% if error_message is defined %}
+    {% if error_message is defined and error_message %}
         <div class="alert alert-danger">{{ error_message }}</div>
     {% endif %}
 
@@ -18,12 +19,13 @@
                 </form>
             </div>
 
-            {# --- MOVED: Display Total Portfolio Summary --- #}
+            {# --- Display Total Portfolio Summary --- #}
             {% if viewType == 'portfolio' %} {# Show summary only for portfolio view #}
                 <div class="portfolio-summary" style="margin-top: 20px; padding: 15px; background-color: #e9ecef; border-radius: 5px; border: 1px solid #dee2e6;">
                      <h4 style="margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Portfolio Summary</h4>
-                     {% if total_portfolio_value is defined and total_portfolio_value is not null %}
-                         <p style="margin-bottom: 5px; font-size: 1.0em;"> {# Adjusted font size slightly #}
+                     {# Portfolio summary calculations use data passed from controller, unaffected by card/chart filtering #}
+                     {% if total_portfolio_value is defined and total_portfolio_cost is defined and total_portfolio_earnings is defined %}
+                         <p style="margin-bottom: 5px; font-size: 1.0em;">
                              <strong>Total Current Value:</strong>
                              <span style="font-weight: bold; float: right;">
                                 ${{ total_portfolio_value|number_format(2, '.', ',') }}
@@ -47,17 +49,18 @@
                      {% endif %}
                  </div>
             {% endif %}
-            {# --- END MOVED Portfolio Summary --- #}
+            {# --- END Portfolio Summary --- #}
 
         </div>{# End left-column #}
 
         <div class="right-column">
 
-            {# --- MOVED: CHART SECTION --- #}
+            {# --- CHART SECTION --- #}
             {# Conditionally include chart div and script ONLY for portfolio view #}
-            {% if viewType is defined and viewType == 'portfolio' and displayStocks is defined and displayStocks %}
+            {# Check if displayStocks exists and is not empty BEFORE trying to draw chart #}
+            {% if viewType is defined and viewType == 'portfolio' and displayStocks is defined and displayStocks is not empty %}
                 <!-- Chart Container - Now in the right column -->
-                <div id="chart_div" style="margin-bottom: 20px;"> {# Adjusted margin #}
+                <div id="chart_div" style="margin-bottom: 20px; display: none;"> {# Start hidden, JS will show it if data exists #}
                     {# Chart will be drawn here by JS #}
                 </div>
 
@@ -70,30 +73,33 @@
                     function drawNetEarningsChart() {
                         var data = new google.visualization.DataTable();
                         data.addColumn('string', 'Stock Symbol');
-                        data.addColumn('number', 'Net Earnings ($)');
+                        data.addColumn('number', 'Net Earnings ($)'); // Chart shows earnings even if sold, if desired
 
-                        var earningsData = [
-                            {% for stock in displayStocks %}
-                                {% if stock.net_earnings is defined %}
-                                    ['{{ stock.symbol|e('js') }}', {{ stock.net_earnings }}]{% if not loop.last %},{% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        ];
+                        // Build JS array safely
+                        var earningsElements = [];
+                        {% for stock in displayStocks %}
+                            {# Only include in chart if quantity held > 0 #}
+                            {% if stock.net_earnings is defined and stock.net_quantity_held is defined and stock.net_quantity_held > 0 %}
+                                // Push valid data points into a temporary JS array
+                                earningsElements.push(['{{ stock.symbol|escape('js') }}', {{ stock.net_earnings }}]);
+                            {% endif %}
+                        {% endfor %}
 
-                        if (earningsData.length > 0) {
-                            data.addRows(earningsData);
+                        // Add rows to Google DataTable if we collected any elements
+                        var chartContainer = document.getElementById('chart_div');
+                        if (earningsElements.length > 0 && chartContainer) {
+                            data.addRows(earningsElements);
+                            chartContainer.style.display = 'block'; // Show the container
                         } else {
-                             console.log("No earnings data to display in chart.");
-                             // Hide the container if no data, check if it exists first
-                             var chartContainer = document.getElementById('chart_div');
+                             console.log("No stocks with current holdings to display in chart.");
                              if(chartContainer) {
-                                chartContainer.style.display = 'none';
+                                chartContainer.style.display = 'none'; // Ensure it stays hidden
                              }
-                             return; // Stop chart drawing
+                             return; // Stop chart drawing if no data or container missing
                         }
 
                         var options = {
-                            title: 'Net Earnings per Stock in Portfolio',
+                            title: 'Net Earnings per Held Stock in Portfolio', // Updated title
                             width: '100%', // Takes width of the right column
                             height: 350,
                             legend: { position: 'none' },
@@ -104,108 +110,132 @@
                             },
                             vAxis: {
                                 title: 'Net Earnings ($)',
-                                minValue: null,
+                                minValue: null, // Auto-adjust axis
                                 format: 'currency'
                             },
                             bar: { groupWidth: '75%' }
                         };
 
-                        var chartContainer = document.getElementById('chart_div');
-                        if (chartContainer) {
-                            // Ensure container is visible before drawing (in case it was hidden above)
-                            chartContainer.style.display = 'block';
-                            var chart = new google.visualization.ColumnChart(chartContainer);
-                            chart.draw(data, options);
-                        } else {
-                            console.error("Chart container 'chart_div' not found.");
-                        }
+                        // Draw the chart
+                        var chart = new google.visualization.ColumnChart(chartContainer);
+                        chart.draw(data, options);
                     }
 
                     // Redraw chart on window resize
                     window.addEventListener('resize', drawNetEarningsChart);
                 </script>
             {% endif %}
-            {# --- END MOVED CHART SECTION --- #}
+            {# --- END CHART SECTION --- #}
 
 
-            {# --- STOCK CARDS SECTION (Remains here) --- #}
-            {% if displayStocks is defined and displayStocks %}
+            {# --- STOCK CARDS SECTION --- #}
+            {% if displayStocks is defined and displayStocks is not empty %}
                 <div class="stock-grid">
-                    {# Loop over displayStocks #}
+                    {% set items_displayed = false %} {# Flag to track if we actually show any card #}
                     {% for stock in displayStocks %}
-                        <div class="stock-card">
-                             {% if viewType == 'watchlist' and user.is_admin %}
-                            {# Use the form for positioning, style the button inside #}
-                            <form class="remove-form" action="removeFromWatchlist.php" method="POST">
-                                <input type="hidden" name="symbol" value="{{ stock.symbol }}">
-                                {# Use a symbol like '×' for subtlety, add title for accessibility #}
-                                <button type="submit" class="remove-btn" title="Remove {{ stock.symbol }} from Watchlist">×</button>
-                            </form>
-                        {% endif %}
+                        {# Condition to display: Watchlist OR Portfolio with holdings > 0 #}
+                        {% if (viewType == 'watchlist') or (viewType == 'portfolio' and stock.net_quantity_held is defined and stock.net_quantity_held > 0) %}
+                            {% set items_displayed = true %} {# Mark that we are displaying at least one item #}
 
-                            {# --- Portfolio Specific Info (Inside the card) --- #}
-                            {% if viewType == 'portfolio' %}
-                                <div class="portfolio-stock-info" style="font-size: 0.85em; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #eee;">
-                                    <p style="margin: 2px 0;">Held: {{ stock.net_quantity_held|number_format }}</p>
-                                    <p style="margin: 2px 0;">Avg. Buy Price: ${{ stock.average_purchase_price|number_format(2) }}</p>
-                                    <p style="margin: 2px 0;">Value Held: ${{ stock.current_value|number_format(2) }}</p>
-                                    {# ---- CHANGE THIS LINE ---- #}
-                                          
-<p style="margin: 2px 0;">Current Price: ${{ stock.current_price|number_format(2) }}</p>
+                            <div class="stock-card">
+                                 {# Watchlist remove button (only if viewType is watchlist and user is admin) #}
+                                 {% if viewType == 'watchlist' and user is defined and user.is_admin %}
+                                    <form class="remove-form" action="removeFromWatchlist.php" method="POST" style="position: absolute; top: 5px; right: 5px;">
+                                        <input type="hidden" name="symbol" value="{{ stock.symbol }}">
+                                        <button type="submit" class="remove-btn" title="Remove {{ stock.symbol }} from Watchlist" style="background:none; border:none; color:#dc3545; font-size:1.4em; font-weight:bold; cursor:pointer; padding:0 5px; line-height:1;">×</button>
+                                    </form>
+                                {% endif %}
 
-    
-                                    {# ---- END CHANGE ---- #}
-                                    <p style="margin: 2px 0;" class="{{ stock.net_earnings >= 0 ? 'positive' : 'negative' }}">
-                                        Stock Earnings: ${{ stock.net_earnings|number_format(2) }}
-                                    </p>
-                                </div>
-                            {% endif %}
-                            {# --- End Portfolio Specific Info --- #}
+                                {# --- Portfolio Specific Info (Inside the card) --- #}
+                                {# This block is only relevant if viewType is portfolio, and the outer 'if' already guarantees holdings > 0 #}
+                                {% if viewType == 'portfolio' %}
+                                    <div class="portfolio-stock-info" style="font-size: 0.85em; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #eee;">
+                                        <p style="margin: 2px 0;">Held: {{ stock.net_quantity_held|number_format }}</p>
+                                        <p style="margin: 2px 0;">Avg. Buy Price: ${{ stock.average_purchase_price|number_format(2) }}</p>
+                                        <p style="margin: 2px 0;">Value Held: ${{ stock.current_value|number_format(2) }}</p>
+                                        <p style="margin: 2px 0;">Current Price: ${{ stock.current_price|number_format(2) }}</p> {# Price from calculation #}
+                                        <p style="margin: 2px 0;" class="{{ stock.net_earnings >= 0 ? 'positive' : 'negative' }}">
+                                            Stock Earnings: ${{ stock.net_earnings|number_format(2) }} {# Overall earnings for this stock #}
+                                        </p>
+                                    </div>
+                                {% endif %}
+                                {# --- End Portfolio Specific Info --- #}
 
-                            {# Make the content clickable #}
-                            <a href="Stock/{{ stock.symbol|url_encode }}" class="stock-card-content-link">
-                                {# ... stock header ... #}
-                                <div class="stock-header">
-                                    <h3>{{ stock.symbol }}</h3>
-                                    <p class="company-name">{{ stock.profile.name | default(stock.name | default('N/A')) }}</p>
-                                </div>
-                                {# ... stock body ... #}
-                                <div class="stock-body">
-                                    {% if stock.quote and stock.quote.c is defined %}
-                                        <div class="stock-info">
-                                             <p>Current Price: ${{ stock.quote.c|number_format(2) }}</p>
-                                             <p>Prev Close: ${{ stock.quote.pc|number_format(2) }}</p>
-                                             <p>Day's Range: ${{ stock.quote.l|number_format(2) }} - ${{ stock.quote.h|number_format(2) }}</p>
-                                             <p class="{{ stock.quote.c >= stock.quote.pc ? 'positive' : 'negative' }}">
-                                                 Change: ${{ (stock.quote.c - stock.quote.pc)|number_format(2) }}
-                                                 ({{ stock.quote.dp | default(0) | number_format(2) }}%)
-                                             </p>
-                                         </div>
-                                    {% else %}
-                                        <p class="text-muted">Quote data not available.</p>
-                                    {% endif %}
-                                </div>
-                            </a> {# End of clickable content link #}
-                        </div> {# End stock-card #}
-                    {% endfor %}
-                </div>
-            {% elseif viewType == 'portfolio' %}
-                 <p class="no-stocks">Your portfolio is currently empty. Add transactions to see stocks here.</p>
-            {% elseif viewType == 'watchlist' %}
-                 <p class="no-stocks">Your watchlist is empty.</p>
+                                {# Make the content clickable - links to stock detail page #}
+                                <a href="Stock/{{ stock.symbol|url_encode }}" class="stock-card-content-link">
+                                    {# Stock Header: Symbol and Name #}
+                                    <div class="stock-header">
+                                        <h3>{{ stock.symbol }}</h3>
+                                        <p class="company-name">{{ stock.profile.name | default(stock.name | default('N/A')) }}</p>
+                                    </div>
+                                    {# Stock Body: Quote data #}
+                                    <div class="stock-body">
+                                        {% if stock.quote and stock.quote.c is defined %}
+                                            <div class="stock-info">
+                                                 <p>Current Price: ${{ stock.quote.c|number_format(2) }}</p> {# Live quote price #}
+                                                 <p>Prev Close: ${{ stock.quote.pc|number_format(2) }}</p>
+                                                 <p>Day's Range: ${{ stock.quote.l|number_format(2) }} - ${{ stock.quote.h|number_format(2) }}</p>
+                                                 <p class="{{ stock.quote.c >= stock.quote.pc ? 'positive' : 'negative' }}">
+                                                     Change: ${{ (stock.quote.c - stock.quote.pc)|number_format(2) }}
+                                                     ({{ stock.quote.dp | default(0) | number_format(2) }}%)
+                                                 </p>
+                                             </div>
+                                        {% else %}
+                                            <p class="text-muted">Quote data not available.</p>
+                                        {% endif %}
+                                    </div>
+                                </a> {# End of clickable content link #}
+                            </div> {# End stock-card #}
+
+                        {% endif %} {# End of the main display condition check (watchlist or portfolio holdings > 0) #}
+                    {% endfor %} {# End loop through displayStocks #}
+                </div> {# End stock-grid #}
+
+                {# Display message if the loop finished but NO items met the display criteria #}
+                {% if not items_displayed %}
+                    {% if viewType == 'portfolio' %}
+                         <p class="no-stocks" style="text-align: center; margin-top: 20px;">Your portfolio currently holds 0 shares of any stock. Add transactions or buy shares to see them here.</p>
+                    {% elseif viewType == 'watchlist' %}
+                         {# This should technically not be reached if displayStocks was not empty,
+                            but included for completeness in case watchlist logic changes #}
+                         <p class="no-stocks">Your watchlist is empty or contains no valid items.</p>
+                    {% endif %}
+                {% endif %}
+
+            {# Handle cases where displayStocks was not defined or was empty from the controller #}
+            {% else %}
+                {% if viewType == 'portfolio' %}
+                     <p class="no-stocks">Your portfolio is currently empty. Add transactions to see stocks here.</p>
+                {% elseif viewType == 'watchlist' %}
+                     <p class="no-stocks">Your watchlist is empty.</p>
+                {% endif %}
             {% endif %}
             {# --- END STOCK CARDS SECTION --- #}
+
         </div> {# End right-column #}
     </div> {# End layout-wrapper #}
 </div> {# End container #}
 
-{# ... Script for stock search form ... #}
+{# --- Script for stock search form --- #}
 <script>
-    document.getElementById("stockForm").addEventListener("submit", function(event) {
-        event.preventDefault();
-        let ticker = document.getElementById("symbol").value.trim().toUpperCase();
-        if (ticker) {
-            window.location.href = `Stock/${encodeURIComponent(ticker)}`;
+    // Ensure the DOM is loaded before attaching the event listener
+    document.addEventListener('DOMContentLoaded', function() {
+        const stockForm = document.getElementById("stockForm");
+        if (stockForm) {
+            stockForm.addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent default form submission
+                const symbolInput = document.getElementById("symbol");
+                if (symbolInput) {
+                    let ticker = symbolInput.value.trim().toUpperCase();
+                    if (ticker) {
+                        // Construct the URL and navigate
+                        window.location.href = `Stock/${encodeURIComponent(ticker)}`;
+                    } else {
+                         // Optional: Add feedback if the input is empty
+                         alert("Please enter a stock ticker symbol.");
+                    }
+                }
+            });
         }
     });
 </script>

@@ -69,7 +69,7 @@ function fetchPendingProposals() {
     $proposals = [];
     try {
         $stmt = $pdo->query("
-            SELECT sp.proposal_id, sp.stock_name, sp.stock_symbol, sp.status, u.username
+            SELECT sp.proposal_id, sp.stock_name, sp.stock_symbol, sp.status, sp.action, sp.quantity, u.username
             FROM stockProposal sp
             JOIN users u ON sp.proposed_by = u.user_id
             WHERE sp.status = 'pending'
@@ -81,6 +81,8 @@ function fetchPendingProposals() {
                 'symbol' => $row['stock_symbol'],
                 'proposed_by' => $row['username'],
                 'status' => $row['status'],
+                'action' => $row['action'],
+                'quantity' => $row['quantity'],
             ];
         }
     } catch (Exception $e) {
@@ -88,6 +90,7 @@ function fetchPendingProposals() {
     }
     return $proposals;
 }
+
 
 
 function fetchAllStocks() {
@@ -511,7 +514,8 @@ function deleteMember($member_id) {
 function getAllTransactions($sortBy = 'date_desc') {
     try {
         global $pdo;
-        //defaulting to ordering by date
+
+        //defaulting to ordering
         $order = "ORDER BY t.buy_sell_date DESC";
 
         if ($sortBy == 'date_asc') {
@@ -520,14 +524,16 @@ function getAllTransactions($sortBy = 'date_desc') {
             $order = "ORDER BY s.symbol ASC";
         }
 
-        $stmt = $pdo->prepare("SELECT s.symbol AS stock_symbol, 
+        $stmt = $pdo->prepare("SELECT t.transaction_id, 
+                s.symbol AS stock_symbol, 
                 s.name AS stock_name, 
                 t.transaction_type, 
                 t.quantity, 
                 t.price_per_share, 
                 t.buy_sell_date 
             FROM transactions t 
-            JOIN stocks s ON t.stock_id = s.stock_id $order");
+            JOIN stocks s ON t.stock_id = s.stock_id 
+            $order");
         $stmt->execute();
 
         $transactions = [];
@@ -622,7 +628,7 @@ function removeTransaction($transaction_id) {
 
         if (!$transaction) {
             return false;
-        }
+        } else {
 
         $stock_id = $transaction['stock_id'];
 
@@ -630,39 +636,9 @@ function removeTransaction($transaction_id) {
         $stmt = $pdo->prepare($deleteQuery);
         $stmt->bindParam(':transaction_id', $transaction_id, PDO::PARAM_INT);
         $stmt->execute();
-
-        $plusQuery = "SELECT COALESCE(SUM(quantity), 0) AS total FROM transactions WHERE transaction_type = 'Buy' AND stock_id = :stock_id";
-        $stmt = $pdo->prepare($plusQuery);
-        $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
-        $stmt->execute();
-        $plusResult = $stmt->fetch(PDO::FETCH_ASSOC);
-        $plusTotal = $plusResult['total'];
-
-        $lessQuery = "SELECT COALESCE(SUM(quantity), 0) AS total FROM transactions WHERE transaction_type = 'Sell' AND stock_id = :stock_id";
-        $stmt = $pdo->prepare($lessQuery);
-        $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
-        $stmt->execute();
-        $lessResult = $stmt->fetch(PDO::FETCH_ASSOC);
-        $lessTotal = $lessResult['total'];
-
-        $total = $plusTotal - $lessTotal;
-
-        if ($total <= 0) {
-            $updateStock = "UPDATE stocks SET active = 0 WHERE stock_id = :stock_id";
-            $stmt2 = $pdo->prepare($updateStock);
-            $stmt2->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
-            $stmt2->execute();
-        } else {
-            $updateStock = "UPDATE stocks SET active = 1 WHERE stock_id = :stock_id";
-            $stmt2 = $pdo->prepare($updateStock);
-            $stmt2->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
-            $stmt2->execute();
-        }
-
         return true;
-
+        }
     } catch (Exception $e) {
         return false;
     }
 }
-

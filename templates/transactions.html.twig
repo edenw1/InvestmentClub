@@ -35,12 +35,15 @@
                         <td>${{ transaction.price_per_share | number_format(2) }}</td>
                         <td>{{ transaction.buy_sell_date }}</td>
                         <td>
-                            {# <!-- Remove Button -->
-                            <form method="POST" action="removeTransactions.php" style="display:inline;">
+                             <!-- Remove Button using an 'x' -->
+                            <form method="POST" action="removeTransactions.php" style="display:inline; margin: 0; padding: 0;">
                                 <input type="hidden" name="transaction_id" value="{{ transaction.transaction_id }}">
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to remove this transaction?')">Remove</button>
+                                <button type="submit" class="remove-transaction-btn"
+                                        title="Remove Transaction {{ transaction.transaction_id }}"
+                                        onclick="return confirm('Are you sure you want to remove this transaction? This action cannot be undone.')">
+                                    × {# This is the HTML entity for a multiplication sign (x) #}
+                                </button>
                             </form>
-                            #}
                         </td>
                     </tr>
                     {% endfor %}

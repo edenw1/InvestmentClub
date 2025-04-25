@@ -635,3 +635,19 @@ label {
     border-radius: 8px;
 }
 
+.remove-transaction-btn {
+    background: none;      /* Remove button background */
+    border: none;          /* Remove button border */
+    color: #dc3545;        /* Red color (danger) */
+    font-size: 1.4em;      /* Make the 'x' a bit larger */
+    font-weight: bold;     /* Make it bolder */
+    cursor: pointer;       /* Indicate it's clickable */
+    padding: 0 5px;        /* Minimal padding */
+    line-height: 1;        /* Adjust line height if needed */
+    vertical-align: middle;/* Align nicely with text if needed */
+    text-decoration: none; /* Remove any potential underlines */
+}
+
+.remove-transaction-btn:hover {
+    color: #a71d2a;        /* Darker red on hover */
+}
