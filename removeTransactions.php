@@ -9,13 +9,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id']) && isset
 }
 
 if ($result == true) {
-    header('Location: admin');
+    header('Location: transactions');
     exit();
 } else {
     echo '<br>' . $result;
     ?>
     <br>
-    <a href="admin">Back to Admin Panel</a>
+    <a href="transactions">Back to Transactions</a>
     <?php
 }
 ?>
