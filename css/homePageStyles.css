@@ -5,7 +5,8 @@ body {
     background-color: #f4f4f9;
     color: #333;
     display: flex;
-    padding-bottom: 60px; 
+    padding-bottom: 70px !important; /* Increased padding for footer clearance */
+    display: flex;
 }
 
 .login-form label {
@@ -19,7 +20,7 @@ body {
     padding: 1rem;
     box-sizing: border-box;
     color: white;
-    height: 100vh;
+    height: 120vh;
     position: sticky; /* Makes it sticky */
     top: 0; /* Makes it stick to the top when scrolling */
     align-items: center;
@@ -218,6 +219,15 @@ nav a:hover {
 .stock-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+
+.stock-card a.stock-card-content-link,
+.stock-card a.stock-card-content-link:hover,
+.stock-card a.stock-card-content-link:visited,
+.stock-card a.stock-card-content-link * { /* Target the link and all elements inside it */
+    text-decoration: none !important; /* Use !important to override other styles if needed */
+    color: inherit; /* Ensure text color is inherited correctly */
 }
 
 .stock-header h3 {
@@ -624,6 +634,4 @@ label {
     height: auto;
     border-radius: 8px;
 }
-
-
 
