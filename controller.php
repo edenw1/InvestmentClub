@@ -248,11 +248,17 @@ function handleStock($twig, $user) {
         $symbol = $_GET['symbol'] ?? null;
         if (!$symbol) throw new Exception("No stock symbol specified");
 
+        // Fetch data for the current stock
         $profile = getProfile($symbol);
         $quote = getQuote($symbol);
         $trends = getTrends($symbol);
         $financials = getFinancials($symbol);
         $news = getNews($symbol, 5);
+
+        $watchlistSymbols = getWatchlistSymbolsOnly(); // Use the efficient function
+        $currentSymbol = $profile['ticker'] ?? $symbol; // Use 'ticker' if profile has it, fallback to $symbol
+        $isInWatchlist = in_array(strtoupper($currentSymbol), array_map('strtoupper', $watchlistSymbols)); // Case-insensitive check
+
 
         echo $twig->render('stock.html.twig', [
             'profile' => $profile,
@@ -260,13 +266,19 @@ function handleStock($twig, $user) {
             'trends' => $trends,
             'financials' => $financials,
             'news' => $news,
-            'user' => $user
+            'user' => $user,
+            'isInWatchlist' => $isInWatchlist // Pass the boolean flag
         ]);
     } catch (Exception $e) {
-        die("Error loading stock data: " . $e->getMessage());
+        error_log("Error loading stock data for $symbol: " . $e->getMessage());
+         echo $twig->render('stock.html.twig', [
+             'error_message' => "Error loading stock data: " . $e->getMessage(),
+             'user' => $user,
+             'symbol' => $symbol 
+         ]);
+         // Alternatively: die("Error loading stock data: " . $e->getMessage());
     }
 }
-
 
 function handleHome($twig, $user) {
     try {

@@ -601,6 +601,20 @@ function fetchWatchlistStocks() {
     return $stocks;
 }
 
+
+function getWatchlistSymbolsOnly() { //not using API, much faster
+    global $pdo;
+    $symbols = [];
+    try {
+
+        $stmt = $pdo->query("SELECT symbol FROM stocks WHERE watchlist = 1");
+        $symbols = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+    } catch (Exception $e) {
+        error_log("Error fetching watchlist symbols: " . $e->getMessage());
+    }
+    return $symbols; // Returns ['AAPL', 'GOOG', 'MSFT', ...]
+}
+
 function fetchKeyMembers() {
     global $pdo;
     $members = [];

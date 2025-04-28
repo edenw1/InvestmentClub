@@ -34,7 +34,7 @@
                         <h2 class="text-muted">Price data unavailable</h2>
                     {% endif %}
 
-                    {% if user.is_authenticated %}
+                    {% if user.is_authenticated and not isInWatchlist %}
                     <form action="/Stock/{{ profile.ticker|default('') }}" method="POST">
                         <input type="hidden" name="name" value="{{ profile.name|default('') }}">
                         <button type="submit" class="custom-btn btn-primary">Add to Watchlist</button>
